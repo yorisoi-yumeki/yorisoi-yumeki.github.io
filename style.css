@@ -261,8 +261,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   overflow: hidden;
   display: flex;
 }
-.exp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue-600), var(--cyan-400)); }
-.exp-bar-fill.secondary { background: #C7D2E8; }
+.exp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+/* secondary（値の小さい方）も実データ。グレーの「空欄っぽさ」を避け、
+   同じブルー系パレット内の落ち着いたトーンで「別カテゴリの実データ」を表現する */
+.exp-bar-fill.secondary {
+  background: linear-gradient(90deg, var(--blue-700), var(--blue-600));
+  box-shadow: none;
+}
 
 /* ---------- Domain (業界・職種 統合) ---------- */
 .domain-card {
