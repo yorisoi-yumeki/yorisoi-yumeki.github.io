@@ -248,29 +248,68 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .strength-card p { margin-bottom: 0; font-size: 0.92rem; }
 
 /* ---------- Experience bars ---------- */
-.exp-bars { display: flex; flex-direction: column; gap: var(--sp-3); margin: var(--sp-3) 0; }
+.exp-bars-caption { font-size: 0.82rem; color: var(--text-600); margin-top: -4px; }
+.exp-bars { display: flex; flex-direction: column; gap: var(--sp-2); margin: var(--sp-2) 0 var(--sp-3); }
 .exp-bar-row { display: flex; flex-direction: column; gap: 6px; }
-.exp-bar-caption { font-size: 0.78rem; color: var(--text-600); }
-.exp-bar-labels { display: flex; justify-content: space-between; font-size: 0.9rem; }
-.exp-bar-labels .left { color: var(--text-900); font-weight: 700; }
-.exp-bar-labels .right { color: var(--text-600); font-weight: 600; }
 .exp-bar-track {
-  height: 12px;
+  height: 44px;
   background: var(--border);
   border-radius: 999px;
-  overflow: hidden;
   display: flex;
+  /* 中の細いセグメントでもラベル文字がバー外にはみ出して読めるよう、clipはしない */
 }
 .exp-bar-fill {
+  position: relative;
   height: 100%;
   background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
   box-shadow: 1px 0 0 rgba(255, 255, 255, 0.7);
 }
+.exp-bar-fill:first-child { border-top-left-radius: 999px; border-bottom-left-radius: 999px; }
+.exp-bar-fill:last-child { border-top-right-radius: 999px; border-bottom-right-radius: 999px; }
 /* secondary（値の小さい方）も実データ。グレーの「空欄っぽさ」を避け、
    同じブルー系パレット内の落ち着いたトーンで「別カテゴリの実データ」を表現する */
 .exp-bar-fill.secondary {
   background: linear-gradient(90deg, var(--blue-700), var(--blue-600));
   box-shadow: none;
+}
+
+/* バー内テキスト：セグメントの外側の端に寄せて配置。狭いセグメントでは
+   反対側のセグメント上にはみ出して表示されるが、どちらも青系背景のため
+   白文字のコントラストは保たれる */
+.exp-bar-fill-label {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  white-space: nowrap;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+.exp-bar-fill:last-child:not(:first-child) .exp-bar-fill-label { left: auto; right: 14px; }
+.exp-bar-fill:only-child .exp-bar-fill-label { left: 50%; right: auto; transform: translate(-50%, -50%); }
+
+button.exp-bar-fill-label.is-jump {
+  cursor: pointer;
+  border-radius: 4px;
+}
+.exp-bar-fill-label.is-jump::after { content: " \203A"; opacity: 0.85; }
+.exp-bar-fill-label.is-jump:hover,
+.exp-bar-fill-label.is-jump:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .exp-bar-track { height: 40px; }
+  .exp-bar-fill-label { font-size: 0.72rem; }
 }
 
 /* ---------- Domain (業界・職種 統合) ---------- */
@@ -346,6 +385,16 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 .career-card summary::-webkit-details-marker { display: none; }
 .career-company { font-weight: 700; color: var(--text-900); font-size: 1.02rem; }
+.career-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0; }
+.career-tag {
+  display: inline-block;
+  background: #EAF1FF;
+  color: var(--blue-700);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
 .career-period { font-size: 0.78rem; color: var(--text-600); }
 .career-headline { font-size: 0.88rem; color: var(--blue-700); margin-top: 4px; }
 .num-highlight {
@@ -360,6 +409,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .career-card[open] .career-toggle-hint::after { content: "閉じる ▲"; }
 .career-card:not([open]) .career-toggle-hint::after { content: "詳細を見る ▼"; }
 .career-detail { margin-top: var(--sp-2); padding-top: var(--sp-2); border-top: 1px dashed var(--border); }
+.career-detail-block + .career-detail-block { margin-top: var(--sp-2); }
+.career-detail-block h4 {
+  margin: 0 0 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--blue-600);
+  text-transform: uppercase;
+}
 .career-detail ul { margin: 0; padding-left: 1.1em; font-size: 0.86rem; color: var(--text-600); }
 .career-detail li { margin-bottom: 6px; }
 

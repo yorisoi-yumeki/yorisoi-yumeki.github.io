@@ -87,6 +87,46 @@
     });
   }
 
+  /* ---------------- 「12年間の経験内容」バー → 経歴カードへジャンプ ----------------
+   * バー内のラベル（例: カスタマーサクセス、マネジメント）のうち、対応する経歴カードが
+   * 明確に存在するものだけをボタン化してある（data-tag属性）。クリックすると、
+   * 同じタグを持つ職務経歴カード（<details data-tags="...">）を全て開いてハイライトする。
+   * 該当カードが「もっと見る」で隠れている場合は先に展開する。
+   */
+  function initExpBarJumpLinks() {
+    var buttons = document.querySelectorAll(".exp-bar-fill-label.is-jump[data-tag]");
+    if (!buttons.length) return;
+
+    var grid = document.getElementById("career-grid");
+    var moreBtn = document.getElementById("career-more-btn");
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var tag = btn.getAttribute("data-tag");
+        var matches = document.querySelectorAll('.career-card[data-tags~="' + tag + '"]');
+        if (!matches.length) return;
+
+        var needsExpand = Array.prototype.some.call(matches, function (card) {
+          return card.classList.contains("career-extra");
+        });
+        if (needsExpand && grid && !grid.classList.contains("is-expanded")) {
+          grid.classList.add("is-expanded");
+          if (moreBtn) moreBtn.classList.add("is-hidden");
+        }
+
+        matches.forEach(function (card) {
+          card.open = true;
+          card.classList.add("is-highlighted");
+          window.setTimeout(function () {
+            card.classList.remove("is-highlighted");
+          }, 1600);
+        });
+
+        matches[0].scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" });
+      });
+    });
+  }
+
   /* ---------------- プロフィール写真の自動検出 ----------------
    * assets/img/ に profile.jpg という決まった名前でアップロードしなくても、
    * GitHubの公開API経由でフォルダの中身を確認し、写真らしきファイル
@@ -130,6 +170,7 @@
     initFadeIn();
     initCareerExpander();
     initLogoJumpLinks();
+    initExpBarJumpLinks();
     initAutoProfilePhoto();
   });
 })();
