@@ -364,7 +364,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   transition: box-shadow 300ms ease;
 }
 
-/* ---------- Human touch section ---------- */
+/* ---------- Human touch section (自己紹介) ---------- */
 .human-touch {
   background: var(--surface);
   border-radius: var(--radius-l);
@@ -372,6 +372,23 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   border: 1px dashed var(--border);
 }
 .human-touch .section-label { color: var(--blue-600); }
+
+.human-touch-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--sp-4);
+  align-items: center;
+}
+.human-touch-photo {
+  width: 220px;
+  height: 220px;
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  box-shadow: var(--shadow-card-lg);
+  background: linear-gradient(135deg, var(--blue-600), var(--cyan-400));
+}
+.human-touch-photo img { width: 100%; height: 100%; object-fit: cover; }
+
 .human-touch ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .human-touch li {
   background: var(--bg);
@@ -380,6 +397,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   font-size: 0.9rem;
   color: var(--text-900);
   max-width: 34em;
+}
+
+@media (max-width: 640px) {
+  .human-touch-grid { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .human-touch-grid ul { justify-content: center; }
 }
 
 /* ---------- Testimonials ---------- */
