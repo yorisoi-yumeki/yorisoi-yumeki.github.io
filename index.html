@@ -175,27 +175,28 @@
 
       <div class="fade-target">
         <h3>精通している業界・職種</h3>
+        <p class="exp-bars-caption">クリックすると、該当する職務経歴カードだけに絞り込みます。</p>
         <div class="domain-card">
           <div class="domain-row">
             <span class="domain-tag">業界</span>
             <div class="chip-group" id="industry-chips">
-              <span class="chip">SaaS</span>
-              <span class="chip">生命保険・損害保険</span>
-              <span class="chip">住宅系建設</span>
-              <span class="chip">中古住宅売買</span>
-              <span class="chip">建材流通</span>
-              <span class="chip">タクシー</span>
+              <button type="button" class="chip" data-axis="audience-industry" data-value="SaaS">SaaS</button>
+              <button type="button" class="chip" data-axis="audience-industry" data-value="生命保険・損害保険">生命保険・損害保険</button>
+              <button type="button" class="chip" data-axis="audience-industry" data-value="住宅系建設">住宅系建設</button>
+              <button type="button" class="chip" data-axis="audience-industry" data-value="中古住宅売買">中古住宅売買</button>
+              <button type="button" class="chip" data-axis="audience-industry" data-value="建材流通">建材流通</button>
+              <button type="button" class="chip" data-axis="audience-industry" data-value="タクシー">タクシー</button>
             </div>
           </div>
           <div class="domain-row">
             <span class="domain-tag">職種</span>
             <div class="chip-group" id="role-chips">
-              <span class="chip">経理</span>
-              <span class="chip">人事</span>
-              <span class="chip">設計・現場監督</span>
-              <span class="chip">運転手</span>
-              <span class="chip">情報システム</span>
-              <span class="chip">マーケティング</span>
+              <button type="button" class="chip" data-axis="audience-job" data-value="経理">経理</button>
+              <button type="button" class="chip" data-axis="audience-job" data-value="人事">人事</button>
+              <button type="button" class="chip" data-axis="audience-job" data-value="設計・現場監督">設計・現場監督</button>
+              <button type="button" class="chip" data-axis="audience-job" data-value="運転手">運転手</button>
+              <button type="button" class="chip" data-axis="audience-job" data-value="情報システム">情報システム</button>
+              <button type="button" class="chip" data-axis="audience-job" data-value="マーケティング">マーケティング</button>
             </div>
           </div>
         </div>
@@ -221,30 +222,60 @@
 
       <div class="fade-target">
         <h3>職務経歴・支援実績</h3>
-        <div class="career-filter" id="career-filter" role="group" aria-label="経歴の絞り込み">
-          <button type="button" class="career-filter-btn is-active" data-filter="all">すべて</button>
-          <button type="button" class="career-filter-btn" data-filter="新規開拓">新規開拓</button>
-          <button type="button" class="career-filter-btn" data-filter="カスタマーサクセス">カスタマーサクセス</button>
-          <button type="button" class="career-filter-btn" data-filter="マネジメント・育成">マネジメント・育成</button>
-          <button type="button" class="career-filter-btn" data-filter="育成">育成</button>
-          <button type="button" class="career-filter-btn" data-filter="フィールドセールス">フィールドセールス</button>
-          <button type="button" class="career-filter-btn" data-filter="インサイドセールス">インサイドセールス</button>
-          <button type="button" class="career-filter-btn" data-filter="飛び込み営業">飛び込み営業</button>
-          <button type="button" class="career-filter-btn" data-filter="展示会営業">展示会営業</button>
-          <button type="button" class="career-filter-btn" data-filter="コンサルティング">コンサルティング</button>
-          <button type="button" class="career-filter-btn" data-filter="代理店支援">代理店支援</button>
-          <button type="button" class="career-filter-btn" data-filter="正社員">正社員</button>
-          <button type="button" class="career-filter-btn" data-filter="営業代行">営業代行</button>
-          <button type="button" class="career-filter-btn" data-filter="対法人">対法人</button>
-          <button type="button" class="career-filter-btn" data-filter="対個人">対個人</button>
-          <button type="button" class="career-filter-btn" data-filter="プレイヤー">プレイヤー</button>
-          <button type="button" class="career-filter-btn" data-filter="完全歩合制">完全歩合制</button>
+        <div class="career-filter" id="career-filter">
+          <button type="button" class="career-filter-reset is-active" data-axis="all">すべて表示</button>
+
+          <div class="career-filter-group" role="group" aria-label="営業手法で絞り込み">
+            <span class="career-filter-group-label">営業手法</span>
+            <button type="button" class="career-filter-btn" data-axis="method" data-value="新規開拓">新規開拓</button>
+            <button type="button" class="career-filter-btn" data-axis="method" data-value="飛び込み営業">飛び込み営業</button>
+            <button type="button" class="career-filter-btn" data-axis="method" data-value="インサイドセールス">インサイドセールス</button>
+            <button type="button" class="career-filter-btn" data-axis="method" data-value="フィールドセールス">フィールドセールス</button>
+            <button type="button" class="career-filter-btn" data-axis="method" data-value="展示会営業">展示会営業</button>
+            <button type="button" class="career-filter-btn" data-axis="method" data-value="コンサルティング">コンサルティング</button>
+            <button type="button" class="career-filter-btn" data-axis="method" data-value="代理店支援">代理店支援</button>
+          </div>
+
+          <div class="career-filter-group" role="group" aria-label="役割で絞り込み">
+            <span class="career-filter-group-label">役割</span>
+            <button type="button" class="career-filter-btn" data-axis="role" data-value="カスタマーサクセス">カスタマーサクセス</button>
+            <button type="button" class="career-filter-btn" data-axis="role" data-value="マネジメント・育成">マネジメント・育成</button>
+            <button type="button" class="career-filter-btn" data-axis="role" data-value="育成">育成</button>
+          </div>
+
+          <div class="career-filter-group" role="group" aria-label="相手の業界で絞り込み">
+            <span class="career-filter-group-label">相手の業界</span>
+            <button type="button" class="career-filter-btn" data-axis="audience-industry" data-value="SaaS">SaaS</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-industry" data-value="住宅系建設">住宅系建設</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-industry" data-value="中古住宅売買">中古住宅売買</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-industry" data-value="建材流通">建材流通</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-industry" data-value="タクシー">タクシー</button>
+          </div>
+
+          <div class="career-filter-group" role="group" aria-label="相手の職種で絞り込み">
+            <span class="career-filter-group-label">相手の職種</span>
+            <button type="button" class="career-filter-btn" data-axis="audience-job" data-value="経理">経理</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-job" data-value="人事">人事</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-job" data-value="設計・現場監督">設計・現場監督</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-job" data-value="運転手">運転手</button>
+            <button type="button" class="career-filter-btn" data-axis="audience-job" data-value="マーケティング">マーケティング</button>
+          </div>
+
+          <div class="career-filter-group" role="group" aria-label="対象・スタンス・雇用形態で絞り込み">
+            <span class="career-filter-group-label">対象・スタンス</span>
+            <button type="button" class="career-filter-btn" data-axis="target" data-value="対法人">対法人</button>
+            <button type="button" class="career-filter-btn" data-axis="target" data-value="対個人">対個人</button>
+            <button type="button" class="career-filter-btn" data-axis="stance" data-value="プレイヤー">プレイヤー</button>
+            <button type="button" class="career-filter-btn" data-axis="stance" data-value="完全歩合制">完全歩合制</button>
+            <button type="button" class="career-filter-btn" data-axis="employment" data-value="正社員">正社員</button>
+            <button type="button" class="career-filter-btn" data-axis="employment" data-value="営業代行">営業代行</button>
+          </div>
         </div>
         <p class="career-filter-empty" id="career-filter-empty" hidden>該当する経歴が見つかりませんでした。</p>
         <div class="career-grid" id="career-grid">
 
           <!-- 初期表示：認知度の高い4社 -->
-          <details class="career-card" id="career-freee" data-tags="フィールドセールス コンサルティング 対法人 プレイヤー 育成 営業代行 展示会営業">
+          <details class="career-card" id="career-freee" data-method="フィールドセールス コンサルティング 展示会営業" data-role="育成" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行" data-audience-job="経理">
             <summary>
               <span class="career-company">freee(株)</span>
               <span class="career-tags"><span class="career-tag tag-green">フィールドセールス</span><span class="career-tag tag-green">コンサルティング</span><span class="career-tag tag-green">展示会営業</span><span class="career-tag tag-purple">育成</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
@@ -276,7 +307,7 @@
             </div>
           </details>
 
-          <details class="career-card" id="career-amazon" data-tags="新規開拓 対法人 プレイヤー 営業代行 飛び込み営業 フィールドセールス">
+          <details class="career-card" id="career-amazon" data-method="新規開拓 飛び込み営業 フィールドセールス" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行">
             <summary>
               <span class="career-company">Amazon Japan（合）</span>
               <span class="career-tags"><span class="career-tag tag-green">新規開拓</span><span class="career-tag tag-green">飛び込み営業</span><span class="career-tag tag-green">フィールドセールス</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
@@ -295,7 +326,7 @@
             </div>
           </details>
 
-          <details class="career-card" id="career-uber" data-tags="カスタマーサクセス 対法人 プレイヤー 営業代行">
+          <details class="career-card" id="career-uber" data-role="カスタマーサクセス" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行" data-audience-industry="タクシー" data-audience-job="運転手">
             <summary>
               <span class="career-company">Uber Japan(株)</span>
               <span class="career-tags"><span class="career-tag tag-purple">カスタマーサクセス</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
@@ -314,7 +345,7 @@
             </div>
           </details>
 
-          <details class="career-card" id="career-rakuten-mobile" data-tags="新規開拓 対法人 プレイヤー 営業代行 飛び込み営業 インサイドセールス">
+          <details class="career-card" id="career-rakuten-mobile" data-method="新規開拓 飛び込み営業 インサイドセールス" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行">
             <summary>
               <span class="career-company">楽天モバイル(株)</span>
               <span class="career-tags"><span class="career-tag tag-green">新規開拓</span><span class="career-tag tag-green">飛び込み営業</span><span class="career-tag tag-green">インサイドセールス</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
@@ -334,7 +365,7 @@
           </details>
 
           <!-- 「もっと見る」で表示する残り5社 -->
-          <details class="career-card career-extra" id="career-plainer" data-tags="展示会営業 対法人 プレイヤー 営業代行">
+          <details class="career-card career-extra" id="career-plainer" data-method="展示会営業" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行" data-audience-industry="SaaS" data-audience-job="マーケティング">
             <summary>
               <span class="career-company">PLAINER(株)</span>
               <span class="career-tags"><span class="career-tag tag-green">展示会営業</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
@@ -353,7 +384,7 @@
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-recruit" data-tags="カスタマーサクセス マネジメント・育成 対法人 営業代行 コンサルティング">
+          <details class="career-card career-extra" id="career-recruit" data-method="コンサルティング" data-role="カスタマーサクセス マネジメント・育成" data-target="対法人" data-employment="営業代行" data-audience-job="人事">
             <summary>
               <span class="career-company">(株)リクルート</span>
               <span class="career-tags"><span class="career-tag tag-purple">カスタマーサクセス</span><span class="career-tag tag-purple">マネジメント・育成</span><span class="career-tag tag-green">コンサルティング</span><span class="career-tag tag-amber">対法人</span></span>
@@ -382,7 +413,7 @@
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-sakiyomi" data-tags="新規開拓 インサイドセールス 対法人 プレイヤー 営業代行">
+          <details class="career-card career-extra" id="career-sakiyomi" data-method="新規開拓 インサイドセールス" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行" data-audience-job="マーケティング">
             <summary>
               <span class="career-company">(株)SAKIYOMI</span>
               <span class="career-tags"><span class="career-tag tag-green">新規開拓</span><span class="career-tag tag-green">インサイドセールス</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
@@ -402,7 +433,7 @@
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-aflac" data-tags="対個人 完全歩合制 プレイヤー フィールドセールス コンサルティング">
+          <details class="career-card career-extra" id="career-aflac" data-method="フィールドセールス コンサルティング" data-target="対個人" data-stance="プレイヤー 完全歩合制">
             <summary>
               <span class="career-company">アフラック保険サービス(株)</span>
               <span class="career-tags"><span class="career-tag tag-green">フィールドセールス</span><span class="career-tag tag-green">コンサルティング</span><span class="career-tag tag-amber">対個人</span><span class="career-tag tag-slate">プレイヤー</span><span class="career-tag tag-slate">完全歩合制</span></span>
@@ -422,7 +453,7 @@
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-juutaku-anshin" data-tags="代理店支援 新規開拓 飛び込み営業 インサイドセールス フィールドセールス 対法人 プレイヤー 正社員 展示会営業 カスタマーサクセス">
+          <details class="career-card career-extra" id="career-juutaku-anshin" data-method="代理店支援 新規開拓 飛び込み営業 インサイドセールス フィールドセールス 展示会営業" data-role="カスタマーサクセス" data-target="対法人" data-stance="プレイヤー" data-employment="正社員" data-audience-industry="住宅系建設 中古住宅売買 建材流通" data-audience-job="設計・現場監督">
             <summary>
               <span class="career-company">(株)住宅あんしん保証</span>
               <span class="career-tags"><span class="career-tag tag-green">代理店支援</span><span class="career-tag tag-green">新規開拓</span><span class="career-tag tag-green">飛び込み営業</span><span class="career-tag tag-green">インサイドセールス</span><span class="career-tag tag-green">フィールドセールス</span><span class="career-tag tag-green">展示会営業</span><span class="career-tag tag-purple">カスタマーサクセス</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>

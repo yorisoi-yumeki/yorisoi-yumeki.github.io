@@ -14,9 +14,41 @@
     : false;
 
   // initCareerFilter()が定義した実装に差し替えられる（絞り込み機能が無効な場合はno-opのまま）。
-  // tags=[] で「すべて」に戻す。tags=["カスタマーサクセス"] のように渡すと、
-  // そのタグを持つカードだけに絞り込んだ状態にする（ボタンのactive状態も連動）。
-  var setCareerFilterTags = function () {};
+  // setCareerFilterAxis("all", []) で「すべて表示」に戻す。
+  // setCareerFilterAxis("role", ["カスタマーサクセス"]) のように渡すと、他の軸の選択は
+  // すべて解除したうえで、指定した軸をその値だけに絞り込む（ボタンのactive状態も連動）。
+  var setCareerFilterAxis = function () {};
+
+  /* 職務経歴カードのタグは軸ごとに data-method / data-role / data-target / data-stance /
+   * data-employment / data-audience-industry / data-audience-job という別々の属性に
+   * 分けて持たせてある（1つの属性に全部を混ぜると「営業手法」×「相手の業界」のような
+   * 異なる軸の組み合わせ絞り込みが意味を成さなくなるため）。
+   * filters は { 軸名: [選択値, ...], ... } の形。軸内はOR、軸間はANDで判定する。
+   * 値が空配列の軸は「その軸は絞り込みに参加していない」= 常に一致とみなす。
+   */
+  function cardMatchesFilters(card, filters) {
+    return Object.keys(filters).every(function (axis) {
+      var selected = filters[axis];
+      if (!selected || !selected.length) return true;
+      var cardValues = (card.getAttribute("data-" + axis) || "").split(" ");
+      return selected.some(function (v) {
+        return cardValues.indexOf(v) !== -1;
+      });
+    });
+  }
+
+  // 「12年間の経験内容」バーのタグ→対応する軸の対応表。
+  // バー側は常に単一タグでの絞り込みなので、そのタグがどの軸に属するかだけ分かればよい。
+  var TAG_AXIS_MAP = {
+    "対法人": "target",
+    "対個人": "target",
+    "新規開拓": "method",
+    "カスタマーサクセス": "role",
+    "マネジメント・育成": "role",
+    "プレイヤー": "stance",
+    "正社員": "employment",
+    "営業代行": "employment"
+  };
 
   /* ---------------- Fade-in on scroll ---------------- */
   function initFadeIn() {
@@ -80,8 +112,8 @@
           grid.classList.add("is-expanded");
           if (moreBtn) moreBtn.classList.add("is-hidden");
         }
-        if (target.classList.contains("is-filtered-out")) {
-          setCareerFilterTags([]); // 絞り込みで隠れている場合は「すべて」に戻す
+        if (target.style.display === "none") {
+          setCareerFilterAxis("all", []); // 絞り込みで隠れている場合は「すべて表示」に戻す
         }
 
         target.open = true;
@@ -108,10 +140,18 @@
     buttons.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var tag = btn.getAttribute("data-tag");
-        var matches = document.querySelectorAll('.career-card[data-tags~="' + tag + '"]');
+        var axis = TAG_AXIS_MAP[tag];
+        if (!axis) return;
+
+        var filter = {};
+        filter[axis] = [tag];
+        var matches = Array.prototype.filter.call(
+          document.querySelectorAll(".career-card"),
+          function (card) { return cardMatchesFilters(card, filter); }
+        );
         if (!matches.length) return;
 
-        setCareerFilterTags([tag]);
+        setCareerFilterAxis(axis, [tag]);
 
         matches.forEach(function (card) {
           card.open = true;
@@ -126,66 +166,143 @@
     });
   }
 
+  /* ---------------- 「精通している業界・職種」チップ → 経歴カードの絞り込み ----------------
+   * 経験バーのボタンと同じ「クリックしたら単一条件に絞り込む（既存の選択は解除）」という
+   * ジャンプ的な挙動。該当カードが無い場合でも絞り込み自体は反映し、空状態メッセージが
+   * 見える位置までスクロールする（「その軸はまだ詳細な事例として書けていない」という
+   * 正直な状態を隠さない）。
+   */
+  function initDomainChipJumpLinks() {
+    var chips = document.querySelectorAll(".chip[data-axis]");
+    if (!chips.length) return;
+
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var axis = chip.getAttribute("data-axis");
+        var value = chip.getAttribute("data-value");
+        var filter = {};
+        filter[axis] = [value];
+        var matches = Array.prototype.filter.call(
+          document.querySelectorAll(".career-card"),
+          function (card) { return cardMatchesFilters(card, filter); }
+        );
+
+        setCareerFilterAxis(axis, [value]);
+
+        var grid = document.getElementById("career-grid");
+        if (!matches.length) {
+          if (grid) grid.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+          return;
+        }
+
+        matches.forEach(function (card) {
+          card.open = true;
+          card.classList.add("is-highlighted");
+          window.setTimeout(function () {
+            card.classList.remove("is-highlighted");
+          }, 1600);
+        });
+        matches[0].scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" });
+      });
+    });
+  }
+
   /* ---------------- 職務経歴・支援実績の絞り込み ----------------
-   * career-filter内のタグボタンをクリックすると、対応するタグを持つカードだけを表示する
-   * （複数選択でOR絞り込み）。絞り込み中は「もっと見る」で隠れているカードも自動展開する。
-   * setCareerFilterTags を外部（ロゴ/経験バーのジャンプ機能）からも呼べるようにしている。
+   * career-filterは軸ごとにグループ化されたボタン群（営業手法／役割／相手の業界／
+   * 相手の職種／対象・スタンス）で構成される。同じ軸内の複数選択はOR、異なる軸を
+   * またぐ選択はAND（cardMatchesFiltersを参照）。
+   * 絞り込み中は「もっと見る」で隠れているカードも自動展開する。表示・非表示の最終判断は
+   * CSSクラスの詳細度に頼らず、JS側で直接 style.display を操作する（過去にCSS詳細度の
+   * 衝突でこの種の表示制御が壊れたことがあるため、状態が増えても再発しないようにするため）。
+   * setCareerFilterAxis を外部（ロゴ/経験バーのジャンプ機能）からも呼べるようにしている。
    */
   function initCareerFilter() {
     var filterBar = document.getElementById("career-filter");
     var grid = document.getElementById("career-grid");
     if (!filterBar || !grid) return;
 
+    var resetBtn = filterBar.querySelector(".career-filter-reset");
     var buttons = filterBar.querySelectorAll(".career-filter-btn");
     var emptyMsg = document.getElementById("career-filter-empty");
     var moreBtn = document.getElementById("career-more-btn");
-    var activeFilters = [];
+    var activeFilters = {}; // { 軸名: [選択値, ...] }
+
+    function isEngaged() {
+      return Object.keys(activeFilters).some(function (axis) {
+        return (activeFilters[axis] || []).length > 0;
+      });
+    }
 
     function updateButtonStates() {
-      buttons.forEach(function (b) {
-        var f = b.getAttribute("data-filter");
-        b.classList.toggle("is-active", f === "all" ? activeFilters.length === 0 : activeFilters.indexOf(f) !== -1);
+      var engaged = isEngaged();
+      if (resetBtn) {
+        resetBtn.classList.toggle("is-active", !engaged);
+        resetBtn.setAttribute("aria-pressed", String(!engaged));
+      }
+      // career-filter内のボタンだけでなく、「精通している業界・職種」チップも
+      // 同じ data-axis/data-value を持つため、ページ全体を対象に同期する
+      document.querySelectorAll("[data-axis][data-value]").forEach(function (b) {
+        var axis = b.getAttribute("data-axis");
+        var value = b.getAttribute("data-value");
+        var isActive = !!(activeFilters[axis] && activeFilters[axis].indexOf(value) !== -1);
+        b.classList.toggle("is-active", isActive);
+        b.setAttribute("aria-pressed", String(isActive));
       });
     }
 
     function applyVisibility() {
-      if (activeFilters.length > 0 && !grid.classList.contains("is-expanded")) {
+      var cards = document.querySelectorAll(".career-card");
+      if (!isEngaged()) {
+        // 絞り込み解除時は、もっと見る／career-extraのCSSに表示制御を返す
+        cards.forEach(function (card) { card.style.display = ""; });
+        if (emptyMsg) emptyMsg.hidden = true;
+        return;
+      }
+      if (!grid.classList.contains("is-expanded")) {
         grid.classList.add("is-expanded");
         if (moreBtn) moreBtn.classList.add("is-hidden");
       }
-      var cards = document.querySelectorAll(".career-card");
       var anyVisible = false;
       cards.forEach(function (card) {
-        var tags = (card.getAttribute("data-tags") || "").split(" ");
-        var match = activeFilters.length === 0 || activeFilters.some(function (f) {
-          return tags.indexOf(f) !== -1;
-        });
-        card.classList.toggle("is-filtered-out", !match);
+        var match = cardMatchesFilters(card, activeFilters);
+        card.style.display = match ? "" : "none";
         if (match) anyVisible = true;
       });
       if (emptyMsg) emptyMsg.hidden = anyVisible;
     }
 
-    setCareerFilterTags = function (tags) {
-      activeFilters = tags.slice();
+    setCareerFilterAxis = function (axis, values) {
+      activeFilters = axis === "all" ? {} : (function () {
+        var o = {};
+        o[axis] = values.slice();
+        return o;
+      })();
       updateButtonStates();
       applyVisibility();
     };
 
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        activeFilters = {};
+        updateButtonStates();
+        applyVisibility();
+      });
+    }
+
     buttons.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var filter = btn.getAttribute("data-filter");
-        if (filter === "all") {
-          activeFilters = [];
-        } else {
-          var idx = activeFilters.indexOf(filter);
-          if (idx === -1) activeFilters.push(filter);
-          else activeFilters.splice(idx, 1);
-        }
+        var axis = btn.getAttribute("data-axis");
+        var value = btn.getAttribute("data-value");
+        if (!activeFilters[axis]) activeFilters[axis] = [];
+        var idx = activeFilters[axis].indexOf(value);
+        if (idx === -1) activeFilters[axis].push(value);
+        else activeFilters[axis].splice(idx, 1);
         updateButtonStates();
         applyVisibility();
       });
     });
+
+    updateButtonStates(); // 初期状態（すべて表示）でもaria-pressedを正しくセットしておく
   }
 
   /* ---------------- プロフィール写真の自動検出 ----------------
@@ -233,6 +350,7 @@
     initCareerFilter();
     initLogoJumpLinks();
     initExpBarJumpLinks();
+    initDomainChipJumpLinks();
     initAutoProfilePhoto();
   });
 })();
