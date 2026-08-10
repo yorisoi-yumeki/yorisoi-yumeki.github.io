@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一言メッセージをお寄せください | 杉田夢生</title>
+<meta name="description" content="杉田夢生への一言コメント・推薦文をお寄せください。いただいた内容の一部は、本人の確認のうえポートフォリオサイトの「周囲からの声」に掲載させていただく場合があります。">
+<meta name="robots" content="noindex">
+
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero" style="padding: var(--sp-6) 0;">
+  <div class="container">
+    <p class="hero-badge" style="display:inline-flex;"><span>杉田夢生 <span class="en">/ Sugita Yumeki</span></span></p>
+    <h1 style="max-width:100%;">周囲の方への<br><span class="hl">一言メッセージ</span>のお願い</h1>
+    <p class="hero-lede">
+      一緒にお仕事をした際の率直な感想を、一言いただけると嬉しいです。<br>
+      いただいた内容の一部は、ご本人に内容を確認のうえ、ポートフォリオサイトの「周囲からの声」に掲載させていただく場合があります（掲載時はお名前・会社名を伏せることも可能です）。
+    </p>
+  </div>
+</header>
+
+<main>
+  <section class="on-light">
+    <div class="container" style="max-width: 640px;">
+      <form id="voice-form">
+        <div class="form-row">
+          <label for="voice-name">お名前<span class="form-optional">（任意・匿名可）</span></label>
+          <input type="text" id="voice-name" name="voice-name" placeholder="例：山田 太郎（空欄でも構いません）" autocomplete="name">
+        </div>
+
+        <div class="form-row">
+          <label for="voice-company">ご関係・会社名<span class="form-optional">（任意）</span></label>
+          <input type="text" id="voice-company" name="voice-company" placeholder="例：株式会社◯◯ / 元同僚" autocomplete="organization">
+        </div>
+
+        <div class="form-row">
+          <label for="voice-quote">一言コメント</label>
+          <textarea id="voice-quote" name="voice-quote" rows="5" placeholder="杉田さんと一緒にお仕事をしてみて感じたことを、率直にお聞かせください"></textarea>
+        </div>
+
+        <div class="form-row">
+          <label for="voice-publish">掲載について<span class="form-optional">（任意）</span></label>
+          <select id="voice-publish" name="voice-publish">
+            <option value="お任せします" selected>お任せします</option>
+            <option value="実名で掲載してもよい">実名・会社名を出して掲載してもよい</option>
+            <option value="匿名なら掲載してもよい">匿名（お名前・会社名は伏せて）なら掲載してもよい</option>
+            <option value="掲載しないでほしい">今回は掲載しないでほしい（本人向けのメッセージのみ）</option>
+          </select>
+        </div>
+
+        <p class="form-note">
+          送信ボタンを押すと、上記の内容が差し込まれた状態でお使いのメールソフトが起動します。内容をご確認のうえ、そのまま送信してください（このページから直接送信されるわけではありません）。
+        </p>
+
+        <!-- JSなしでもメール作成画面は開ける（本文は空のテンプレート）。JSが動く場合は
+             入力内容がリアルタイムで本文に反映される。 -->
+        <a href="#" id="voice-submit-link" class="btn btn-primary">この内容をメールで送る</a>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p><a href="index.html">← ポートフォリオサイトに戻る</a></p>
+  &copy; 2026 Sugita Yumeki
+</footer>
+
+<script src="assets/js/voice-form.js"></script>
+</body>
+</html>

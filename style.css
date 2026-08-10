@@ -539,6 +539,39 @@ button.exp-bar-fill-label.is-jump {
 .testimonial-quote { font-size: 0.95rem; color: var(--text-900); margin-bottom: var(--sp-2); }
 .testimonial-quote::before { content: "\201C"; color: var(--blue-600); font-size: 1.4em; }
 .testimonial-meta { font-size: 0.8rem; color: var(--text-600); }
+.testimonial-cta { margin-top: var(--sp-3); }
+
+/* ---------- Forms (voice-form.html 等) ---------- */
+.form-row { margin-bottom: var(--sp-3); }
+.form-row label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-900);
+  margin-bottom: 6px;
+}
+.form-optional { font-weight: 400; color: var(--text-600); font-size: 0.82rem; }
+.form-row input[type="text"],
+.form-row textarea,
+.form-row select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-900);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  padding: 12px 14px;
+}
+.form-row input[type="text"]:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+  outline: none;
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(75, 123, 255, 0.18);
+}
+.form-row textarea { resize: vertical; min-height: 6em; }
+.form-note { font-size: 0.82rem; color: var(--text-600); margin-bottom: var(--sp-3); }
 
 /* ---------- Contact ---------- */
 .contact-section {

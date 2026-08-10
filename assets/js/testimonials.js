@@ -3,13 +3,15 @@
  * 「周囲からの声」セクション（お客様・同僚・上司など、様々な立場からの声）のデータと表示制御。
  *
  * 【運用方法】
- * 1. Googleフォームに届いた推薦文の中から掲載してよいものを選び、
- *    下の TESTIMONIALS 配列に 1 オブジェクト追加する。
+ * 1. voice-form.html（サイト右下「一言メッセージを届ける」から遷移）経由で
+ *    メールに届いた一言コメントの中から、掲載してよいものを選ぶ。
+ *    （フォームには「掲載可否」の選択欄があるので、そちらの回答も確認すること）
+ * 2. 下の TESTIMONIALS 配列に 1 オブジェクト追加する。
  *    - quote: 一言コメント本文
- *    - name: お名前（未回答の場合は "匿名" のままでOK）
+ *    - name: お名前（未回答・匿名希望の場合は "匿名" のままでOK）
  *    - company: 会社名（未回答の場合は空文字 "" のままでOK）
- * 2. 2〜3件程度たまったら、下の SHOW_TESTIMONIALS を true に書き換えて公開する。
- *    （false のままだとセクション自体が非表示になり、0件のまま公開されることを防げます）
+ * 3. 2〜3件程度たまったら、下の SHOW_TESTIMONIALS を true に書き換えて公開する。
+ *    （false のままでも「声を届ける」導線と空状態メッセージは表示され続けます）
  *
  * 入力値は textContent で挿入しているため、HTMLタグを含む文字列を貼り付けても
  * 画面が壊れたり意図しないコードとして実行されたりしません（安全な実装）。
@@ -53,10 +55,14 @@ var TESTIMONIALS = [
   document.addEventListener("DOMContentLoaded", function () {
     var section = document.getElementById("testimonials");
     var list = document.getElementById("testimonial-list");
+    var emptyMsg = document.getElementById("testimonial-empty");
     if (!section || !list) return;
 
+    // 実際の声がまだ無い場合でも、セクション自体（と「声を届ける」導線）は
+    // 表示したまま、代わりに空状態メッセージを見せる（voice-form.htmlへの
+    // 投稿を後押しするため、以前のようにセクションごと非表示にはしない）。
     if (!SHOW_TESTIMONIALS || TESTIMONIALS.length === 0) {
-      section.style.display = "none";
+      if (emptyMsg) emptyMsg.hidden = false;
       return;
     }
 
