@@ -87,9 +87,49 @@
     });
   }
 
+  /* ---------------- プロフィール写真の自動検出 ----------------
+   * assets/img/ に profile.jpg という決まった名前でアップロードしなくても、
+   * GitHubの公開API経由でフォルダの中身を確認し、写真らしきファイル
+   * （jpg/jpeg/png/webp/gif、ただし ogp.png は除く）が見つかったら
+   * ファイル名を問わず自動的にそれを表示する。
+   * API呼び出しに失敗した場合（オフライン・レート制限など）は、
+   * 何もせず既存の <img src="assets/img/profile.jpg" onerror="..."> の
+   * 挙動（見つかればそのまま表示、無ければプレースホルダー）に任せる。
+   */
+  function initAutoProfilePhoto() {
+    var photos = document.querySelectorAll(".js-profile-photo");
+    if (!photos.length || !window.fetch) return;
+
+    fetch("https://api.github.com/repos/negi720-ui/negi720-portfolio/contents/assets/img", {
+      headers: { Accept: "application/vnd.github+json" }
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("GitHub API error: " + res.status);
+        return res.json();
+      })
+      .then(function (files) {
+        if (!Array.isArray(files)) return;
+        var photo = files.find(function (f) {
+          return f.type === "file" &&
+            /\.(jpe?g|png|webp|gif)$/i.test(f.name) &&
+            !/ogp/i.test(f.name);
+        });
+        if (!photo) return;
+
+        var path = "assets/img/" + encodeURIComponent(photo.name);
+        photos.forEach(function (img) {
+          if (img.getAttribute("src") !== path) img.src = path;
+        });
+      })
+      .catch(function () {
+        // 何もしない。既存の src="assets/img/profile.jpg" + onerror フォールバックに任せる
+      });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initFadeIn();
     initCareerExpander();
     initLogoJumpLinks();
+    initAutoProfilePhoto();
   });
 })();
