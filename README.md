@@ -20,7 +20,7 @@ open index.html   # macOS の場合
 - [ ] **プロフィール写真の差し替え**（下記「① 写真の差し替え」参照）
 - [ ] **メールアドレスの差し替え**（下記「② メールアドレスの差し替え」参照）
 - [ ] **GitHub Pagesが有効になっているか確認**（下記「③ GitHub Pagesの公開設定」参照）
-- [ ] **OGPバナー画像の差し替え**（下記「⑤ OGPバナー画像の差し替え」参照。任意ですが、URLを共有した際の見え方が良くなります）
+- [x] **OGPバナー画像の差し替え**（対応済み。下記「⑤ OGPバナー画像の差し替え」参照）
 
 ---
 
@@ -106,27 +106,16 @@ Claudeが自動で有効化できなかった場合のみ、以下を手動で�
 
 ---
 
-## ⑤ OGPバナー画像の差し替え
+## ⑤ OGPバナー画像の差し替え（対応済み）
 
-LINEやメールでURLを共有した際のリンクプレビュー画像（OGP画像）は、現在プレースホルダーのままです。Canvaで下書きバナーを作成済みなので、お好みで調整してご利用ください。
+LINEやメールでURLを共有した際のリンクプレビュー画像（OGP画像）は、Canvaで作成したバナーを `assets/img/ogp.png`（1200×630px）として反映済みです。`index.html` の `og:image` / `twitter:image` もこの画像を参照するよう設定してあるため、追加の作業は不要です。
+
+デザイン（氏名・キャッチコピー・数字など）を今後調整したい場合は、以下のCanvaデザインを編集してください。
 
 1. 以下のCanvaデザインを開く： https://www.canva.com/d/PH02Ijmu5zQ48qE
 2. 内容（氏名・キャッチコピー・数字など）を必要に応じて調整
 3. 「共有」→「ダウンロード」からPNG形式でダウンロード（推奨サイズ: 1200×630px）
-4. GitHubのリポジトリ画面から `assets/img/` フォルダを開き、「Add file → Upload files」でアップロード（ファイル名は `ogp.png` を推奨）
-5. `index.html` の `<head>` 内、以下2箇所のパスを書き換える
-
-   ```html
-   <meta property="og:image" content="assets/img/profile-placeholder.svg">
-   ...
-   <meta name="twitter:image" content="assets/img/profile-placeholder.svg">
-   ```
-   ↓
-   ```html
-   <meta property="og:image" content="assets/img/ogp.png">
-   ...
-   <meta name="twitter:image" content="assets/img/ogp.png">
-   ```
+4. GitHubのリポジトリ画面から `assets/img/` フォルダを開き、`ogp.png` を「Add file → Upload files」で上書きアップロード
 
 ---
 
