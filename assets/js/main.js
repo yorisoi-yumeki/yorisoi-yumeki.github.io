@@ -318,7 +318,7 @@
     var photos = document.querySelectorAll(".js-profile-photo");
     if (!photos.length || !window.fetch) return;
 
-    fetch("https://api.github.com/repos/negi720-ui/negi720-portfolio/contents/assets/img", {
+    fetch("https://api.github.com/repos/yorisoi-yumeki/yorisoi-yumeki.github.io/contents/assets/img", {
       headers: { Accept: "application/vnd.github+json" }
     })
       .then(function (res) {

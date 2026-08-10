@@ -1,8 +1,8 @@
-# negi720-portfolio
+# 杉田夢生 ポートフォリオサイト
 
 杉田夢生（営業代行フリーランス）の実績紹介サイト。「名刺代わり」に商談前へURLを一つ渡し、信頼性を補強することを目的とした1ページの静的サイトです。
 
-- 公開URL: `https://negi720-ui.github.io/negi720-portfolio/`（下記「⑥ URLをスマートにする」の変更が完了すると `https://yorisoi-yumeki.github.io/` に変わる予定）
+- 公開URL: `https://yorisoi-yumeki.github.io/`
 - 技術構成: 素のHTML / CSS / JavaScript（ビルド不要）
 - ホスティング: GitHub Pages（`main`ブランチ / ルートから配信）
 
@@ -21,7 +21,7 @@ open index.html   # macOS の場合
 - [ ] **メールアドレスの差し替え**（下記「② メールアドレスの差し替え」参照）
 - [ ] **GitHub Pagesが有効になっているか確認**（下記「③ GitHub Pagesの公開設定」参照）
 - [x] **OGPバナー画像の差し替え**（対応済み。下記「⑤ OGPバナー画像の差し替え」参照）
-- [ ] **GitHubユーザー名・リポジトリ名の変更でURLをスマートにする**（下記「⑥ URLをスマートにする」参照。無料ですが、GitHubの画面上でご自身の操作が必要です）
+- [x] **GitHubユーザー名・リポジトリ名の変更でURLをスマートにする**（対応済み。下記「⑥ URLをスマートにする」参照）
 
 ---
 
@@ -29,7 +29,7 @@ open index.html   # macOS の場合
 
 現在はプレースホルダー画像（イラストアイコン）が、ヒーロー上部の小さなバッジと「ちょっとした自己紹介」セクションの大きな写真枠の2箇所に表示されています。**コードの編集もファイル名の変更も不要**で、そのままドラッグ&ドロップするだけで自動的に切り替わります。
 
-1. 以下のURLを開く： https://github.com/negi720-ui/negi720-portfolio/upload/main/assets/img
+1. 以下のURLを開く： https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/upload/main/assets/img
 2. パソコン内の顔写真ファイルを、画面中央の枠にそのままドラッグ&ドロップする（スマホで撮った写真そのままのファイル名でOKです）
 3. 下にスクロールして緑色の「Commit changes」ボタンを押す
 4. 数分待つと（GitHub Pagesの再デプロイ後）、上記2箇所の写真が自動的に差し替わります
@@ -58,7 +58,7 @@ Claudeが自動で有効化できなかった場合のみ、以下を手動で�
 2. 左メニューの「Pages」を開く
 3. 「Build and deployment」の「Source」を **Deploy from a branch** にする
 4. Branch を **main** / **/(root)** にして「Save」
-5. 数分後に `https://negi720-ui.github.io/negi720-portfolio/` でアクセスできるようになります
+5. 数分後に `https://yorisoi-yumeki.github.io/` でアクセスできるようになります
 
 ## ④ 「周囲からの声」の追加・公開（対応済み）
 
@@ -113,30 +113,21 @@ LINEやメールでURLを共有した際のリンクプレビュー画像（OGP�
 
 ---
 
-## ⑥ URLをスマートにする（無料）
+## ⑥ URLをスマートにする（対応済み）
 
-現在のURL `https://negi720-ui.github.io/negi720-portfolio/` から、GitHubアカウント名の「negi720」表記を完全に消し、`https://yorisoi-yumeki.github.io/` にする手順です。**費用はかかりませんが、GitHubのアカウント設定に関わるため、GitHub側のAPIでは操作できず、ご自身でGitHubの画面上から行っていただく必要があります。**
+GitHubアカウント名を `negi720-ui` → `yorisoi-yumeki` に、リポジトリ名を `negi720-portfolio` → `yorisoi-yumeki.github.io` に変更済みです。公開URLは `https://yorisoi-yumeki.github.io/` になりました（`negi720` の表記は完全に消えています）。
 
-GitHub Pagesのルート直下URL（`https://ユーザー名.github.io/`）は、「リポジトリ名がGitHubのユーザー名と完全一致している」場合にだけ有効になる仕組みです。そのため、以下の2つを両方行う必要があります。
+これに伴い、以下も新URL基準に更新済みです。
 
-### 手順
+- `index.html` の `og:url` / `og:image` / `twitter:image`
+- `assets/js/main.js` のプロフィール写真自動検出（GitHub公開API呼び出し先）
+- 本READMEの各URL
 
-1. **GitHubアカウントのユーザー名を変更する**
-   - 右上のアイコン →「Settings」→ 一番下までスクロールして「Change username」
-   - `negi720-ui` から `yorisoi-yumeki`（空き状況はその場で確認できます。埋まっていた場合は `yorisoi-yumeki-sales` など別候補で）に変更
-   - 確認画面が出るので内容を確認して実行（旧URLは一定期間GitHubが自動リダイレクトしてくれます）
-
-2. **このリポジトリの名前を変更する**
-   - リポジトリ画面の「Settings」→ 一番上の「Repository name」欄
-   - `negi720-portfolio` から、**手順1で設定した新しいユーザー名と完全に同じ文字列 + `.github.io`**（例: `yorisoi-yumeki.github.io`）に変更して「Rename」
-
-3. 数分待つと `https://yorisoi-yumeki.github.io/`（手順1・2で選んだ名前に応じたURL）でアクセスできるようになります
-4. `index.html` 内の `og:image` / `twitter:image` を、新URL基準の絶対パス（例: `https://yorisoi-yumeki.github.io/assets/img/ogp.png`）に更新すると、SNSでのリンクプレビューがより安定します（`<!-- TODO -->` コメントの箇所）
+旧URL（`https://negi720-ui.github.io/negi720-portfolio/`）は、GitHubが一定期間自動リダイレクトしてくれます。
 
 ### 補足
 
-- 独自ドメイン（例: `yorisoi-yumeki.com` を購入する方法）の方が、より「自社サイト感」の強い見た目になりますが有料（年額1,000〜2,000円程度）です。無料の方法で試してみて、将来的に有料の独自ドメインに切り替えたくなった場合はいつでもご相談ください
-- ユーザー名変更後、Claude Codeとの連携（このリポジトリへのアクセス）が新しいユーザー名で再設定になる場合があります
+- 独自ドメイン（例: `yorisoi-yumeki.com` を購入する方法）にすると、`.github.io` が末尾に付かず、より「自社サイト感」の強い見た目になりますが有料（年額1,000〜2,000円程度）です。ご希望があればいつでもご相談ください
 
 ---
 
