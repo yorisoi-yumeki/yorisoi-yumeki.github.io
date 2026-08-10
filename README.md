@@ -2,7 +2,7 @@
 
 杉田夢生（営業代行フリーランス）の実績紹介サイト。「名刺代わり」に商談前へURLを一つ渡し、信頼性を補強することを目的とした1ページの静的サイトです。
 
-- 公開URL: `https://yorisoi-yumeki.com/`（独自ドメイン。DNS設定が完了するまでは `https://negi720-ui.github.io/negi720-portfolio/` でもアクセスできます）
+- 公開URL: `https://negi720-ui.github.io/negi720-portfolio/`（下記「⑥ URLをスマートにする」の変更が完了すると `https://yorisoi-yumeki.github.io/` に変わる予定）
 - 技術構成: 素のHTML / CSS / JavaScript（ビルド不要）
 - ホスティング: GitHub Pages（`main`ブランチ / ルートから配信）
 
@@ -21,7 +21,7 @@ open index.html   # macOS の場合
 - [ ] **メールアドレスの差し替え**（下記「② メールアドレスの差し替え」参照）
 - [ ] **GitHub Pagesが有効になっているか確認**（下記「③ GitHub Pagesの公開設定」参照）
 - [x] **OGPバナー画像の差し替え**（対応済み。下記「⑤ OGPバナー画像の差し替え」参照）
-- [ ] **独自ドメイン（yorisoi-yumeki.com）のDNS設定**（下記「⑥ 独自ドメインの設定」参照。取得・DNS設定はご自身で行う必要があります）
+- [ ] **GitHubユーザー名・リポジトリ名の変更でURLをスマートにする**（下記「⑥ URLをスマートにする」参照。無料ですが、GitHubの画面上でご自身の操作が必要です）
 
 ---
 
@@ -113,38 +113,30 @@ LINEやメールでURLを共有した際のリンクプレビュー画像（OGP�
 
 ---
 
-## ⑥ 独自ドメインの設定
+## ⑥ URLをスマートにする（無料）
 
-`https://negi720-ui.github.io/negi720-portfolio/` という既定のGitHub Pages URLの代わりに、`yorisoi-yumeki.com` という独自ドメインでアクセスできるようにする設定です。リポジトリ側（`CNAME`ファイル）は設定済みですが、**ドメインの取得とDNS設定はご自身で行う必要があります**（GitHubのAPIには第三者のドメインを操作する権限がないため）。
+現在のURL `https://negi720-ui.github.io/negi720-portfolio/` から、GitHubアカウント名の「negi720」表記を完全に消し、`https://yorisoi-yumeki.github.io/` にする手順です。**費用はかかりませんが、GitHubのアカウント設定に関わるため、GitHub側のAPIでは操作できず、ご自身でGitHubの画面上から行っていただく必要があります。**
+
+GitHub Pagesのルート直下URL（`https://ユーザー名.github.io/`）は、「リポジトリ名がGitHubのユーザー名と完全一致している」場合にだけ有効になる仕組みです。そのため、以下の2つを両方行う必要があります。
 
 ### 手順
 
-1. お名前.com・Google Domains・Cloudflare Registrarなどのドメイン登録サービスで `yorisoi-yumeki.com` を取得する（年額1,000〜2,000円程度が目安）
-2. 取得したドメインの管理画面（DNS設定）で、以下のレコードを追加する
+1. **GitHubアカウントのユーザー名を変更する**
+   - 右上のアイコン →「Settings」→ 一番下までスクロールして「Change username」
+   - `negi720-ui` から `yorisoi-yumeki`（空き状況はその場で確認できます。埋まっていた場合は `yorisoi-yumeki-sales` など別候補で）に変更
+   - 確認画面が出るので内容を確認して実行（旧URLは一定期間GitHubが自動リダイレクトしてくれます）
 
-   **Aレコード（`yorisoi-yumeki.com` 本体宛て）** — GitHub Pagesの固定IPアドレス4つを登録
+2. **このリポジトリの名前を変更する**
+   - リポジトリ画面の「Settings」→ 一番上の「Repository name」欄
+   - `negi720-portfolio` から、**手順1で設定した新しいユーザー名と完全に同じ文字列 + `.github.io`**（例: `yorisoi-yumeki.github.io`）に変更して「Rename」
 
-   ```
-   185.199.108.153
-   185.199.109.153
-   185.199.110.153
-   185.199.111.153
-   ```
+3. 数分待つと `https://yorisoi-yumeki.github.io/`（手順1・2で選んだ名前に応じたURL）でアクセスできるようになります
+4. `index.html` 内の `og:image` / `twitter:image` を、新URL基準の絶対パス（例: `https://yorisoi-yumeki.github.io/assets/img/ogp.png`）に更新すると、SNSでのリンクプレビューがより安定します（`<!-- TODO -->` コメントの箇所）
 
-   **（任意）AAAAレコード（IPv6）**
+### 補足
 
-   ```
-   2606:50c0:8000::153
-   2606:50c0:8001::153
-   2606:50c0:8002::153
-   2606:50c0:8003::153
-   ```
-
-   **（任意）`www.yorisoi-yumeki.com` を使いたい場合** — CNAMEレコードで `negi720-ui.github.io` を指す
-
-3. リポジトリの「Settings」→「Pages」を開き、「Custom domain」欄に `yorisoi-yumeki.com` と入力して保存する（`CNAME`ファイルは既にリポジトリに含まれているため、この欄には自動的に反映されている場合もあります）
-4. DNSの反映には数分〜数時間かかります。反映が完了すると、GitHubの同じ画面で「Enforce HTTPS」にチェックを入れられるようになるので、有効にしてください（httpsでの証明書発行にも少し時間がかかります）
-5. 反映後は `https://yorisoi-yumeki.com/` でアクセスできるようになります
+- 独自ドメイン（例: `yorisoi-yumeki.com` を購入する方法）の方が、より「自社サイト感」の強い見た目になりますが有料（年額1,000〜2,000円程度）です。無料の方法で試してみて、将来的に有料の独自ドメインに切り替えたくなった場合はいつでもご相談ください
+- ユーザー名変更後、Claude Codeとの連携（このリポジトリへのアクセス）が新しいユーザー名で再設定になる場合があります
 
 ---
 
@@ -158,6 +150,5 @@ assets/js/main.js        スクロール演出・経歴カードの開閉制御�
 assets/js/testimonials.js 周囲からの声のデータとON/OFF切り替え
 assets/js/voice-form.js  一言メッセージフォームのmailtoリンク生成
 assets/img/               写真・アイコン類（strength-icon の3点はSVGアイコン）
-CNAME                    独自ドメイン（yorisoi-yumeki.com）の設定ファイル
 .nojekyll                 GitHub PagesのJekyll処理をスキップするための空ファイル
 ```
