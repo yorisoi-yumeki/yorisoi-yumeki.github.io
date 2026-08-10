@@ -1,6 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-  <path d="M13 20a11 11 0 0 1 19-6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M35 28a11 11 0 0 1-19 6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M13 20v-6h6" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M35 28v6h-6" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="cycle-grad" x1="12" y1="12" x2="84" y2="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4B7BFF"/>
+      <stop offset="1" stop-color="#38D6FF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 仕組み化する改善力：個人の学びを回すループ + 中心のチェックリスト -->
+  <path d="M24 34a24 24 0 0 1 42-14" stroke="url(#cycle-grad)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M18 34v-12h12" stroke="url(#cycle-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M72 62a24 24 0 0 1-42 14" stroke="url(#cycle-grad)" stroke-width="6" stroke-linecap="round" opacity="0.55"/>
+  <path d="M78 62v12H66" stroke="url(#cycle-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+
+  <rect x="33" y="33" width="30" height="30" rx="7" fill="#fff"/>
+  <path d="M40 48l6 6 11-13" stroke="url(#cycle-grad)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
