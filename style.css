@@ -149,16 +149,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   gap: 10px;
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.22);
-  border-radius: 999px;
-  padding: 6px 16px 6px 6px;
+  border-radius: var(--radius-l);
+  padding: 8px 18px 8px 8px;
   margin-bottom: var(--sp-3);
 }
 .hero-badge img {
   width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
   border: 2px solid rgba(255,255,255,0.6);
   background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
 }
-.hero-badge span { font-size: 0.85rem; color: #EAF1FF; font-weight: 600; }
+.hero-badge span { font-size: 0.85rem; color: #EAF1FF; font-weight: 600; line-height: 1.5; }
 .hero-badge .en { font-family: var(--font-en); color: #C7D8FF; font-weight: 400; }
 
 .hero h1 { color: #fff; max-width: 18em; }

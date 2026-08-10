@@ -2,7 +2,7 @@
 
 杉田夢生（営業代行フリーランス）の実績紹介サイト。「名刺代わり」に商談前へURLを一つ渡し、信頼性を補強することを目的とした1ページの静的サイトです。
 
-- 公開URL: `https://negi720-ui.github.io/negi720-portfolio/`
+- 公開URL: `https://yorisoi-yumeki.com/`（独自ドメイン。DNS設定が完了するまでは `https://negi720-ui.github.io/negi720-portfolio/` でもアクセスできます）
 - 技術構成: 素のHTML / CSS / JavaScript（ビルド不要）
 - ホスティング: GitHub Pages（`main`ブランチ / ルートから配信）
 
@@ -21,6 +21,7 @@ open index.html   # macOS の場合
 - [ ] **メールアドレスの差し替え**（下記「② メールアドレスの差し替え」参照）
 - [ ] **GitHub Pagesが有効になっているか確認**（下記「③ GitHub Pagesの公開設定」参照）
 - [x] **OGPバナー画像の差し替え**（対応済み。下記「⑤ OGPバナー画像の差し替え」参照）
+- [ ] **独自ドメイン（yorisoi-yumeki.com）のDNS設定**（下記「⑥ 独自ドメインの設定」参照。取得・DNS設定はご自身で行う必要があります）
 
 ---
 
@@ -112,13 +113,51 @@ LINEやメールでURLを共有した際のリンクプレビュー画像（OGP�
 
 ---
 
+## ⑥ 独自ドメインの設定
+
+`https://negi720-ui.github.io/negi720-portfolio/` という既定のGitHub Pages URLの代わりに、`yorisoi-yumeki.com` という独自ドメインでアクセスできるようにする設定です。リポジトリ側（`CNAME`ファイル）は設定済みですが、**ドメインの取得とDNS設定はご自身で行う必要があります**（GitHubのAPIには第三者のドメインを操作する権限がないため）。
+
+### 手順
+
+1. お名前.com・Google Domains・Cloudflare Registrarなどのドメイン登録サービスで `yorisoi-yumeki.com` を取得する（年額1,000〜2,000円程度が目安）
+2. 取得したドメインの管理画面（DNS設定）で、以下のレコードを追加する
+
+   **Aレコード（`yorisoi-yumeki.com` 本体宛て）** — GitHub Pagesの固定IPアドレス4つを登録
+
+   ```
+   185.199.108.153
+   185.199.109.153
+   185.199.110.153
+   185.199.111.153
+   ```
+
+   **（任意）AAAAレコード（IPv6）**
+
+   ```
+   2606:50c0:8000::153
+   2606:50c0:8001::153
+   2606:50c0:8002::153
+   2606:50c0:8003::153
+   ```
+
+   **（任意）`www.yorisoi-yumeki.com` を使いたい場合** — CNAMEレコードで `negi720-ui.github.io` を指す
+
+3. リポジトリの「Settings」→「Pages」を開き、「Custom domain」欄に `yorisoi-yumeki.com` と入力して保存する（`CNAME`ファイルは既にリポジトリに含まれているため、この欄には自動的に反映されている場合もあります）
+4. DNSの反映には数分〜数時間かかります。反映が完了すると、GitHubの同じ画面で「Enforce HTTPS」にチェックを入れられるようになるので、有効にしてください（httpsでの証明書発行にも少し時間がかかります）
+5. 反映後は `https://yorisoi-yumeki.com/` でアクセスできるようになります
+
+---
+
 ## ファイル構成
 
 ```
 index.html               本体（1ページ）
+voice-form.html           「周囲からの声」収集フォーム
 style.css                デザイン（カラー・レイアウト定義）
-assets/js/main.js        スクロール演出・経歴カードの開閉制御・ロゴクリックのジャンプ制御
+assets/js/main.js        スクロール演出・経歴カードの開閉制御・絞り込み・ジャンプ連動
 assets/js/testimonials.js 周囲からの声のデータとON/OFF切り替え
+assets/js/voice-form.js  一言メッセージフォームのmailtoリンク生成
 assets/img/               写真・アイコン類（strength-icon の3点はSVGアイコン）
+CNAME                    独自ドメイン（yorisoi-yumeki.com）の設定ファイル
 .nojekyll                 GitHub PagesのJekyll処理をスキップするための空ファイル
 ```

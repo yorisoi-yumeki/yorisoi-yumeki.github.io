@@ -7,15 +7,18 @@
 <meta name="description" content="杉田夢生（Sugita Yumeki）。無形商材営業12年、9社での実績を持つ営業代行フリーランス。深いヒアリング力を武器に、顧客自身も気づいていない本質的な課題を解決する「寄り添い提案型の営業」を提供します。">
 
 <!-- OGP / Twitter Card: 商談前にURLを共有した際のリンクプレビュー用。
-     Canvaで生成したOGPバナー（assets/img/ogp.png, 1200×630px）を使用中。 -->
+     Canvaで生成したOGPバナー（assets/img/ogp.png, 1200×630px）を使用中。
+     og:image/twitter:imageは一部のSNSクローラーが相対パスを正しく解決できないため、
+     独自ドメイン（CNAME参照）を基準にした絶対URLで指定している。 -->
 <meta property="og:type" content="profile">
+<meta property="og:url" content="https://yorisoi-yumeki.com/">
 <meta property="og:title" content="杉田夢生 | 寄り添い提案型の営業">
 <meta property="og:description" content="無形商材営業12年、9社での実績を持つ営業代行フリーランスの実績紹介ページです。">
-<meta property="og:image" content="assets/img/ogp.png">
+<meta property="og:image" content="https://yorisoi-yumeki.com/assets/img/ogp.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="杉田夢生 | 寄り添い提案型の営業">
 <meta name="twitter:description" content="無形商材営業12年、9社での実績を持つ営業代行フリーランスの実績紹介ページです。">
-<meta name="twitter:image" content="assets/img/ogp.png">
+<meta name="twitter:image" content="https://yorisoi-yumeki.com/assets/img/ogp.png">
 
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
 
@@ -36,7 +39,7 @@
            assets/img/profile.jpg をアップロードするだけで自動的にこちらが表示されます
            （ファイルが無い間はプレースホルダー画像にフォールバックします） -->
       <img class="js-profile-photo" src="assets/img/profile.jpg" alt="杉田夢生の写真" onerror="this.onerror=null;this.src='assets/img/profile-placeholder.svg';">
-      <span>杉田夢生 <span class="en">/ Sugita Yumeki・営業代行フリーランス</span></span>
+      <span>杉田夢生 <span class="en">/ Sugita Yumeki</span><br><span class="en">営業代行フリーランス</span></span>
     </div>
 
     <h1>深いヒアリングで、<br><span class="hl">顧客の本質的な課題</span>を解決する。</h1>
