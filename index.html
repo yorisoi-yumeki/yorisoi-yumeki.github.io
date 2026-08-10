@@ -41,7 +41,8 @@
 
     <h1>深いヒアリングで、<br><span class="hl">顧客の本質的な課題</span>を解決する。</h1>
     <p class="hero-lede">
-      相手の状況や背景を深く理解するヒアリング力を武器に、顧客自身も気づいていない課題を浮き彫りにする「寄り添い提案型の営業」。一方的な提案はせず、深く理解した上での最適解を提示することで、顧客を自社のファンへと変えます。
+      相手の状況や背景を深く理解するヒアリング力を武器に、顧客自身も気づいていない課題を浮き彫りにする「寄り添い提案型の営業」。<br>
+      一方的な提案はせず、深く理解した上での最適解を提示することで、顧客を自社のファンへと変えます。
     </p>
 
     <div class="hero-actions">
@@ -120,7 +121,7 @@
 
       <div class="fade-target">
         <h3>12年間の経験内容</h3>
-        <p class="exp-bars-caption">色の付いた項目はクリックすると、該当する下部の職務経歴カードにジャンプします。</p>
+        <p class="exp-bars-caption">クリックできる項目をクリックすると、下部の職務経歴カードを該当するものだけに絞り込んで表示します。</p>
         <div class="exp-bars">
           <div class="exp-bar-row">
             <div class="exp-bar-track">
@@ -132,7 +133,7 @@
           <div class="exp-bar-row">
             <div class="exp-bar-track">
               <div class="exp-bar-fill" style="width:83%">
-                <span class="exp-bar-fill-label">対法人 10年</span>
+                <button type="button" class="exp-bar-fill-label is-jump" data-tag="対法人">対法人 10年</button>
               </div>
               <div class="exp-bar-fill secondary" style="width:17%">
                 <button type="button" class="exp-bar-fill-label is-jump" data-tag="個人向け">対個人 2年</button>
@@ -155,17 +156,17 @@
                 <button type="button" class="exp-bar-fill-label is-jump" data-tag="マネジメント">マネジメント 2年</button>
               </div>
               <div class="exp-bar-fill secondary" style="width:83%">
-                <span class="exp-bar-fill-label">プレイヤー 10年</span>
+                <button type="button" class="exp-bar-fill-label is-jump" data-tag="プレイヤー">プレイヤー 10年</button>
               </div>
             </div>
           </div>
           <div class="exp-bar-row">
             <div class="exp-bar-track">
               <div class="exp-bar-fill" style="width:58%">
-                <button type="button" class="exp-bar-fill-label is-jump" data-tag="正社員">正社員 7年</button>
+                <span class="exp-bar-fill-label">正社員 7年</span>
               </div>
               <div class="exp-bar-fill secondary" style="width:42%">
-                <button type="button" class="exp-bar-fill-label is-jump" data-tag="営業代行">営業代行 5年</button>
+                <span class="exp-bar-fill-label">営業代行 5年</span>
               </div>
             </div>
           </div>
@@ -220,14 +221,30 @@
 
       <div class="fade-target">
         <h3>職務経歴・支援実績</h3>
+        <div class="career-filter" id="career-filter" role="group" aria-label="経歴の絞り込み">
+          <button type="button" class="career-filter-btn is-active" data-filter="all">すべて</button>
+          <button type="button" class="career-filter-btn" data-filter="新規開拓">新規開拓</button>
+          <button type="button" class="career-filter-btn" data-filter="カスタマーサクセス">カスタマーサクセス</button>
+          <button type="button" class="career-filter-btn" data-filter="マネジメント">マネジメント</button>
+          <button type="button" class="career-filter-btn" data-filter="フィールドセールス">フィールドセールス</button>
+          <button type="button" class="career-filter-btn" data-filter="インサイドセールス">インサイドセールス</button>
+          <button type="button" class="career-filter-btn" data-filter="飛び込み営業">飛び込み営業</button>
+          <button type="button" class="career-filter-btn" data-filter="展示会営業">展示会営業</button>
+          <button type="button" class="career-filter-btn" data-filter="コンサルティング">コンサルティング</button>
+          <button type="button" class="career-filter-btn" data-filter="代理店支援">代理店支援</button>
+          <button type="button" class="career-filter-btn" data-filter="対法人">対法人</button>
+          <button type="button" class="career-filter-btn" data-filter="個人向け">個人向け</button>
+          <button type="button" class="career-filter-btn" data-filter="プレイヤー">プレイヤー</button>
+          <button type="button" class="career-filter-btn" data-filter="完全歩合制">完全歩合制</button>
+        </div>
+        <p class="career-filter-empty" id="career-filter-empty" hidden>該当する経歴が見つかりませんでした。</p>
         <div class="career-grid" id="career-grid">
 
           <!-- 初期表示：認知度の高い4社 -->
-          <details class="career-card" id="career-freee" data-tags="業務委託 フィールドセールス コンサルティング">
+          <details class="career-card" id="career-freee" data-tags="フィールドセールス コンサルティング 対法人 プレイヤー">
             <summary>
               <span class="career-company">freee(株)</span>
-              <span class="career-tags"><span class="career-tag">業務委託</span><span class="career-tag">フィールドセールス</span><span class="career-tag">コンサルティング</span></span>
-              <span class="career-period">業務委託 / 直契約・2023年4月〜現在</span>
+              <span class="career-tags"><span class="career-tag">フィールドセールス</span><span class="career-tag">コンサルティング</span><span class="career-tag">対法人</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline">商談化率KPI30%に対し<span class="num-highlight">44.3%</span>を達成、成約件数・平均契約金額<span class="num-highlight">チーム6名中1位</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -248,14 +265,14 @@
                   <li>異動後2クォーター目に<span class="num-highlight">ARR300万円</span>のKPIを達成</li>
                 </ul>
               </div>
+              <p class="career-detail-period">業務委託 / 直契約・2023年4月〜現在</p>
             </div>
           </details>
 
-          <details class="career-card" id="career-amazon" data-tags="営業代行 新規開拓">
+          <details class="career-card" id="career-amazon" data-tags="新規開拓 対法人 プレイヤー">
             <summary>
               <span class="career-company">Amazon Japan（合）</span>
-              <span class="career-tags"><span class="career-tag">営業代行</span><span class="career-tag">新規開拓</span></span>
-              <span class="career-period">営業代行・派遣社員・2021年4月〜21年7月（4ヶ月）</span>
+              <span class="career-tags"><span class="career-tag">新規開拓</span><span class="career-tag">対法人</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline">新規飛び込み100%の中、獲得件数が<span class="num-highlight">チーム8名中2位</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -275,14 +292,14 @@
                   <li>高水準の成果を継続的に創出</li>
                 </ul>
               </div>
+              <p class="career-detail-period">営業代行・派遣社員・2021年4月〜21年7月（4ヶ月）</p>
             </div>
           </details>
 
-          <details class="career-card" id="career-uber" data-tags="営業代行 カスタマーサクセス">
+          <details class="career-card" id="career-uber" data-tags="カスタマーサクセス 対法人 プレイヤー">
             <summary>
               <span class="career-company">Uber Japan(株)</span>
-              <span class="career-tags"><span class="career-tag">営業代行</span><span class="career-tag">カスタマーサクセス</span></span>
-              <span class="career-period">営業代行・派遣社員・2020年10月〜21年3月（6ヶ月）</span>
+              <span class="career-tags"><span class="career-tag">カスタマーサクセス</span><span class="career-tag">対法人</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline"><span class="num-highlight">提携12社</span>・<span class="num-highlight">稼働2,100台</span>まで急拡大した立ち上げ期を推進</span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -301,14 +318,14 @@
                   <li><span class="num-highlight">提携12社</span>・<span class="num-highlight">稼働2,100台</span>まで急拡大した立ち上げ期を推進</li>
                 </ul>
               </div>
+              <p class="career-detail-period">営業代行・派遣社員・2020年10月〜21年3月（6ヶ月）</p>
             </div>
           </details>
 
-          <details class="career-card" id="career-rakuten-mobile" data-tags="営業代行 新規開拓">
+          <details class="career-card" id="career-rakuten-mobile" data-tags="新規開拓 対法人 プレイヤー">
             <summary>
               <span class="career-company">楽天モバイル(株)</span>
-              <span class="career-tags"><span class="career-tag">営業代行</span><span class="career-tag">新規開拓</span></span>
-              <span class="career-period">営業代行・派遣社員・2020年4月〜20年9月（6ヶ月）</span>
+              <span class="career-tags"><span class="career-tag">新規開拓</span><span class="career-tag">対法人</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline">初月実績で最大50名規模の派遣社員中、<span class="num-highlight">上位15%</span>を達成</span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -316,7 +333,7 @@
               <div class="career-detail-block">
                 <h4>仕事内容</h4>
                 <ul>
-                  <li>携帯電話基地局の開設に向けた用地確保プロジェクト（新規開拓90%／テレアポ10%）</li>
+                  <li>携帯電話基地局の開設に向けた用地確保プロジェクト（新規飛び込み訪問90%／テレアポ10%）</li>
                   <li>未活用地やビル屋上のオーナー交渉、適地選定から契約締結までを一貫して担当</li>
                 </ul>
               </div>
@@ -327,15 +344,15 @@
                   <li>成果を評価され契約が延長、新卒教育プロジェクトの担当メンバーにも選出</li>
                 </ul>
               </div>
+              <p class="career-detail-period">営業代行・派遣社員・2020年4月〜20年9月（6ヶ月）</p>
             </div>
           </details>
 
           <!-- 「もっと見る」で表示する残り5社 -->
-          <details class="career-card career-extra" id="career-plainer" data-tags="業務委託 展示会営業">
+          <details class="career-card career-extra" id="career-plainer" data-tags="展示会営業 対法人 プレイヤー">
             <summary>
               <span class="career-company">PLAINER(株)</span>
-              <span class="career-tags"><span class="career-tag">業務委託</span><span class="career-tag">展示会営業</span></span>
-              <span class="career-period">業務委託 / 直契約・2025年11月〜現在（兼務・展示会時のみ）</span>
+              <span class="career-tags"><span class="career-tag">展示会営業</span><span class="career-tag">対法人</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline">SaaS特化型デモ作成ツールの展示会営業を担当</span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -347,14 +364,14 @@
                   <li>来場者の参加者バッジ（色分け）から職種や役割を瞬時に識別し、声がけのフレーズを戦略的に使い分け</li>
                 </ul>
               </div>
+              <p class="career-detail-period">業務委託 / 直契約・2025年11月〜現在（兼務・展示会時のみ）</p>
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-recruit" data-tags="業務委託 カスタマーサクセス マネジメント">
+          <details class="career-card career-extra" id="career-recruit" data-tags="カスタマーサクセス マネジメント 対法人">
             <summary>
               <span class="career-company">(株)リクルート</span>
-              <span class="career-tags"><span class="career-tag">業務委託</span><span class="career-tag">カスタマーサクセス</span><span class="career-tag">マネジメント</span></span>
-              <span class="career-period">業務委託 / 再委託契約・2021年10月〜23年3月（1年6ヶ月）</span>
+              <span class="career-tags"><span class="career-tag">カスタマーサクセス</span><span class="career-tag">マネジメント</span><span class="career-tag">対法人</span></span>
               <span class="career-headline">オンボード率KPI50%に対し<span class="num-highlight">80%</span>を達成、<span class="num-highlight">月間MVP受賞</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -373,14 +390,14 @@
                   <li><span class="num-highlight">月間MVP受賞</span>、成功要因の言語化・図式化が評価されSVへ昇格</li>
                 </ul>
               </div>
+              <p class="career-detail-period">業務委託 / 再委託契約・2021年10月〜23年3月（1年6ヶ月）</p>
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-sakiyomi" data-tags="業務委託 新規開拓 インサイドセールス">
+          <details class="career-card career-extra" id="career-sakiyomi" data-tags="新規開拓 インサイドセールス 対法人 プレイヤー">
             <summary>
               <span class="career-company">(株)SAKIYOMI</span>
-              <span class="career-tags"><span class="career-tag">業務委託</span><span class="career-tag">新規開拓</span><span class="career-tag">インサイドセールス</span></span>
-              <span class="career-period">業務委託 / 再委託契約・2021年8月〜21年9月（2ヶ月）</span>
+              <span class="career-tags"><span class="career-tag">新規開拓</span><span class="career-tag">インサイドセールス</span><span class="career-tag">対法人</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline">厳格なターゲット条件下で<span class="num-highlight">アポ獲得率9.9%</span>を達成</span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -398,14 +415,14 @@
                   <li>厳格なターゲット条件下で<span class="num-highlight">アポ獲得率9.9%</span>を達成</li>
                 </ul>
               </div>
+              <p class="career-detail-period">業務委託 / 再委託契約・2021年8月〜21年9月（2ヶ月）</p>
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-aflac" data-tags="個人向け 完全歩合制">
+          <details class="career-card career-extra" id="career-aflac" data-tags="個人向け 完全歩合制 プレイヤー">
             <summary>
               <span class="career-company">アフラック保険サービス(株)</span>
-              <span class="career-tags"><span class="career-tag">個人向け</span><span class="career-tag">完全歩合制</span></span>
-              <span class="career-period">完全歩合制・2018年4月〜20年3月（2年間）</span>
+              <span class="career-tags"><span class="career-tag">個人向け</span><span class="career-tag">完全歩合制</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline"><span class="num-highlight">全国約400人中34位</span>、支社内表彰者11名中で最年少</span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -423,14 +440,14 @@
                   <li><span class="num-highlight">全国約400人中34位</span>、支社内表彰者11名中で最年少</li>
                 </ul>
               </div>
+              <p class="career-detail-period">完全歩合制・2018年4月〜20年3月（2年間）</p>
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-juutaku-anshin" data-tags="正社員 代理店支援">
+          <details class="career-card career-extra" id="career-juutaku-anshin" data-tags="代理店支援 新規開拓 飛び込み営業 インサイドセールス フィールドセールス 対法人 プレイヤー">
             <summary>
               <span class="career-company">(株)住宅あんしん保証</span>
-              <span class="career-tags"><span class="career-tag">正社員</span><span class="career-tag">代理店支援</span></span>
-              <span class="career-period">正社員・2013年4月〜18年3月（5年間）</span>
+              <span class="career-tags"><span class="career-tag">代理店支援</span><span class="career-tag">新規開拓</span><span class="career-tag">飛び込み営業</span><span class="career-tag">インサイドセールス</span><span class="career-tag">フィールドセールス</span><span class="career-tag">対法人</span><span class="career-tag">プレイヤー</span></span>
               <span class="career-headline">2017年度、新規獲得顧客の売上金額で<span class="num-highlight">営業職20名中1位</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -449,6 +466,7 @@
                   <li>中堅企業を中心に新規顧客を大幅拡大</li>
                 </ul>
               </div>
+              <p class="career-detail-period">正社員・2013年4月〜18年3月（5年間）</p>
             </div>
           </details>
         </div>

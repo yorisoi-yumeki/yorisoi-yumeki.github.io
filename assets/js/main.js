@@ -13,6 +13,11 @@
     ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
     : false;
 
+  // initCareerFilter()が定義した実装に差し替えられる（絞り込み機能が無効な場合はno-opのまま）。
+  // tags=[] で「すべて」に戻す。tags=["カスタマーサクセス"] のように渡すと、
+  // そのタグを持つカードだけに絞り込んだ状態にする（ボタンのactive状態も連動）。
+  var setCareerFilterTags = function () {};
+
   /* ---------------- Fade-in on scroll ---------------- */
   function initFadeIn() {
     if (prefersReducedMotion || !("IntersectionObserver" in window)) {
@@ -75,6 +80,9 @@
           grid.classList.add("is-expanded");
           if (moreBtn) moreBtn.classList.add("is-hidden");
         }
+        if (target.classList.contains("is-filtered-out")) {
+          setCareerFilterTags([]); // 絞り込みで隠れている場合は「すべて」に戻す
+        }
 
         target.open = true;
         target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" });
@@ -87,18 +95,15 @@
     });
   }
 
-  /* ---------------- 「12年間の経験内容」バー → 経歴カードへジャンプ ----------------
+  /* ---------------- 「12年間の経験内容」バー → 経歴カードの絞り込み ----------------
    * バー内のラベル（例: カスタマーサクセス、マネジメント）のうち、対応する経歴カードが
    * 明確に存在するものだけをボタン化してある（data-tag属性）。クリックすると、
-   * 同じタグを持つ職務経歴カード（<details data-tags="...">）を全て開いてハイライトする。
-   * 該当カードが「もっと見る」で隠れている場合は先に展開する。
+   * 下部の「職務経歴・支援実績」の絞り込み（career-filter）をそのタグ1つに設定し、
+   * 該当カードだけが表示された状態にした上でスクロールする。
    */
   function initExpBarJumpLinks() {
     var buttons = document.querySelectorAll(".exp-bar-fill-label.is-jump[data-tag]");
     if (!buttons.length) return;
-
-    var grid = document.getElementById("career-grid");
-    var moreBtn = document.getElementById("career-more-btn");
 
     buttons.forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -106,13 +111,7 @@
         var matches = document.querySelectorAll('.career-card[data-tags~="' + tag + '"]');
         if (!matches.length) return;
 
-        var needsExpand = Array.prototype.some.call(matches, function (card) {
-          return card.classList.contains("career-extra");
-        });
-        if (needsExpand && grid && !grid.classList.contains("is-expanded")) {
-          grid.classList.add("is-expanded");
-          if (moreBtn) moreBtn.classList.add("is-hidden");
-        }
+        setCareerFilterTags([tag]);
 
         matches.forEach(function (card) {
           card.open = true;
@@ -123,6 +122,68 @@
         });
 
         matches[0].scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" });
+      });
+    });
+  }
+
+  /* ---------------- 職務経歴・支援実績の絞り込み ----------------
+   * career-filter内のタグボタンをクリックすると、対応するタグを持つカードだけを表示する
+   * （複数選択でOR絞り込み）。絞り込み中は「もっと見る」で隠れているカードも自動展開する。
+   * setCareerFilterTags を外部（ロゴ/経験バーのジャンプ機能）からも呼べるようにしている。
+   */
+  function initCareerFilter() {
+    var filterBar = document.getElementById("career-filter");
+    var grid = document.getElementById("career-grid");
+    if (!filterBar || !grid) return;
+
+    var buttons = filterBar.querySelectorAll(".career-filter-btn");
+    var emptyMsg = document.getElementById("career-filter-empty");
+    var moreBtn = document.getElementById("career-more-btn");
+    var activeFilters = [];
+
+    function updateButtonStates() {
+      buttons.forEach(function (b) {
+        var f = b.getAttribute("data-filter");
+        b.classList.toggle("is-active", f === "all" ? activeFilters.length === 0 : activeFilters.indexOf(f) !== -1);
+      });
+    }
+
+    function applyVisibility() {
+      if (activeFilters.length > 0 && !grid.classList.contains("is-expanded")) {
+        grid.classList.add("is-expanded");
+        if (moreBtn) moreBtn.classList.add("is-hidden");
+      }
+      var cards = document.querySelectorAll(".career-card");
+      var anyVisible = false;
+      cards.forEach(function (card) {
+        var tags = (card.getAttribute("data-tags") || "").split(" ");
+        var match = activeFilters.length === 0 || activeFilters.some(function (f) {
+          return tags.indexOf(f) !== -1;
+        });
+        card.classList.toggle("is-filtered-out", !match);
+        if (match) anyVisible = true;
+      });
+      if (emptyMsg) emptyMsg.hidden = anyVisible;
+    }
+
+    setCareerFilterTags = function (tags) {
+      activeFilters = tags.slice();
+      updateButtonStates();
+      applyVisibility();
+    };
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var filter = btn.getAttribute("data-filter");
+        if (filter === "all") {
+          activeFilters = [];
+        } else {
+          var idx = activeFilters.indexOf(filter);
+          if (idx === -1) activeFilters.push(filter);
+          else activeFilters.splice(idx, 1);
+        }
+        updateButtonStates();
+        applyVisibility();
       });
     });
   }
@@ -169,6 +230,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initFadeIn();
     initCareerExpander();
+    initCareerFilter();
     initLogoJumpLinks();
     initExpBarJumpLinks();
     initAutoProfilePhoto();
