@@ -7,8 +7,10 @@
 <meta name="description" content="杉田夢生（Sugita Yumeki）。無形商材営業12年、9社での実績を持つ営業代行フリーランス。深いヒアリング力を武器に、顧客自身も気づいていない本質的な課題を解決する「寄り添い提案型の営業」を提供します。">
 
 <!-- OGP / Twitter Card: 商談前にURLを共有した際のリンクプレビュー用。
-     ※ 実際のプロフィール写真（assets/img/profile.jpg）を追加したら、
-        下の og:image / twitter:image のパスをそちらに書き換えてください -->
+     ※ Canvaで生成したOGPバナー（README.md参照）をダウンロードして
+        assets/img/ogp.png としてアップロードしたら、下の
+        og:image / twitter:image のパスをそちらに書き換えてください。
+        （プロフィール写真を追加した場合は assets/img/profile.jpg でも構いません） -->
 <meta property="og:type" content="profile">
 <meta property="og:title" content="杉田夢生 | 寄り添い提案型の営業">
 <meta property="og:description" content="無形商材営業12年、9社での実績を持つ営業代行フリーランスの実績紹介ページです。">
@@ -73,15 +75,15 @@
   <div class="container">
     <p class="strip-caption">これまでに実績を積んできた企業</p>
     <div class="logo-row">
-      <span class="logo-pill">freee</span>
-      <span class="logo-pill">Amazon Japan</span>
-      <span class="logo-pill">Uber Japan</span>
-      <span class="logo-pill">楽天モバイル</span>
-      <span class="logo-pill">リクルート</span>
-      <span class="logo-pill">SAKIYOMI</span>
-      <span class="logo-pill">アフラック保険サービス</span>
-      <span class="logo-pill">住宅あんしん保証</span>
-      <span class="logo-pill">PLAINER</span>
+      <a class="logo-pill" href="#career-freee">freee</a>
+      <a class="logo-pill" href="#career-amazon">Amazon Japan</a>
+      <a class="logo-pill" href="#career-uber">Uber Japan</a>
+      <a class="logo-pill" href="#career-rakuten-mobile">楽天モバイル</a>
+      <a class="logo-pill" href="#career-recruit">リクルート</a>
+      <a class="logo-pill" href="#career-sakiyomi">SAKIYOMI</a>
+      <a class="logo-pill" href="#career-aflac">アフラック保険サービス</a>
+      <a class="logo-pill" href="#career-juutaku-anshin">住宅あんしん保証</a>
+      <a class="logo-pill" href="#career-plainer">PLAINER</a>
     </div>
   </div>
 </section>
@@ -95,17 +97,17 @@
       <h2>3つの強み</h2>
       <div class="strength-grid">
         <div class="strength-card fade-target">
-          <div class="strength-icon" aria-hidden="true">👂</div>
+          <div class="strength-icon"><img src="assets/img/icon-listening.svg" alt="" width="24" height="24"></div>
           <h3>深いヒアリング力</h3>
           <p>「いつの間にか深い部分まで話しちゃった」と言われる対話力で、顧客自身も気づいていない本質的な課題を浮き彫りにします。</p>
         </div>
         <div class="strength-card fade-target">
-          <div class="strength-icon" aria-hidden="true">📈</div>
+          <div class="strength-icon"><img src="assets/img/icon-growth.svg" alt="" width="24" height="24"></div>
           <h3>12年・9社の実行力</h3>
           <p>SaaS・保険・住宅・タクシーなど多様な業界、大手からスタートアップまで9社で成果を出し続けてきた再現性の高い営業力。</p>
         </div>
         <div class="strength-card fade-target">
-          <div class="strength-icon" aria-hidden="true">🔁</div>
+          <div class="strength-icon"><img src="assets/img/icon-cycle.svg" alt="" width="24" height="24"></div>
           <h3>仕組み化する改善力</h3>
           <p>ヒアリングで得た示唆をトークスクリプトや運用に反映し、個人の成功を「組織の共通資産」に変える言語化・仕組み化力。</p>
         </div>
@@ -168,8 +170,7 @@
               <span class="chip">住宅系建設</span>
               <span class="chip">中古住宅売買</span>
               <span class="chip">建材流通</span>
-              <span class="chip is-extra">タクシー</span>
-              <button type="button" class="chip chip-more">+1 すべて見る</button>
+              <span class="chip">タクシー</span>
             </div>
           </div>
           <div class="domain-row">
@@ -180,8 +181,7 @@
               <span class="chip">設計・現場監督</span>
               <span class="chip">運転手</span>
               <span class="chip">情報システム</span>
-              <span class="chip is-extra">マーケティング</span>
-              <button type="button" class="chip chip-more">+1 すべて見る</button>
+              <span class="chip">マーケティング</span>
             </div>
           </div>
         </div>
@@ -206,31 +206,31 @@
       </div>
 
       <div class="fade-target">
-        <h3>職務経歴</h3>
+        <h3>職務経歴・支援実績</h3>
         <div class="career-grid" id="career-grid">
 
           <!-- 初期表示：認知度の高い4社 -->
-          <details class="career-card">
+          <details class="career-card" id="career-freee">
             <summary>
               <span class="career-company">freee(株)</span>
               <span class="career-period">業務委託 / 直契約・2023年4月〜現在</span>
-              <span class="career-headline">商談化率KPI30%に対し44.3%を達成、成約件数・平均契約金額チーム6名中1位</span>
+              <span class="career-headline">商談化率KPI30%に対し<span class="num-highlight">44.3%</span>を達成、成約件数・平均契約金額<span class="num-highlight">チーム6名中1位</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">
               <ul>
                 <li>バックオフィス診断コンサルタント（約2年）：インサイドセールスが商談化できなかった停滞顧客を対象に、潜在ニーズを顕在化させ再商談化を推進</li>
-                <li>アウトバウンド・フィールドセールス（約1年）：正社員のみが担当する体制の中、業務委託としては異例の抜擢。異動後2クォーター目にARR300万円のKPIを達成</li>
+                <li>アウトバウンド・フィールドセールス（約1年）：正社員のみが担当する体制の中、業務委託としては異例の抜擢。異動後2クォーター目に<span class="num-highlight">ARR300万円</span>のKPIを達成</li>
                 <li>バックオフィス診断コンサルタント復活：現在は型のない中での検証と高度な商談を任されている</li>
               </ul>
             </div>
           </details>
 
-          <details class="career-card">
+          <details class="career-card" id="career-amazon">
             <summary>
               <span class="career-company">Amazon Japan（合）</span>
               <span class="career-period">営業代行・派遣社員・2021年4月〜21年7月（4ヶ月）</span>
-              <span class="career-headline">新規飛び込み100%の中、獲得件数がチーム8名中2位</span>
+              <span class="career-headline">新規飛び込み100%の中、獲得件数が<span class="num-highlight">チーム8名中2位</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">
@@ -242,11 +242,11 @@
             </div>
           </details>
 
-          <details class="career-card">
+          <details class="career-card" id="career-uber">
             <summary>
               <span class="career-company">Uber Japan(株)</span>
               <span class="career-period">営業代行・派遣社員・2020年10月〜21年3月（6ヶ月）</span>
-              <span class="career-headline">提携12社・稼働2,100台まで急拡大した立ち上げ期を推進</span>
+              <span class="career-headline"><span class="num-highlight">提携12社</span>・<span class="num-highlight">稼働2,100台</span>まで急拡大した立ち上げ期を推進</span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">
@@ -258,11 +258,11 @@
             </div>
           </details>
 
-          <details class="career-card">
+          <details class="career-card" id="career-rakuten-mobile">
             <summary>
               <span class="career-company">楽天モバイル(株)</span>
               <span class="career-period">営業代行・派遣社員・2020年4月〜20年9月（6ヶ月）</span>
-              <span class="career-headline">初月実績で最大50名規模の派遣社員中、上位15%を達成</span>
+              <span class="career-headline">初月実績で最大50名規模の派遣社員中、<span class="num-highlight">上位15%</span>を達成</span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">
@@ -275,7 +275,7 @@
           </details>
 
           <!-- 「もっと見る」で表示する残り5社 -->
-          <details class="career-card career-extra">
+          <details class="career-card career-extra" id="career-plainer">
             <summary>
               <span class="career-company">PLAINER(株)</span>
               <span class="career-period">業務委託 / 直契約・2025年11月〜現在（兼務・展示会時のみ）</span>
@@ -290,26 +290,26 @@
             </div>
           </details>
 
-          <details class="career-card career-extra">
+          <details class="career-card career-extra" id="career-recruit">
             <summary>
               <span class="career-company">(株)リクルート</span>
               <span class="career-period">業務委託 / 再委託契約・2021年10月〜23年3月（1年6ヶ月）</span>
-              <span class="career-headline">オンボード率KPI50%に対し80%を達成、月間MVP受賞</span>
+              <span class="career-headline">オンボード率KPI50%に対し<span class="num-highlight">80%</span>を達成、<span class="num-highlight">月間MVP受賞</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">
               <ul>
                 <li>カスタマーサクセス兼セールス（約7ヶ月）：採用管理システムのオンボーディングを推進し月間MVP受賞、成功要因の言語化・図式化が評価されSVへ昇格</li>
-                <li>スーパーバイザー／チーム育成・管理（約11ヶ月）：プロジェクトが20名から61名へ急拡大する中、SV11名体制でチーム育成と運営を主導</li>
+                <li>スーパーバイザー／チーム育成・管理（約11ヶ月）：プロジェクトが20名から<span class="num-highlight">61名</span>へ急拡大する中、<span class="num-highlight">SV11名体制</span>でチーム育成と運営を主導</li>
               </ul>
             </div>
           </details>
 
-          <details class="career-card career-extra">
+          <details class="career-card career-extra" id="career-sakiyomi">
             <summary>
               <span class="career-company">(株)SAKIYOMI</span>
               <span class="career-period">業務委託 / 再委託契約・2021年8月〜21年9月（2ヶ月）</span>
-              <span class="career-headline">厳格なターゲット条件下でアポ獲得率9.9%を達成</span>
+              <span class="career-headline">厳格なターゲット条件下で<span class="num-highlight">アポ獲得率9.9%</span>を達成</span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">
@@ -320,11 +320,11 @@
             </div>
           </details>
 
-          <details class="career-card career-extra">
+          <details class="career-card career-extra" id="career-aflac">
             <summary>
               <span class="career-company">アフラック保険サービス(株)</span>
               <span class="career-period">完全歩合制・2018年4月〜20年3月（2年間）</span>
-              <span class="career-headline">全国約400人中34位、支社内表彰者11名中で最年少</span>
+              <span class="career-headline"><span class="num-highlight">全国約400人中34位</span>、支社内表彰者11名中で最年少</span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">
@@ -335,11 +335,11 @@
             </div>
           </details>
 
-          <details class="career-card career-extra">
+          <details class="career-card career-extra" id="career-juutaku-anshin">
             <summary>
               <span class="career-company">(株)住宅あんしん保証</span>
               <span class="career-period">正社員・2013年4月〜18年3月（5年間）</span>
-              <span class="career-headline">2017年度、新規獲得顧客の売上金額で営業職20名中1位</span>
+              <span class="career-headline">2017年度、新規獲得顧客の売上金額で<span class="num-highlight">営業職20名中1位</span></span>
               <span class="career-toggle-hint"></span>
             </summary>
             <div class="career-detail">

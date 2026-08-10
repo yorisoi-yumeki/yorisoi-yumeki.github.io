@@ -212,6 +212,14 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   font-size: 0.92rem;
   padding: 10px 20px;
   border-radius: 999px;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+.logo-pill:hover, .logo-pill:focus-visible {
+  background: #EAF1FF;
+  border-color: var(--blue-500);
+  color: var(--blue-700);
+  text-decoration: none;
+  transform: translateY(-1px);
 }
 
 /* ---------- Strength cards (3つの強み) ---------- */
@@ -289,16 +297,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   transition: background-color 150ms ease;
 }
 .chip:hover { background: #EAF1FF; }
-.chip-more {
-  background: var(--navy-900);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font: inherit;
-}
-.chip.is-extra { display: none; }
-.chip-group.is-expanded .chip.is-extra { display: inline-block; }
-.chip-group.is-expanded .chip-more { display: none; }
 
 /* ---------- Cards (philosophy) ---------- */
 .philosophy-grid {
@@ -341,6 +339,14 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .career-company { font-weight: 700; color: var(--text-900); font-size: 1.02rem; }
 .career-period { font-size: 0.78rem; color: var(--text-600); }
 .career-headline { font-size: 0.88rem; color: var(--blue-700); margin-top: 4px; }
+.num-highlight {
+  font-weight: 700;
+  color: var(--blue-600);
+  background: #EAF1FF;
+  padding: 1px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
 .career-toggle-hint { font-size: 0.78rem; color: var(--blue-600); margin-top: 8px; }
 .career-card[open] .career-toggle-hint::after { content: "閉じる ▲"; }
 .career-card:not([open]) .career-toggle-hint::after { content: "詳細を見る ▼"; }
@@ -351,6 +357,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .career-extra { display: none; }
 .career-grid.is-expanded .career-extra { display: block; }
 #career-more-btn.is-hidden { display: none; }
+
+/* ロゴストリップからジャンプしてきた際の一瞬のハイライト */
+.career-card.is-highlighted {
+  box-shadow: 0 0 0 3px var(--cyan-400), var(--shadow-card-lg);
+  transition: box-shadow 300ms ease;
+}
 
 /* ---------- Human touch section ---------- */
 .human-touch {
