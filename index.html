@@ -29,86 +29,126 @@
 </head>
 <body>
 
-<!-- ============ ヒーロー / プロフィール ============ -->
+<!-- ============ ヒーロー ============ -->
 <header class="hero">
   <div class="container">
-    <div class="hero-sidebar">
-      <div class="hero-photo">
-        <!-- TODO: 写真差し替え手順は README.md を参照。
-             ご自身の写真を assets/img/profile.jpg として追加後、
-             下の src を "assets/img/profile.jpg" に書き換えてください -->
-        <img src="assets/img/profile-placeholder.svg" alt="杉田夢生の写真">
-      </div>
-      <div class="hero-name-jp">杉田 夢生</div>
-      <div class="hero-name-en">Sugita Yumeki</div>
-      <div class="hero-contact">
-        <!-- TODO: サイト公開前に、下のメールアドレスをサイト専用の実アドレスへ差し替えてください -->
-        <a class="btn btn-primary" href="mailto:contact@example.com">メールで連絡する</a>
-      </div>
+    <div class="hero-badge">
+      <!-- TODO: 写真差し替え手順は README.md を参照。
+           ご自身の写真を assets/img/profile.jpg として追加後、
+           下の src を "assets/img/profile.jpg" に書き換えてください -->
+      <img src="assets/img/profile-placeholder.svg" alt="杉田夢生の写真">
+      <span>杉田夢生 <span class="en">/ Sugita Yumeki・営業代行フリーランス</span></span>
     </div>
-    <div class="hero-main">
-      <p class="hero-tagline">寄り添い提案型の営業</p>
-      <h1>杉田夢生</h1>
-      <p>
-        私の一番の武器は、相手の状況や背景を深く理解するヒアリング力です。プライベートでも「いつの間にか深い部分まで話しちゃった」と言われる対話力を活かし、顧客自身も気づいていない本質的な課題を浮き彫りにします。一方的な提案ではなく、深く理解した上での最適解を提示することで、顧客を自社のファンへと変えます。
-      </p>
 
-      <div class="stat-bar">
-        <div class="stat-item">
-          <span class="stat-num">12<span style="font-size:0.6em;">年</span></span>
-          <span class="stat-label">無形商材営業経験</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-num">9<span style="font-size:0.6em;">社</span></span>
-          <span class="stat-label">営業実績のある企業数</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-num">6<span style="font-size:0.6em;">業界</span></span>
-          <span class="stat-label">精通している業界数</span>
-        </div>
+    <h1>深いヒアリングで、<br><span class="hl">顧客の本質的な課題</span>を解決する。</h1>
+    <p class="hero-lede">
+      相手の状況や背景を深く理解するヒアリング力を武器に、顧客自身も気づいていない課題を浮き彫りにする「寄り添い提案型の営業」。一方的な提案はせず、深く理解した上での最適解を提示することで、顧客を自社のファンへと変えます。
+    </p>
+
+    <div class="hero-actions">
+      <!-- TODO: サイト公開前に、下のメールアドレスをサイト専用の実アドレスへ差し替えてください -->
+      <a class="btn btn-primary" href="mailto:contact@example.com">メールで相談する</a>
+      <a class="btn btn-dark" href="#achievements">実績を見る ↓</a>
+    </div>
+
+    <div class="stat-bar">
+      <div class="stat-item">
+        <span class="stat-num">12<span style="font-size:0.6em;">年</span></span>
+        <span class="stat-label">無形商材営業経験</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">9<span style="font-size:0.6em;">社</span></span>
+        <span class="stat-label">営業実績のある企業数</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">6<span style="font-size:0.6em;">業界</span></span>
+        <span class="stat-label">精通している業界数</span>
       </div>
     </div>
   </div>
 </header>
 
+<!-- ============ 支援実績のある企業 ============ -->
+<section class="logo-strip">
+  <div class="container">
+    <p class="strip-caption">これまでに実績を積んできた企業</p>
+    <div class="logo-row">
+      <span class="logo-pill">freee</span>
+      <span class="logo-pill">Amazon Japan</span>
+      <span class="logo-pill">Uber Japan</span>
+      <span class="logo-pill">楽天モバイル</span>
+      <span class="logo-pill">リクルート</span>
+      <span class="logo-pill">SAKIYOMI</span>
+      <span class="logo-pill">アフラック保険サービス</span>
+      <span class="logo-pill">住宅あんしん保証</span>
+      <span class="logo-pill">PLAINER</span>
+    </div>
+  </div>
+</section>
+
 <main>
+
+  <!-- ============ 3つの強み ============ -->
+  <section id="strengths" class="on-light">
+    <div class="container">
+      <p class="section-label">Strengths</p>
+      <h2>3つの強み</h2>
+      <div class="strength-grid">
+        <div class="strength-card fade-target">
+          <div class="strength-icon" aria-hidden="true">👂</div>
+          <h3>深いヒアリング力</h3>
+          <p>「いつの間にか深い部分まで話しちゃった」と言われる対話力で、顧客自身も気づいていない本質的な課題を浮き彫りにします。</p>
+        </div>
+        <div class="strength-card fade-target">
+          <div class="strength-icon" aria-hidden="true">📈</div>
+          <h3>12年・9社の実行力</h3>
+          <p>SaaS・保険・住宅・タクシーなど多様な業界、大手からスタートアップまで9社で成果を出し続けてきた再現性の高い営業力。</p>
+        </div>
+        <div class="strength-card fade-target">
+          <div class="strength-icon" aria-hidden="true">🔁</div>
+          <h3>仕組み化する改善力</h3>
+          <p>ヒアリングで得た示唆をトークスクリプトや運用に反映し、個人の成功を「組織の共通資産」に変える言語化・仕組み化力。</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ============ 実績・強み ============ -->
   <section id="achievements">
     <div class="container">
-      <p class="section-label">Achievements & Strengths</p>
-      <h2>実績・強み</h2>
+      <p class="section-label">Achievements</p>
+      <h2>実績・経歴</h2>
 
       <div class="fade-target">
         <h3>12年間の経験内容</h3>
         <div class="exp-bars">
           <div class="exp-bar-row">
-            <div class="exp-bar-label">無形商材 12年</div>
+            <div class="exp-bar-labels"><span class="left">無形商材</span><span class="right">12年</span></div>
             <div class="exp-bar-track"><div class="exp-bar-fill" style="width:100%"></div></div>
           </div>
           <div class="exp-bar-row">
-            <div class="exp-bar-label">対法人10年 / 対個人2年</div>
+            <div class="exp-bar-labels"><span class="left">対法人 10年</span><span class="right">対個人 2年</span></div>
             <div class="exp-bar-track">
               <div class="exp-bar-fill" style="width:83%"></div>
               <div class="exp-bar-fill secondary" style="width:17%"></div>
             </div>
           </div>
           <div class="exp-bar-row">
-            <div class="exp-bar-label">新規開拓9年 / CS 3年</div>
+            <div class="exp-bar-labels"><span class="left">新規開拓 9年</span><span class="right">カスタマーサクセス 3年</span></div>
             <div class="exp-bar-track">
               <div class="exp-bar-fill" style="width:75%"></div>
               <div class="exp-bar-fill secondary" style="width:25%"></div>
             </div>
           </div>
           <div class="exp-bar-row">
-            <div class="exp-bar-label">マネジメント2年 / プレイヤー10年</div>
+            <div class="exp-bar-labels"><span class="left">マネジメント 2年</span><span class="right">プレイヤー 10年</span></div>
             <div class="exp-bar-track">
               <div class="exp-bar-fill" style="width:17%"></div>
               <div class="exp-bar-fill secondary" style="width:83%"></div>
             </div>
           </div>
           <div class="exp-bar-row">
-            <div class="exp-bar-label">正社員7年 / 営業代行5年</div>
+            <div class="exp-bar-labels"><span class="left">正社員 7年</span><span class="right">営業代行 5年</span></div>
             <div class="exp-bar-track">
               <div class="exp-bar-fill" style="width:58%"></div>
               <div class="exp-bar-fill secondary" style="width:42%"></div>
@@ -118,26 +158,32 @@
       </div>
 
       <div class="fade-target">
-        <h3>精通している業界</h3>
-        <div class="chip-group" id="industry-chips">
-          <span class="chip">SaaS</span>
-          <span class="chip">生命保険・損害保険</span>
-          <span class="chip">住宅系建設</span>
-          <span class="chip">中古住宅売買</span>
-          <span class="chip">建材流通</span>
-          <span class="chip is-extra">タクシー</span>
-          <button type="button" class="chip chip-more">+1 すべて見る</button>
-        </div>
-
-        <h3>精通している職種</h3>
-        <div class="chip-group" id="role-chips">
-          <span class="chip">経理</span>
-          <span class="chip">人事</span>
-          <span class="chip">設計・現場監督</span>
-          <span class="chip">運転手</span>
-          <span class="chip">情報システム</span>
-          <span class="chip is-extra">マーケティング</span>
-          <button type="button" class="chip chip-more">+1 すべて見る</button>
+        <h3>精通している業界・職種</h3>
+        <div class="domain-card">
+          <div class="domain-row">
+            <span class="domain-tag">業界</span>
+            <div class="chip-group" id="industry-chips">
+              <span class="chip">SaaS</span>
+              <span class="chip">生命保険・損害保険</span>
+              <span class="chip">住宅系建設</span>
+              <span class="chip">中古住宅売買</span>
+              <span class="chip">建材流通</span>
+              <span class="chip is-extra">タクシー</span>
+              <button type="button" class="chip chip-more">+1 すべて見る</button>
+            </div>
+          </div>
+          <div class="domain-row">
+            <span class="domain-tag">職種</span>
+            <div class="chip-group" id="role-chips">
+              <span class="chip">経理</span>
+              <span class="chip">人事</span>
+              <span class="chip">設計・現場監督</span>
+              <span class="chip">運転手</span>
+              <span class="chip">情報システム</span>
+              <span class="chip is-extra">マーケティング</span>
+              <button type="button" class="chip chip-more">+1 すべて見る</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -321,7 +367,7 @@
         <ul>
           <li>パーソナル診断：ENFP-A（広報運動家）</li>
           <li>動物占いはゾウ🐘</li>
-          <li>ITリテラシー：Claude Codeを活用した業務自動化スクリプト・簡単なアプリ開発、ダッシュボードでの成果可視化ができる程度</li>
+          <li>ITリテラシー：Claude Codeなどの生成AIエージェントを使いこなし、要件整理からUI/UXデザイン、実装まで一気通貫でディレクションできるレベル（実際、このサイト自体もAIエージェントとの協業で構築しています）</li>
           <li>よく「的場浩司さんに似てる」と言われます</li>
         </ul>
       </div>
@@ -340,7 +386,7 @@
   <!-- ============ 連絡先 ============ -->
   <section class="contact-section" id="contact">
     <div class="container">
-      <p class="section-label" style="color:var(--gold-500)">Contact</p>
+      <p class="section-label" style="color:var(--cyan-400)">Contact</p>
       <h2>ご連絡はこちらから</h2>
       <p>商談・お仕事のご相談、お気軽にご連絡ください。</p>
       <div class="contact-actions">
