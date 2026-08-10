@@ -1,0 +1,353 @@
+/* ===========================================================
+   杉田夢生 ポートフォリオサイト - style.css
+   =========================================================== */
+
+:root {
+  /* Colors */
+  --navy-900: #12233F;
+  --navy-700: #1D3A63;
+  --navy-500: #2E5590;
+  --gold-500: #E3B341;
+  --gold-600: #C99A2E;
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --text-900: #1A1D24;
+  --text-600: #4B5563;
+  --border: #E3E7EE;
+
+  /* Spacing scale (8px base) */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-6: 48px;
+  --sp-8: 64px;
+
+  /* Type */
+  --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", system-ui, sans-serif;
+  --font-en: "Inter", "Noto Sans JP", system-ui, sans-serif;
+
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 24px;
+  --shadow-card: 0 4px 20px rgba(18, 35, 63, 0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-900);
+  font-family: var(--font-jp);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: var(--navy-500); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1, h2, h3 { font-family: var(--font-jp); color: var(--navy-900); margin: 0 0 var(--sp-2); line-height: 1.4; }
+
+h1 { font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.6rem); }
+h2 { font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem); }
+h3 { font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem); }
+
+p { margin: 0 0 var(--sp-2); max-width: 38em; color: var(--text-600); }
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--sp-3);
+}
+
+section { padding: var(--sp-8) 0; }
+section + section { border-top: 1px solid var(--border); }
+
+.section-label {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--gold-600);
+  text-transform: uppercase;
+  margin-bottom: var(--sp-1);
+}
+
+/* Focus visibility for accessibility */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.btn-primary {
+  background: var(--gold-500);
+  color: var(--navy-900); /* WCAG AA: white-on-gold fails contrast, navy-900 text is required */
+}
+.btn-primary:hover { background: var(--gold-600); text-decoration: none; transform: translateY(-1px); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--navy-500);
+  border-color: var(--navy-500);
+}
+.btn-secondary:hover { background: rgba(46, 85, 144, 0.08); text-decoration: none; }
+
+/* ---------- Header / Hero ---------- */
+.hero {
+  background: var(--navy-900);
+  color: #fff;
+  padding: var(--sp-8) 0;
+}
+.hero .container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.hero-sidebar {
+  text-align: center;
+}
+
+.hero-photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto var(--sp-2);
+  border: 4px solid var(--gold-500);
+  background: var(--navy-700);
+}
+.hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+.hero-name-jp { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.hero-name-en { font-family: var(--font-en); font-size: 0.95rem; color: #C9D3E4; letter-spacing: 0.04em; margin-bottom: var(--sp-2); }
+
+.hero-contact {
+  margin-top: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  align-items: center;
+}
+
+.hero-main h1 { color: #fff; }
+.hero-tagline {
+  color: var(--gold-500);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 1rem + 1vw, 1.6rem);
+  margin-bottom: var(--sp-2);
+}
+.hero-main p { color: #DCE3F0; max-width: 46em; }
+
+/* Stat bar */
+.stat-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+  max-width: 46em;
+}
+.stat-item {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-m);
+  padding: var(--sp-2);
+  text-align: center;
+}
+.stat-num {
+  font-family: var(--font-en);
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem);
+  font-weight: 700;
+  color: var(--gold-500);
+  display: block;
+  line-height: 1.1;
+}
+.stat-label { font-size: 0.8rem; color: #C9D3E4; }
+
+/* ---------- Experience bars ---------- */
+.exp-bars { display: flex; flex-direction: column; gap: var(--sp-2); margin: var(--sp-3) 0; }
+.exp-bar-row { display: flex; align-items: center; gap: var(--sp-2); }
+.exp-bar-label { flex: 0 0 220px; font-size: 0.9rem; color: var(--text-900); }
+.exp-bar-track {
+  flex: 1;
+  height: 10px;
+  background: var(--navy-700);
+  border-radius: 999px;
+  overflow: hidden;
+  display: flex;
+}
+.exp-bar-fill { height: 100%; background: var(--gold-500); }
+.exp-bar-fill.secondary { background: rgba(255,255,255,0.35); }
+
+/* ---------- Chips ---------- */
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--sp-1) 0 var(--sp-3); }
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--navy-700);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  transition: background-color 150ms ease;
+}
+.chip:hover { background: #EFF3FA; }
+.chip-more {
+  background: var(--navy-700);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+.chip.is-extra { display: none; }
+.chip-group.is-expanded .chip.is-extra { display: inline-block; }
+.chip-group.is-expanded .chip-more { display: none; }
+
+/* ---------- Cards (philosophy) ---------- */
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+.philosophy-card {
+  background: var(--surface);
+  border-radius: var(--radius-m);
+  padding: var(--sp-3);
+  box-shadow: var(--shadow-card);
+}
+.philosophy-card h3 { color: var(--navy-700); }
+.philosophy-card p { margin-bottom: 0; font-size: 0.92rem; }
+
+/* ---------- Career cards ---------- */
+.career-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+.career-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  padding: var(--sp-2) var(--sp-3);
+  box-shadow: var(--shadow-card);
+}
+.career-card summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.career-card summary::-webkit-details-marker { display: none; }
+.career-company { font-weight: 700; color: var(--navy-900); font-size: 1.02rem; }
+.career-period { font-size: 0.78rem; color: var(--text-600); }
+.career-headline { font-size: 0.88rem; color: var(--navy-700); margin-top: 4px; }
+.career-toggle-hint { font-size: 0.78rem; color: var(--navy-500); margin-top: 8px; }
+.career-card[open] .career-toggle-hint::after { content: "閉じる ▲"; }
+.career-card:not([open]) .career-toggle-hint::after { content: "詳細を見る ▼"; }
+.career-detail { margin-top: var(--sp-2); padding-top: var(--sp-2); border-top: 1px dashed var(--border); }
+.career-detail ul { margin: 0; padding-left: 1.1em; font-size: 0.86rem; color: var(--text-600); }
+.career-detail li { margin-bottom: 6px; }
+
+.career-extra { display: none; }
+.career-grid.is-expanded .career-extra { display: block; }
+#career-more-btn.is-hidden { display: none; }
+
+/* ---------- Human touch section ---------- */
+.human-touch {
+  background: var(--surface);
+  border-radius: var(--radius-l);
+  padding: var(--sp-4);
+  border: 1px dashed var(--border);
+}
+.human-touch .section-label { color: var(--navy-500); }
+.human-touch ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.human-touch li {
+  background: var(--bg);
+  border-radius: var(--radius-s);
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  color: var(--text-900);
+}
+
+/* ---------- Testimonials ---------- */
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+.testimonial-card {
+  background: var(--surface);
+  border-radius: var(--radius-m);
+  padding: var(--sp-3);
+  box-shadow: var(--shadow-card);
+  border-top: 4px solid var(--gold-500);
+}
+.testimonial-quote { font-size: 0.95rem; color: var(--text-900); margin-bottom: var(--sp-2); }
+.testimonial-quote::before { content: "“"; color: var(--gold-500); font-size: 1.4em; }
+.testimonial-meta { font-size: 0.8rem; color: var(--text-600); }
+
+/* ---------- Contact ---------- */
+.contact-section { background: var(--navy-900); color: #fff; text-align: center; }
+.contact-section h2 { color: #fff; }
+.contact-section p { color: #DCE3F0; margin-left: auto; margin-right: auto; }
+.contact-actions { margin-top: var(--sp-3); display: flex; gap: var(--sp-2); justify-content: center; flex-wrap: wrap; }
+
+footer {
+  text-align: center;
+  padding: var(--sp-3) 0;
+  font-size: 0.78rem;
+  color: var(--text-600);
+}
+
+/* ---------- Fade-in (progressive enhancement) ---------- */
+/* Default: everything visible. Only when JS adds .js to <html> AND
+   an element is marked .fade-target, do we hide it pre-animation. */
+html.js .fade-target { opacity: 0; transform: translateY(12px); }
+html.js .fade-target.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 380ms ease-out, transform 380ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .fade-target { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .hero .container { grid-template-columns: 1fr; text-align: center; }
+  .hero-main p { margin-left: auto; margin-right: auto; }
+  .stat-bar { max-width: 100%; }
+  .exp-bar-label { flex-basis: 150px; font-size: 0.82rem; }
+}
+
+@media (max-width: 480px) {
+  section { padding: var(--sp-6) 0; }
+  .stat-bar { grid-template-columns: 1fr; }
+}
