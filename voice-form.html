@@ -14,6 +14,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+<style>
+  /* Googleフォームの埋め込み。フォームの高さは内容量に応じて変わるため、
+     ある程度余裕を持たせた高さを指定している（短すぎるとフォーム内で
+     二重スクロールが発生するため）。 */
+  .voice-form-embed {
+    width: 100%;
+    max-width: 640px;
+    height: 1400px;
+    border: none;
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-card);
+    background: var(--surface);
+  }
+  .voice-form-fallback { margin-top: var(--sp-2); font-size: 0.85rem; }
+</style>
 </head>
 <body>
 
@@ -31,40 +46,14 @@
 <main>
   <section class="on-light">
     <div class="container" style="max-width: 640px;">
-      <form id="voice-form">
-        <div class="form-row">
-          <label for="voice-name">お名前<span class="form-optional">（任意・匿名可）</span></label>
-          <input type="text" id="voice-name" name="voice-name" placeholder="例：山田 太郎（空欄でも構いません）" autocomplete="name">
-        </div>
-
-        <div class="form-row">
-          <label for="voice-company">ご関係・会社名<span class="form-optional">（任意）</span></label>
-          <input type="text" id="voice-company" name="voice-company" placeholder="例：株式会社◯◯ / 元同僚" autocomplete="organization">
-        </div>
-
-        <div class="form-row">
-          <label for="voice-quote">一言コメント</label>
-          <textarea id="voice-quote" name="voice-quote" rows="5" placeholder="杉田さんと一緒にお仕事をしてみて感じたことを、率直にお聞かせください"></textarea>
-        </div>
-
-        <div class="form-row">
-          <label for="voice-publish">掲載について<span class="form-optional">（任意）</span></label>
-          <select id="voice-publish" name="voice-publish">
-            <option value="お任せします" selected>お任せします</option>
-            <option value="実名で掲載してもよい">実名・会社名を出して掲載してもよい</option>
-            <option value="匿名なら掲載してもよい">匿名（お名前・会社名は伏せて）なら掲載してもよい</option>
-            <option value="掲載しないでほしい">今回は掲載しないでほしい（本人向けのメッセージのみ）</option>
-          </select>
-        </div>
-
-        <p class="form-note">
-          送信ボタンを押すと、上記の内容が差し込まれた状態でお使いのメールソフトが起動します。内容をご確認のうえ、そのまま送信してください（このページから直接送信されるわけではありません）。
-        </p>
-
-        <!-- JSなしでもメール作成画面は開ける（本文は空のテンプレート）。JSが動く場合は
-             入力内容がリアルタイムで本文に反映される。 -->
-        <a href="#" id="voice-submit-link" class="btn btn-primary">この内容をメールで送る</a>
-      </form>
+      <!-- Googleフォームを直接埋め込み。回答は自動的にフォームに紐づくGoogleスプレッドシートへ集計される。
+           iframeなのでJS不要で動作する（本体サイトのprogressive enhancement方針と両立）。 -->
+      <iframe class="voice-form-embed" src="https://forms.gle/v8dnvnhX8GUVzTMP7" title="一言メッセージフォーム">
+        読み込んでいます…
+      </iframe>
+      <p class="voice-form-fallback">
+        フォームが表示されない場合は、<a href="https://forms.gle/v8dnvnhX8GUVzTMP7" target="_blank" rel="noopener">こちらから直接開いて</a>ご記入ください。
+      </p>
     </div>
   </section>
 </main>
@@ -74,6 +63,5 @@
   &copy; 2026 Sugita Yumeki
 </footer>
 
-<script src="assets/js/voice-form.js"></script>
 </body>
 </html>
