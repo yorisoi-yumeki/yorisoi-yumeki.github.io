@@ -27,18 +27,19 @@
 
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="top">
 
 <!-- ============ ヒーロー ============ -->
 <header class="hero">
   <div class="container">
-    <div class="hero-badge">
+    <a class="hero-badge" href="#personality">
       <!-- 写真差し替え手順はREADME.mdを参照。
            assets/img/profile.jpg をアップロードするだけで自動的にこちらが表示されます
-           （ファイルが無い間はプレースホルダー画像にフォールバックします） -->
+           （ファイルが無い間はプレースホルダー画像にフォールバックします）。
+           クリックすると下部の「ちょっとした自己紹介」セクションへジャンプする。 -->
       <img class="js-profile-photo" src="assets/img/profile.jpg" alt="杉田夢生の写真" onerror="this.onerror=null;this.src='assets/img/profile-placeholder.svg';">
       <span>杉田夢生 <span class="en">/ Sugita Yumeki</span><br><span class="en">営業支援・営業代行</span></span>
-    </div>
+    </a>
 
     <h1>深いヒアリングで、<br><span class="hl">顧客の本質的な課題</span>を解決する。</h1>
     <p class="hero-lede">
@@ -540,6 +541,8 @@
 <footer>
   &copy; 2026 Sugita Yumeki
 </footer>
+
+<a href="#top" class="back-to-top" aria-label="ページ上部に戻る">↑</a>
 
 <script src="assets/js/testimonials.js"></script>
 <script src="assets/js/main.js"></script>
