@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>管理画面（周囲の声） | 杉田夢生</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<style>
+  .admin-storage-note {
+    font-size: 0.85rem;
+    color: var(--text-600);
+    background: #EAF1FF;
+    border-radius: var(--radius-m);
+    padding: var(--sp-2);
+    margin-bottom: var(--sp-3);
+  }
+  .admin-checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: var(--sp-2); }
+  .admin-checkbox-row input { width: auto; }
+  .admin-form-actions { display: flex; gap: var(--sp-1); align-items: center; }
+  .admin-list-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: var(--sp-2);
+    margin-bottom: var(--sp-2);
+    box-shadow: var(--shadow-card);
+  }
+  .admin-list-item.is-unpublished { opacity: 0.6; }
+  .admin-list-item-body { flex: 1 1 auto; min-width: 0; }
+  .admin-list-item-quote { color: var(--text-900); margin-bottom: 4px; }
+  .admin-list-item-meta { font-size: 0.8rem; color: var(--text-600); margin-bottom: 0; }
+  .admin-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .admin-badge.is-published { background: #E1F5EA; color: #1C7C3F; }
+  .admin-badge.is-draft { background: #EEF0F4; color: #666F87; }
+  .admin-list-item-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .admin-list-item-actions button {
+    font-size: 0.78rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .admin-list-item-actions button:hover { background: var(--bg); }
+  .admin-list-item-actions button.is-danger { color: #C23A3A; border-color: #F0C6C6; }
+  .admin-list-item-actions button.is-danger:hover { background: #FDF1F1; }
+  #admin-code-output {
+    width: 100%;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 0.76rem;
+    line-height: 1.6;
+    padding: var(--sp-2);
+    border-radius: var(--radius-m);
+    border: 1px solid var(--border);
+    margin-top: var(--sp-2);
+    background: var(--navy-900);
+    color: #E6ECFB;
+  }
+  .admin-code-actions { display: flex; gap: var(--sp-1); align-items: center; flex-wrap: wrap; }
+  #admin-preview-empty, #admin-list-empty { margin-top: var(--sp-2); }
+</style>
+</head>
+<body>
+
+<header class="hero" style="padding: var(--sp-6) 0;">
+  <div class="container">
+    <a class="hero-badge" href="index.html" style="display:inline-flex;"><span>杉田夢生 <span class="en">/ Sugita Yumeki</span></span></a>
+    <h1 style="max-width:100%;">「周囲の声」<br><span class="hl">管理画面</span></h1>
+    <p class="hero-lede">
+      掲載する推薦文の追加・編集・並び替えができるツールです。<br>
+      サイトの見た目や内容には自動反映されません。「STEP 3」でコードを生成し、GitHub上に貼り付けて保存すると初めて公開されます。
+    </p>
+  </div>
+</header>
+
+<main>
+
+  <section class="on-light">
+    <div class="container" style="max-width: 680px;">
+      <p class="admin-storage-note">
+        この画面に入力した内容は、<strong>この端末のこのブラウザ内だけ</strong>に保存されます（他の端末やブラウザ、シークレットモードでは表示されません）。ブラウザの閲覧データを消去すると内容も消えるため、こまめに「STEP 3」でコードを生成してGitHub側に保存することをおすすめします。
+      </p>
+
+      <span class="section-label">STEP 1</span>
+      <h2 id="admin-form-title">声を追加する</h2>
+      <form id="admin-form">
+        <div class="form-row">
+          <label for="admin-quote">一言コメント <span class="form-required">*</span></label>
+          <textarea id="admin-quote" rows="4" required></textarea>
+        </div>
+        <div class="form-row">
+          <label for="admin-name">お名前<span class="form-optional">（未入力の場合は「匿名」として表示）</span></label>
+          <input type="text" id="admin-name" placeholder="例：山田 太郎 / Y.T.">
+        </div>
+        <div class="form-row">
+          <label for="admin-company">会社名・肩書<span class="form-optional">（未入力の場合は非表示）</span></label>
+          <input type="text" id="admin-company" placeholder="例：株式会社サンプル">
+        </div>
+        <div class="form-row admin-checkbox-row">
+          <input type="checkbox" id="admin-published" checked>
+          <label for="admin-published" style="margin:0;">サイトに掲載する（オフにすると下書きとして保存のみ）</label>
+        </div>
+        <p class="form-error" id="admin-form-error" hidden>一言コメントを入力してください。</p>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary" id="admin-submit-btn">追加する</button>
+          <button type="button" class="btn btn-secondary" id="admin-cancel-btn" hidden>編集をキャンセル</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <span class="section-label">PREVIEW</span>
+      <h2>サイトでの見え方</h2>
+      <p>「掲載する」がオンの項目だけが、実際の「周囲からの声」セクションと同じ見た目で表示されます。</p>
+      <div class="testimonial-grid" id="admin-preview-grid"></div>
+      <p id="admin-preview-empty" class="form-note" hidden>掲載する項目がまだありません。</p>
+    </div>
+  </section>
+
+  <section class="on-light">
+    <div class="container">
+      <span class="section-label">STEP 2</span>
+      <h2>登録済み一覧（下書き含む全件）</h2>
+      <p>並び順がそのままサイトでの表示順になります。▲▼で並び替えできます。</p>
+      <div id="admin-list"></div>
+      <p id="admin-list-empty" class="form-note" hidden>まだ何も登録されていません。上のフォームから追加してください。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="max-width: 720px;">
+      <span class="section-label">STEP 3</span>
+      <h2>コードを生成してサイトに反映する</h2>
+      <p>ここでの編集はサイトにはまだ反映されていません。以下の手順でGitHub側に保存すると公開されます。</p>
+      <ol>
+        <li>下の「コードを生成」ボタンを押す</li>
+        <li>「コピーする」ボタンでコードをコピー</li>
+        <li><a href="https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/edit/main/assets/js/testimonials.js" target="_blank" rel="noopener">GitHub上のtestimonials.js編集画面</a>を開く（要ログイン）</li>
+        <li>編集画面の中身を全選択（クリックして Ctrl+A / ⌘+A）して削除し、コピーしたコードを貼り付ける</li>
+        <li>ページ下部までスクロールし、緑色の「Commit changes」ボタンを押す</li>
+        <li>数分待つとサイトに反映されます</li>
+      </ol>
+      <div class="admin-code-actions">
+        <button type="button" class="btn btn-dark" id="admin-generate-btn">コードを生成</button>
+        <button type="button" class="btn btn-secondary" id="admin-copy-btn" hidden>コピーする</button>
+        <span id="admin-copy-status" class="form-note" hidden>コピーしました！</span>
+      </div>
+      <textarea id="admin-code-output" rows="18" readonly hidden></textarea>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p><a href="index.html">← ポートフォリオサイトに戻る</a></p>
+  &copy; 2026 Sugita Yumeki
+</footer>
+
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
