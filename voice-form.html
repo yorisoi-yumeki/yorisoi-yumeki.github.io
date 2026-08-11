@@ -14,21 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
-<style>
-  /* Googleフォームの埋め込み。フォームの高さは内容量に応じて変わるため、
-     ある程度余裕を持たせた高さを指定している（短すぎるとフォーム内で
-     二重スクロールが発生するため）。 */
-  .voice-form-embed {
-    width: 100%;
-    max-width: 640px;
-    height: 1310px;
-    border: none;
-    border-radius: var(--radius-m);
-    box-shadow: var(--shadow-card);
-    background: var(--surface);
-  }
-  .voice-form-fallback { margin-top: var(--sp-2); font-size: 0.85rem; }
-</style>
 </head>
 <body>
 
@@ -46,14 +31,69 @@
 <main>
   <section class="on-light">
     <div class="container" style="max-width: 640px;">
-      <!-- Googleフォームを直接埋め込み。回答は自動的にフォームに紐づくGoogleスプレッドシートへ集計される。
-           iframeなのでJS不要で動作する（本体サイトのprogressive enhancement方針と両立）。 -->
-      <iframe class="voice-form-embed" src="https://docs.google.com/forms/d/e/1FAIpQLSfE0qfYftVsnFOiK_HISeNGgP2E4geK8tMZSCmG3mnfmZ-Yrw/viewform?embedded=true" title="一言メッセージフォーム">
-        読み込んでいます…
-      </iframe>
-      <p class="voice-form-fallback">
-        フォームが表示されない場合は、<a href="https://forms.gle/v8dnvnhX8GUVzTMP7" target="_blank" rel="noopener">こちらから直接開いて</a>ご記入ください。
-      </p>
+
+      <!-- 見た目は完全にこのサイト独自のフォームだが、送信するとJS(assets/js/voice-form.js)が
+           Googleフォームの回答送信エンドポイントへ直接データを送る（画面遷移なし）。
+           回答は通常のGoogleフォーム回答と同様に、紐づくスプレッドシートに集計される。
+           JSが無効な環境向けに、下に元のGoogleフォームへのリンクをフォールバックとして用意している。 -->
+      <form id="voice-form" novalidate>
+        <div class="form-row">
+          <label for="voice-name">お名前<span class="form-optional">（イニシャル可）</span> <span class="form-required">*</span></label>
+          <input type="text" id="voice-name" placeholder="例：山田 太郎 / Y.T." autocomplete="name" required>
+        </div>
+
+        <div class="form-row">
+          <label>関係性 <span class="form-required">*</span></label>
+          <div class="form-choice-group" role="radiogroup" aria-required="true">
+            <label class="form-choice"><input type="radio" name="relation" value="同僚" required> 同僚</label>
+            <label class="form-choice"><input type="radio" name="relation" value="上司／先輩"> 上司／先輩</label>
+            <label class="form-choice"><input type="radio" name="relation" value="部下／後輩"> 部下／後輩</label>
+            <label class="form-choice"><input type="radio" name="relation" value="取引先"> 取引先</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>どんな点が良かったか<span class="form-optional">（複数選択可）</span> <span class="form-required">*</span></label>
+          <div class="form-choice-group" id="good-points-group">
+            <label class="form-choice"><input type="checkbox" value="潜在ニーズを引き出すヒアリング"> 潜在ニーズを引き出すヒアリング</label>
+            <label class="form-choice"><input type="checkbox" value="行き詰まっても別の切り口で提案し直す粘り強さ"> 行き詰まっても別の切り口で提案し直す粘り強さ</label>
+            <label class="form-choice"><input type="checkbox" value="相手の知識レベルに合わせた分かりやすい説明"> 相手の知識レベルに合わせた分かりやすい説明</label>
+            <label class="form-choice"><input type="checkbox" value="ナレッジの横展開"> ナレッジの横展開</label>
+            <label class="form-choice"><input type="checkbox" value="社内営業力"> 社内営業力</label>
+            <label class="form-choice form-choice-other">
+              <input type="checkbox" id="good-points-other-check"> その他：
+              <input type="text" id="good-points-other-text" class="form-inline-text" placeholder="自由記述" aria-label="その他の内容">
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="voice-comment">一言コメント<span class="form-optional">（印象的なエピソードなどがあれば教えてください）</span></label>
+          <textarea id="voice-comment" rows="5"></textarea>
+        </div>
+
+        <div class="form-row">
+          <label>掲載について <span class="form-required">*</span></label>
+          <div class="form-choice-group" role="radiogroup" aria-required="true">
+            <label class="form-choice"><input type="radio" name="publish" value="名前付きで掲載して良い" required> 名前付きで掲載して良い</label>
+            <label class="form-choice"><input type="radio" name="publish" value="イニシャルなら掲載して良い"> イニシャルなら掲載して良い</label>
+            <label class="form-choice"><input type="radio" name="publish" value="今回は掲載しないで欲しい（本人向けのメッセージのみ）"> 今回は掲載しないで欲しい（本人向けのメッセージのみ）</label>
+          </div>
+        </div>
+
+        <p class="form-error" id="voice-form-error" hidden>必須項目（※）が未入力です。ご確認のうえ、もう一度お試しください。</p>
+
+        <button type="submit" class="btn btn-primary" id="voice-form-submit">回答を送信</button>
+      </form>
+
+      <div class="voice-form-done" id="voice-form-done" hidden>
+        <h2>送信しました！</h2>
+        <p>一言メッセージをお届けいただき、ありがとうございます。</p>
+      </div>
+
+      <noscript>
+        <p class="form-note">このフォームの送信にはJavaScriptが必要です。JSが無効な場合は、<a href="https://forms.gle/v8dnvnhX8GUVzTMP7" target="_blank" rel="noopener">こちらのGoogleフォーム</a>から直接ご記入ください。</p>
+      </noscript>
     </div>
   </section>
 </main>
@@ -63,5 +103,6 @@
   &copy; 2026 Sugita Yumeki
 </footer>
 
+<script src="assets/js/voice-form.js"></script>
 </body>
 </html>
