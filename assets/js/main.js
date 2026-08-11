@@ -168,7 +168,9 @@
 
   /* ---------------- 「精通している業界・職種」チップ → 経歴カードの絞り込み ----------------
    * 経験バーのボタンと同じ「クリックしたら単一条件に絞り込む（既存の選択は解除）」という
-   * ジャンプ的な挙動。該当カードが無い場合でも絞り込み自体は反映し、空状態メッセージが
+   * ジャンプ的な挙動。ただしこのチップ自身が既に選択中の場合はトグルで解除し「すべて表示」に
+   * 戻す（選択済みのタブをもう一度押したら選択解除できるようにするため）。
+   * 該当カードが無い場合でも絞り込み自体は反映し、空状態メッセージが
    * 見える位置までスクロールする（「その軸はまだ詳細な事例として書けていない」という
    * 正直な状態を隠さない）。
    */
@@ -180,6 +182,12 @@
       chip.addEventListener("click", function () {
         var axis = chip.getAttribute("data-axis");
         var value = chip.getAttribute("data-value");
+
+        if (chip.classList.contains("is-active")) {
+          setCareerFilterAxis("all", []);
+          return;
+        }
+
         var filter = {};
         filter[axis] = [value];
         var matches = Array.prototype.filter.call(
@@ -226,6 +234,28 @@
     var emptyMsg = document.getElementById("career-filter-empty");
     var moreBtn = document.getElementById("career-more-btn");
     var activeFilters = {}; // { 軸名: [選択値, ...] }
+
+    /* 絞り込みボタン群（営業手法／役割／…の26個のボタン）は数が多く画面を圧迫するため、
+     * 既定では折りたたんでおき、「絞り込む」ボタンを押した時だけ展開する。
+     * JSが動かない環境ではこの折りたたみ自体を行わない（＝常に全ボタンが見える）ことで、
+     * 「JSなしでもコンテンツは表示される」という方針を守る。 */
+    var toggleBtn = document.getElementById("career-filter-toggle");
+    var groupsWrap = document.getElementById("career-filter-groups");
+    var toggleLabel = toggleBtn && toggleBtn.querySelector(".career-filter-toggle-label");
+
+    function setGroupsCollapsed(collapsed) {
+      if (!toggleBtn || !groupsWrap) return;
+      groupsWrap.classList.toggle("is-collapsed", collapsed);
+      toggleBtn.setAttribute("aria-expanded", String(!collapsed));
+      if (toggleLabel) toggleLabel.textContent = collapsed ? "絞り込む" : "閉じる";
+    }
+
+    if (toggleBtn && groupsWrap) {
+      setGroupsCollapsed(true); // 初期表示は折りたたみ
+      toggleBtn.addEventListener("click", function () {
+        setGroupsCollapsed(!groupsWrap.classList.contains("is-collapsed"));
+      });
+    }
 
     function isEngaged() {
       return Object.keys(activeFilters).some(function (axis) {
@@ -279,6 +309,9 @@
       })();
       updateButtonStates();
       applyVisibility();
+      // ロゴ／経験バー／業界職種チップからの絞り込みジャンプで軸が確定した際は、
+      // どの条件が選ばれているか見えるよう折りたたみを自動で開く
+      if (axis !== "all") setGroupsCollapsed(false);
     };
 
     if (resetBtn) {
