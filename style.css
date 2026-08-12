@@ -15,6 +15,8 @@
   --text-900: #10182B;
   --text-600: #55607A;
   --border: #E4E9F2;
+  --forest-700: #1F4D38; /* モスグリーン（自己紹介の一部強調に使用） */
+  --forest-100: #E4F0E8; /* モスグリーンの薄いハイライト背景 */
 
   /* Spacing scale (8px base) */
   --sp-1: 8px;
@@ -591,6 +593,15 @@ button.exp-bar-fill-label.is-jump {
   font-size: 0.9rem;
   color: var(--text-900);
   max-width: 34em;
+}
+/* 「23区外」の「外」だけを目立たせるハイライト（蛍光ペン風のモスグリーン） */
+.gai-highlight {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--forest-700);
+  background: var(--forest-100);
+  padding: 1px 7px;
+  border-radius: 6px;
 }
 
 @media (max-width: 640px) {
