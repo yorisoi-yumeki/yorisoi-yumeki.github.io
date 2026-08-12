@@ -594,8 +594,8 @@ button.exp-bar-fill-label.is-jump {
   color: var(--text-900);
   max-width: 34em;
 }
-/* 「23区外」の「外」だけを目立たせるハイライト（蛍光ペン風のモスグリーン） */
-.gai-highlight {
+/* Personalityの各項目につき1箇所だけ目立たせる（蛍光ペン風のモスグリーン） */
+.personality-highlight {
   display: inline-block;
   font-weight: 700;
   color: var(--forest-700);
