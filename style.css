@@ -15,8 +15,10 @@
   --text-900: #10182B;
   --text-600: #55607A;
   --border: #E4E9F2;
-  --forest-700: #1F4D38; /* モスグリーン（自己紹介の一部強調に使用） */
+  --forest-700: #1F4D38; /* モスグリーン（「23区外」の「外」専用） */
   --forest-100: #E4F0E8; /* モスグリーンの薄いハイライト背景 */
+  --amber-700: #B5730A;  /* Personalityの各項目ラベルの強調色（career-tagのamberと共通） */
+  --amber-100: #FFF3DE;  /* amberの薄いハイライト背景 */
 
   /* Spacing scale (8px base) */
   --sp-1: 8px;
@@ -594,14 +596,21 @@ button.exp-bar-fill-label.is-jump {
   color: var(--text-900);
   max-width: 34em;
 }
-/* Personalityの各項目につき1箇所だけ目立たせる（蛍光ペン風のモスグリーン） */
+/* Personalityの各項目につき1箇所だけ目立たせる（蛍光ペン風のハイライト）。
+   「23区外」の「外」だけは緑（--green）、それ以外の項目名はamberで統一。 */
 .personality-highlight {
   display: inline-block;
   font-weight: 700;
-  color: var(--forest-700);
-  background: var(--forest-100);
   padding: 1px 7px;
   border-radius: 6px;
+}
+.personality-highlight--green {
+  color: var(--forest-700);
+  background: var(--forest-100);
+}
+.personality-highlight--amber {
+  color: var(--amber-700);
+  background: var(--amber-100);
 }
 
 @media (max-width: 640px) {
