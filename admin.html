@@ -78,6 +78,41 @@
   }
   .admin-code-actions { display: flex; gap: var(--sp-1); align-items: center; flex-wrap: wrap; }
   #admin-preview-empty, #admin-list-empty { margin-top: var(--sp-2); }
+
+  /* ---- 回答の取り込み ---- */
+  #import-paste { font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.8rem; }
+  .import-row-card {
+    display: flex;
+    gap: var(--sp-2);
+    align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: var(--sp-2);
+    margin-bottom: var(--sp-2);
+    box-shadow: var(--shadow-card);
+  }
+  .import-row-card.is-excluded { opacity: 0.55; }
+  .import-row-check { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+  .import-row-check input { width: auto; }
+  .import-row-check span { font-size: 0.7rem; color: var(--text-600); white-space: nowrap; }
+  .import-row-body { flex: 1 1 auto; min-width: 0; }
+  .import-row-meta { font-size: 0.78rem; color: var(--text-600); margin-bottom: var(--sp-1); display: flex; flex-wrap: wrap; gap: 6px 10px; }
+  .import-row-field { margin-bottom: var(--sp-1); }
+  .import-row-field label { display: block; font-size: 0.76rem; font-weight: 700; color: var(--text-600); margin-bottom: 2px; }
+  .import-row-field input[type="text"], .import-row-field textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.86rem;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .import-row-field textarea { resize: vertical; min-height: 3.6em; }
+  .import-row-goodpoints { font-size: 0.82rem; color: var(--text-600); background: var(--bg); border-radius: 8px; padding: 6px 10px; }
+  .import-row-warning { font-size: 0.78rem; color: #B4562F; font-weight: 700; margin: var(--sp-1) 0 0; }
+  .import-row-warning.is-blocked { color: #C23A3A; }
 </style>
 </head>
 <body>
@@ -88,7 +123,7 @@
     <h1 style="max-width:100%;">「周囲の声」<br><span class="hl">管理画面</span></h1>
     <p class="hero-lede">
       掲載する推薦文の追加・編集・並び替えができるツールです。<br>
-      サイトの見た目や内容には自動反映されません。「STEP 3」でコードを生成し、GitHub上に貼り付けて保存すると初めて公開されます。
+      サイトの見た目や内容には自動反映されません。「STEP 4」でコードを生成し、GitHub上に貼り付けて保存すると初めて公開されます。
     </p>
   </div>
 </header>
@@ -96,13 +131,39 @@
 <main>
 
   <section class="on-light">
-    <div class="container" style="max-width: 680px;">
+    <div class="container" style="max-width: 780px;">
       <p class="admin-storage-note">
-        この画面に入力した内容は、<strong>この端末のこのブラウザ内だけ</strong>に保存されます（他の端末やブラウザ、シークレットモードでは表示されません）。ブラウザの閲覧データを消去すると内容も消えるため、こまめに「STEP 3」でコードを生成してGitHub側に保存することをおすすめします。
+        この画面に入力した内容は、<strong>この端末のこのブラウザ内だけ</strong>に保存されます（他の端末やブラウザ、シークレットモードでは表示されません）。ブラウザの閲覧データを消去すると内容も消えるため、こまめに「STEP 4」でコードを生成してGitHub側に保存することをおすすめします。
       </p>
 
       <span class="section-label">STEP 1</span>
-      <h2 id="admin-form-title">声を追加する</h2>
+      <h2>回答を取り込む</h2>
+      <p>Googleフォームの回答が集まる<strong>スプレッドシート</strong>を開き、ヘッダー行を含めて回答の行（A列〜F列：タイムスタンプ〜掲載について）を選択してコピー（Ctrl+C / ⌘+C）し、下のボックスに貼り付けてください。1件ずつ手で転記する必要はありません。</p>
+
+      <div class="form-row">
+        <label for="import-paste">スプレッドシートからコピーした内容を貼り付け</label>
+        <textarea id="import-paste" rows="5" placeholder="スプレッドシートで行を選択してコピーし、ここに貼り付けてください（Ctrl+V / ⌘+V）"></textarea>
+      </div>
+      <button type="button" class="btn btn-dark" id="import-parse-btn">貼り付けた内容を読み込む</button>
+      <p class="form-error" id="import-error" hidden></p>
+
+      <div id="import-preview" hidden style="margin-top: var(--sp-3);">
+        <h3>読み込み結果（内容を確認し、掲載するものにチェックを入れてください）</h3>
+        <p class="form-note">「掲載について」の回答に応じて、チェックの初期状態と注意書きを自動で出しています。氏名や一言コメントの文面は、この場で直接編集できます。</p>
+        <div id="import-rows"></div>
+        <div class="admin-form-actions" style="margin-top: var(--sp-2);">
+          <button type="button" class="btn btn-primary" id="import-commit-btn">チェックした回答を取り込む</button>
+          <span id="import-commit-status" class="form-note" hidden></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="on-light">
+    <div class="container" style="max-width: 680px;">
+      <span class="section-label">STEP 2</span>
+      <h2 id="admin-form-title">個別に追加・編集する</h2>
+      <p>取り込んだ内容の修正や、フォームを経由しない声の追加はここから行えます。</p>
       <form id="admin-form">
         <div class="form-row">
           <label for="admin-quote">一言コメント <span class="form-required">*</span></label>
@@ -141,7 +202,7 @@
 
   <section class="on-light">
     <div class="container">
-      <span class="section-label">STEP 2</span>
+      <span class="section-label">STEP 3</span>
       <h2>登録済み一覧（下書き含む全件）</h2>
       <p>並び順がそのままサイトでの表示順になります。▲▼で並び替えできます。</p>
       <div id="admin-list"></div>
@@ -151,7 +212,7 @@
 
   <section>
     <div class="container" style="max-width: 720px;">
-      <span class="section-label">STEP 3</span>
+      <span class="section-label">STEP 4</span>
       <h2>コードを生成してサイトに反映する</h2>
       <p>ここでの編集はサイトにはまだ反映されていません。以下の手順でGitHub側に保存すると公開されます。</p>
       <ol>

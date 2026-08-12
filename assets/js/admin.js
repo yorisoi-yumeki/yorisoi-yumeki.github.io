@@ -338,7 +338,7 @@
       renderAll();
     });
 
-    // ---- STEP 3: コード生成 ----
+    // ---- STEP 4: コード生成 ----
 
     function jsString(value) {
       return JSON.stringify(value || "");
@@ -407,6 +407,251 @@
         document.execCommand("copy");
         showCopied();
       }
+    });
+
+    // ---- STEP 1: 回答の取り込み（スプレッドシートのコピー&ペースト） ----
+    // Googleフォームの回答シートは列順が
+    // タイムスタンプ / お名前 / 関係性 / どんな点が良かったか / 一言コメント / 掲載について
+    // で固定されている（voice-form.htmlの質問順そのまま）。ここではその前提で列を読み取る。
+    // スプレッドシートをコピーした際のクリップボードはタブ区切り(TSV)で、セル内に
+    // 改行を含む場合は "..." で囲まれる（CSVと同じ引用ルール）ため、単純な
+    // split("\n")/split("\t") ではなく、引用を考慮したパーサーを使う。
+
+    var importPasteEl = document.getElementById("import-paste");
+    var importParseBtn = document.getElementById("import-parse-btn");
+    var importErrorEl = document.getElementById("import-error");
+    var importPreviewWrap = document.getElementById("import-preview");
+    var importRowsEl = document.getElementById("import-rows");
+    var importCommitBtn = document.getElementById("import-commit-btn");
+    var importCommitStatus = document.getElementById("import-commit-status");
+
+    var importedRows = []; // [{ checkbox, nameInput, quoteTextarea, published, excluded }]
+
+    function parseDelimitedText(text, delimiter) {
+      var rows = [];
+      var row = [];
+      var field = "";
+      var inQuotes = false;
+
+      for (var i = 0; i < text.length; i++) {
+        var ch = text[i];
+        if (inQuotes) {
+          if (ch === '"') {
+            if (text[i + 1] === '"') { field += '"'; i++; }
+            else { inQuotes = false; }
+          } else {
+            field += ch;
+          }
+          continue;
+        }
+        if (ch === '"') {
+          inQuotes = true;
+        } else if (ch === delimiter) {
+          row.push(field);
+          field = "";
+        } else if (ch === "\n") {
+          row.push(field);
+          rows.push(row);
+          row = [];
+          field = "";
+        } else if (ch === "\r") {
+          // 改行はこの後の \n 側で処理するため無視
+        } else {
+          field += ch;
+        }
+      }
+      if (field.length || row.length) {
+        row.push(field);
+        rows.push(row);
+      }
+      // 完全な空行（全セル空欄）は除外
+      return rows.filter(function (r) {
+        return r.some(function (cell) { return cell.trim() !== ""; });
+      });
+    }
+
+    function classifyPublishPref(rawPref) {
+      var pref = (rawPref || "").trim();
+      if (pref.indexOf("掲載しないで") !== -1) {
+        return { published: false, badgeClass: "is-draft", label: "掲載不可", warning: "この回答者は「今回は掲載しないで欲しい」を選んでいます。取り込む場合も掲載は控えてください。", blocked: true };
+      }
+      if (pref.indexOf("イニシャル") !== -1) {
+        return { published: false, badgeClass: "is-draft", label: "イニシャル希望", warning: "「イニシャルなら可」の回答です。下の「お名前」を本名からイニシャルに書き換えてから掲載してください。", blocked: false };
+      }
+      if (pref.indexOf("名前付き") !== -1) {
+        return { published: true, badgeClass: "is-published", label: "名前付きOK", warning: "", blocked: false };
+      }
+      return { published: false, badgeClass: "is-draft", label: "掲載について不明", warning: "「掲載について」の回答を認識できませんでした。内容を確認のうえ、掲載可否を判断してください。", blocked: false };
+    }
+
+    function parseImportRows(text) {
+      var raw = parseDelimitedText(text, "\t");
+      if (!raw.length) return [];
+
+      // 1行目がヘッダー（「タイムスタンプ」など数字を含まない）なら除外する
+      if (raw.length && raw[0][0] && !/\d/.test(raw[0][0])) {
+        raw = raw.slice(1);
+      }
+
+      return raw.map(function (cols) {
+        return {
+          timestamp: (cols[0] || "").trim(),
+          name: (cols[1] || "").trim(),
+          relation: (cols[2] || "").trim(),
+          goodPoints: (cols[3] || "").trim(),
+          comment: (cols[4] || "").trim(),
+          publishPrefRaw: (cols[5] || "").trim(),
+          columnCount: cols.length
+        };
+      });
+    }
+
+    function renderImportRows(rows) {
+      importRowsEl.innerHTML = "";
+      importedRows = [];
+
+      rows.forEach(function (row) {
+        var pref = classifyPublishPref(row.publishPrefRaw);
+
+        var card = document.createElement("div");
+        card.className = "import-row-card" + (pref.blocked ? " is-excluded" : "");
+
+        var checkWrap = document.createElement("label");
+        checkWrap.className = "import-row-check";
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = !pref.blocked;
+        var checkLabel = document.createElement("span");
+        checkLabel.textContent = "取り込む";
+        checkWrap.appendChild(checkbox);
+        checkWrap.appendChild(checkLabel);
+
+        var body = document.createElement("div");
+        body.className = "import-row-body";
+
+        var meta = document.createElement("div");
+        meta.className = "import-row-meta";
+        var badge = document.createElement("span");
+        badge.className = "admin-badge " + pref.badgeClass;
+        badge.textContent = pref.label;
+        meta.appendChild(badge);
+        if (row.timestamp) meta.appendChild(document.createTextNode("日時: " + row.timestamp));
+        if (row.relation) meta.appendChild(document.createTextNode("関係性: " + row.relation));
+        if (row.columnCount !== 6) {
+          var colWarn = document.createElement("span");
+          colWarn.style.color = "#B4562F";
+          colWarn.textContent = "⚠ 列数が想定(6列)と異なります(" + row.columnCount + "列)";
+          meta.appendChild(colWarn);
+        }
+        body.appendChild(meta);
+
+        var nameField = document.createElement("div");
+        nameField.className = "import-row-field";
+        var nameLabel = document.createElement("label");
+        nameLabel.textContent = "お名前";
+        var nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.value = row.name;
+        nameField.appendChild(nameLabel);
+        nameField.appendChild(nameInput);
+        body.appendChild(nameField);
+
+        if (row.goodPoints) {
+          var gp = document.createElement("div");
+          gp.className = "import-row-goodpoints";
+          gp.textContent = "良かった点: " + row.goodPoints;
+          body.appendChild(gp);
+        }
+
+        var quoteField = document.createElement("div");
+        quoteField.className = "import-row-field";
+        quoteField.style.marginTop = "6px";
+        var quoteLabel = document.createElement("label");
+        quoteLabel.textContent = "一言コメント（掲載文になります）";
+        var quoteTextarea = document.createElement("textarea");
+        quoteTextarea.value = row.comment;
+        if (!row.comment) {
+          quoteTextarea.placeholder = "コメント欄が空欄でした。上の「良かった点」を参考に、掲載文を書いてください。";
+        }
+        quoteField.appendChild(quoteLabel);
+        quoteField.appendChild(quoteTextarea);
+        body.appendChild(quoteField);
+
+        if (pref.warning) {
+          var warn = document.createElement("p");
+          warn.className = "import-row-warning" + (pref.blocked ? " is-blocked" : "");
+          warn.textContent = "⚠ " + pref.warning;
+          body.appendChild(warn);
+        }
+
+        card.appendChild(checkWrap);
+        card.appendChild(body);
+        importRowsEl.appendChild(card);
+
+        importedRows.push({
+          checkbox: checkbox,
+          nameInput: nameInput,
+          quoteTextarea: quoteTextarea,
+          published: pref.published
+        });
+      });
+    }
+
+    importParseBtn.addEventListener("click", function () {
+      var text = importPasteEl.value;
+      if (!text || !text.trim()) {
+        importErrorEl.textContent = "貼り付け内容が空です。スプレッドシートの回答行をコピーしてから貼り付けてください。";
+        importErrorEl.hidden = false;
+        importPreviewWrap.hidden = true;
+        return;
+      }
+
+      var rows = parseImportRows(text);
+      if (!rows.length) {
+        importErrorEl.textContent = "内容を読み取れませんでした。スプレッドシートのセルを選択してコピーしたものを貼り付けているかご確認ください。";
+        importErrorEl.hidden = false;
+        importPreviewWrap.hidden = true;
+        return;
+      }
+
+      importErrorEl.hidden = true;
+      renderImportRows(rows);
+      importPreviewWrap.hidden = false;
+      importCommitStatus.hidden = true;
+      importPreviewWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    importCommitBtn.addEventListener("click", function () {
+      var added = 0;
+      importedRows.forEach(function (row) {
+        if (!row.checkbox.checked) return;
+        var quote = row.quoteTextarea.value.trim();
+        if (!quote) return; // 掲載文が空のままの行は取り込まない（書き忘れ防止）
+        drafts.push({
+          id: nextId++,
+          quote: quote,
+          name: row.nameInput.value.trim(),
+          company: "",
+          published: row.published
+        });
+        added++;
+      });
+
+      if (added === 0) {
+        importCommitStatus.textContent = "取り込める行がありませんでした（チェック漏れ、または一言コメントが未入力の行はスキップされます）。";
+        importCommitStatus.hidden = false;
+        return;
+      }
+
+      save();
+      renderAll();
+
+      importCommitStatus.textContent = added + "件を取り込みました。下の「STEP 3」の一覧に追加されています（会社名の入力や内容の微調整は一覧の「編集する」から行えます）。";
+      importCommitStatus.hidden = false;
+      importPasteEl.value = "";
+      importPreviewWrap.hidden = true;
+      importRowsEl.innerHTML = "";
+      importedRows = [];
     });
   });
 })();
