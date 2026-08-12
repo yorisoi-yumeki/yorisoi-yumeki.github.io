@@ -46,7 +46,7 @@
     "カスタマーサクセス": "role",
     "マネジメント・育成": "role",
     "プレイヤー": "stance",
-    "正社員": "employment",
+    "正社員・派遣": "employment",
     "業務委託": "employment"
   };
 
