@@ -13,6 +13,13 @@
 
   var STORAGE_KEY = "yorisoiTestimonialDrafts_v1";
 
+  /* 回答スプレッドシートを自動取得するための読み取り専用API(Google Apps Script)のURL。
+   * 未設定（空文字）の間は「自動で取得する」ボタンを押すとセットアップ手順を案内する。
+   * 設置方法はREADME.md「④ 周囲からの声の追加・公開」参照。
+   * このAPIは「今回は掲載しないで欲しい」回答をあらかじめ除外して返す実装にしてあるため、
+   * このURLが公開ソースコードとして誰かの目に触れても、非公開希望者のデータは含まれない。 */
+  var SHEET_API_URL = ""; // 例: "https://script.google.com/macros/s/xxxxxxxxxxxx/exec"
+
   // ---- testimonials.js のうち、STEP 3で生成するコードでも変えずに使う部分 ----
 
   var FILE_HEADER =
@@ -484,26 +491,33 @@
       return { published: false, badgeClass: "is-draft", label: "掲載について不明", warning: "「掲載について」の回答を認識できませんでした。内容を確認のうえ、掲載可否を判断してください。", blocked: false };
     }
 
-    function parseImportRows(text) {
-      var raw = parseDelimitedText(text, "\t");
-      if (!raw.length) return [];
+    // 行の2次元配列(各行が[タイムスタンプ, お名前, 関係性, どんな点が良かったか, 一言コメント, 掲載について])を
+    // renderImportRows() が扱える形のオブジェクト配列に変換する。
+    // 貼り付けパース(parseImportRows)と自動取得API(fetchFromSheetApi)の両方から共通で使う。
+    function rowsArrayToImportObjects(raw) {
+      if (!raw || !raw.length) return [];
 
       // 1行目がヘッダー（「タイムスタンプ」など数字を含まない）なら除外する
-      if (raw.length && raw[0][0] && !/\d/.test(raw[0][0])) {
+      if (raw[0][0] != null && !/\d/.test(String(raw[0][0]))) {
         raw = raw.slice(1);
       }
 
       return raw.map(function (cols) {
         return {
-          timestamp: (cols[0] || "").trim(),
-          name: (cols[1] || "").trim(),
-          relation: (cols[2] || "").trim(),
-          goodPoints: (cols[3] || "").trim(),
-          comment: (cols[4] || "").trim(),
-          publishPrefRaw: (cols[5] || "").trim(),
+          timestamp: String(cols[0] || "").trim(),
+          name: String(cols[1] || "").trim(),
+          relation: String(cols[2] || "").trim(),
+          goodPoints: String(cols[3] || "").trim(),
+          comment: String(cols[4] || "").trim(),
+          publishPrefRaw: String(cols[5] || "").trim(),
           columnCount: cols.length
         };
       });
+    }
+
+    function parseImportRows(text) {
+      var raw = parseDelimitedText(text, "\t");
+      return rowsArrayToImportObjects(raw);
     }
 
     function renderImportRows(rows) {
@@ -596,6 +610,54 @@
         });
       });
     }
+
+    // ---- 自動取得（Apps Script API 経由。設定手順はREADME.md参照） ----
+
+    var importFetchBtn = document.getElementById("import-fetch-btn");
+    var importFetchStatus = document.getElementById("import-fetch-status");
+
+    function showFetchStatus(text, isError) {
+      importFetchStatus.textContent = text;
+      importFetchStatus.style.color = isError ? "#C23A3A" : "";
+      importFetchStatus.hidden = false;
+    }
+
+    function fetchFromSheetApi() {
+      if (!SHEET_API_URL) {
+        showFetchStatus("自動取得の設定がまだ完了していません。README.mdの「④ 周囲からの声の追加・公開」の手順に従ってApps Scriptを設置するか、下の「貼り付けで取り込む」をご利用ください。", true);
+        return;
+      }
+
+      importFetchBtn.disabled = true;
+      showFetchStatus("取得中…", false);
+
+      fetch(SHEET_API_URL)
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        })
+        .then(function (raw) {
+          if (!Array.isArray(raw)) throw new Error("想定外の形式のデータが返されました");
+          var rows = rowsArrayToImportObjects(raw);
+          if (!rows.length) {
+            showFetchStatus("取得できましたが、表示できる回答がありませんでした（すべて「今回は掲載しないで欲しい」回答だった可能性があります）。", false);
+            return;
+          }
+          importFetchStatus.hidden = true;
+          renderImportRows(rows);
+          importPreviewWrap.hidden = false;
+          importCommitStatus.hidden = true;
+          importPreviewWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+        })
+        .catch(function () {
+          showFetchStatus("取得に失敗しました。Apps Scriptのデプロイ設定（アクセスできるユーザーが「全員」になっているか）をご確認いただくか、下の「貼り付けで取り込む」をご利用ください。", true);
+        })
+        .then(function () {
+          importFetchBtn.disabled = false;
+        });
+    }
+
+    importFetchBtn.addEventListener("click", fetchFromSheetApi);
 
     importParseBtn.addEventListener("click", function () {
       var text = importPasteEl.value;

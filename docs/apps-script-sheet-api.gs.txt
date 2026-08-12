@@ -1,0 +1,64 @@
+/**
+ * apps-script-sheet-api.gs
+ *
+ * 「周囲の声」回答スプレッドシートの内容を、admin.html（管理画面）の
+ * 「STEP 1: 回答を取り込む」→「スプレッドシートから自動で取得する」が
+ * 読み込むための、読み取り専用の小さなAPI。
+ *
+ * 【設置方法】（初回のみ・README.md「④ 周囲からの声の追加・公開」にも記載）
+ * 1. 回答が集まるGoogleスプレッドシートを開く
+ * 2. メニューの「拡張機能」→「Apps Script」を開く
+ * 3. デフォルトで入っているコードを全部消し、このファイルの中身を貼り付けて保存
+ * 4. 右上の「デプロイ」→「新しいデプロイ」
+ *    - 種類の選択（歯車アイコン）で「ウェブアプリ」を選ぶ
+ *    - 「次のユーザーとして実行」：自分
+ *    - 「アクセスできるユーザー」：全員
+ *    - 「デプロイ」を押す（Googleアカウントの承認画面が出たら許可する）
+ * 5. 発行された「ウェブアプリ」のURL（https://script.google.com/macros/s/xxxxx/exec）をコピー
+ * 6. assets/js/admin.js の SHEET_API_URL にそのURLを貼り付けて保存
+ *
+ * 【このAPIがやっていること】
+ * - スプレッドシートの全行を読み取り、JSON形式の2次元配列として返す
+ * - ただし「掲載について」の回答が「今回は掲載しないで欲しい」の行は、
+ *   このAPIの応答には最初から含めない（プライバシー保護のため。
+ *   このURLはサイトの公開ソースコードに含まれるので、万一URLが第三者に
+ *   知られても、非公開希望者のデータが漏れないようにする設計）
+ *
+ * 【質問の列を追加・変更した場合】
+ * 下の PUBLISH_COL（0始まりの列番号。デフォルトは6列目=index 5「掲載について」）を、
+ * 実際のシートの列位置に合わせて修正してください。
+ */
+
+// フォームの回答が入っているシート名。null ならアクティブなシート（通常はこれでOK）を使う
+var SHEET_NAME = null;
+
+// 「掲載について」列の位置（0始まり）。列順：
+// 0:タイムスタンプ 1:お名前 2:関係性 3:どんな点が良かったか 4:一言コメント 5:掲載について
+var PUBLISH_COL = 5;
+
+// この文字列を含む回答は、プライバシー保護のためAPI応答から除外する
+var NO_PUBLISH_MARK = "今回は掲載しないで欲しい";
+
+function doGet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = SHEET_NAME ? ss.getSheetByName(SHEET_NAME) : ss.getActiveSheet();
+  var values = sheet.getDataRange().getValues();
+
+  var rows = values
+    .filter(function (row, i) {
+      if (i === 0) return true; // ヘッダー行はそのまま残す（読み込み側で自動判定・除外される）
+      var pref = String(row[PUBLISH_COL] || "");
+      return pref.indexOf(NO_PUBLISH_MARK) === -1;
+    })
+    .map(function (row) {
+      return row.map(function (cell) {
+        return cell instanceof Date
+          ? Utilities.formatDate(cell, Session.getScriptTimeZone(), "yyyy/MM/dd HH:mm:ss")
+          : cell;
+      });
+    });
+
+  return ContentService
+    .createTextOutput(JSON.stringify(rows))
+    .setMimeType(ContentService.MimeType.JSON);
+}

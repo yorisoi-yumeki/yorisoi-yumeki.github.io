@@ -138,14 +138,24 @@
 
       <span class="section-label">STEP 1</span>
       <h2>回答を取り込む</h2>
-      <p>Googleフォームの回答が集まる<strong>スプレッドシート</strong>を開き、ヘッダー行を含めて回答の行（A列〜F列：タイムスタンプ〜掲載について）を選択してコピー（Ctrl+C / ⌘+C）し、下のボックスに貼り付けてください。1件ずつ手で転記する必要はありません。</p>
+      <p>ボタン1つでスプレッドシートの回答を読み込みます。1件ずつ手で転記する必要はありません（初回のみ下記の設定が必要です）。</p>
 
-      <div class="form-row">
-        <label for="import-paste">スプレッドシートからコピーした内容を貼り付け</label>
-        <textarea id="import-paste" rows="5" placeholder="スプレッドシートで行を選択してコピーし、ここに貼り付けてください（Ctrl+V / ⌘+V）"></textarea>
-      </div>
-      <button type="button" class="btn btn-dark" id="import-parse-btn">貼り付けた内容を読み込む</button>
-      <p class="form-error" id="import-error" hidden></p>
+      <button type="button" class="btn btn-dark" id="import-fetch-btn">スプレッドシートから自動で取得する</button>
+      <p id="import-fetch-status" class="form-note" hidden></p>
+      <p class="form-note">※「今回は掲載しないで欲しい」という回答は、プライバシー保護のためこの自動取得には表示されません（内容の確認はスプレッドシートで直接行ってください）。</p>
+
+      <details style="margin-top: var(--sp-3);">
+        <summary style="cursor:pointer; font-weight:700; font-size:0.9rem; color: var(--text-600);">自動取得がうまくいかない場合／設定がまだの場合は、貼り付けでも取り込めます</summary>
+        <div style="margin-top: var(--sp-2);">
+          <p class="form-note">自動取得の初回設定（Apps Scriptの設置。README.md「④ 周囲からの声の追加・公開」参照）がまだの間は、こちらの貼り付け方式をご利用ください。Googleフォームの回答が集まる<strong>スプレッドシート</strong>を開き、ヘッダー行を含めて回答の行（A列〜F列：タイムスタンプ〜掲載について）を選択してコピー（Ctrl+C / ⌘+C）し、下のボックスに貼り付けてください。</p>
+          <div class="form-row">
+            <label for="import-paste">スプレッドシートからコピーした内容を貼り付け</label>
+            <textarea id="import-paste" rows="5" placeholder="スプレッドシートで行を選択してコピーし、ここに貼り付けてください（Ctrl+V / ⌘+V）"></textarea>
+          </div>
+          <button type="button" class="btn btn-secondary" id="import-parse-btn">貼り付けた内容を読み込む</button>
+          <p class="form-error" id="import-error" hidden></p>
+        </div>
+      </details>
 
       <div id="import-preview" hidden style="margin-top: var(--sp-3);">
         <h3>読み込み結果（内容を確認し、掲載するものにチェックを入れてください）</h3>
