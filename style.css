@@ -355,7 +355,7 @@ button.exp-bar-fill-label.is-jump {
 }
 
 /* ---------- Chips（精通している業界・職種。ボタン要素でクリック可能） ---------- */
-.chip-group { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 260px; }
+.chip-group { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; flex: 1 1 260px; }
 .chip {
   font: inherit;
   margin: 0;
@@ -752,7 +752,11 @@ html.js .fade-target.is-visible {
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .stat-bar { max-width: 100%; }
+  /* .chip-groupの flex: 1 1 260px は横並び時の「幅」の目安として付けたものだが、
+     ここで縦並びに変えると主軸が縦になり、260pxが「高さ」として効いてしまい、
+     中のチップがその高さいっぱいに引き伸ばされてしまう。縦並びでは無効化する。 */
   .domain-row { flex-direction: column; }
+  .domain-row .chip-group { flex: 1 1 auto; }
 }
 
 @media (max-width: 480px) {
