@@ -26,7 +26,6 @@
   var ENTRY_IDS = {
     name: "",    // 例: "entry.123456789"
     company: "", // 空文字のままなら「会社名」は送信データから省かれる
-    email: "",
     message: ""
   };
   // ============================================================
@@ -50,16 +49,15 @@
       var values = {
         name: document.getElementById("contact-name").value.trim(),
         company: document.getElementById("contact-company").value.trim(),
-        email: document.getElementById("contact-email").value.trim(),
         message: document.getElementById("contact-message").value.trim()
       };
 
-      if (!values.name || !values.email || !values.message) {
+      if (!values.name || !values.message) {
         showError("必須項目（※）が未入力です。ご確認のうえ、もう一度お試しください。");
         return;
       }
 
-      if (!FORM_ACTION || !ENTRY_IDS.name || !ENTRY_IDS.email || !ENTRY_IDS.message) {
+      if (!FORM_ACTION || !ENTRY_IDS.name || !ENTRY_IDS.message) {
         showError("フォームの設定がまだ完了していません（サイト運営者向け：README.md「② お問い合わせフォームの設定」を参照してください）。");
         return;
       }
@@ -68,7 +66,6 @@
       var params = new URLSearchParams();
       params.append(ENTRY_IDS.name, values.name);
       if (ENTRY_IDS.company) params.append(ENTRY_IDS.company, values.company);
-      params.append(ENTRY_IDS.email, values.email);
       params.append(ENTRY_IDS.message, values.message);
 
       submitBtn.disabled = true;
