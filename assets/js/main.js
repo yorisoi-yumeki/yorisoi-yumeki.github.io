@@ -47,7 +47,7 @@
     "マネジメント・育成": "role",
     "プレイヤー": "stance",
     "正社員": "employment",
-    "営業代行": "employment"
+    "業務委託": "employment"
   };
 
   /* ---------------- Fade-in on scroll ---------------- */

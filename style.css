@@ -249,11 +249,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 
 /* ---------- Strength cards (3つの強み) ----------
-   career-cardと同じ<details>/<summary>の段階的開示パターン。閉じた状態は
-   アイコン+タイトル+一言のみ、開くと「考え方・強み」の詳しい物語が展開される
-   （以前は#achievementsの「考え方・強み」ブロックに同テーマの内容が別枠で
-   存在し、内容が重複して見えていたため統合した）。 */
-.strengths-caption { font-size: 0.85rem; color: var(--text-600); margin-top: -4px; }
+   タップ展開はやめ、最初から全内容を表示する（以前は<details>/<summary>で
+   一言のみ→タップで「考え方・強み」の詳しい物語を展開する2段階開示だったが、
+   全部見せてよい内容量のため常時全表示に変更）。 */
 .strength-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -267,11 +265,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   box-shadow: var(--shadow-card-lg);
   border-top: 4px solid var(--blue-600);
 }
-.strength-card summary {
-  cursor: pointer;
-  list-style: none;
-}
-.strength-card summary::-webkit-details-marker { display: none; }
 .strength-head {
   display: flex;
   align-items: center;
@@ -288,9 +281,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .strength-icon img { width: 40px; height: 40px; }
 .strength-card h3 { color: var(--text-900); margin: 0; }
 .strength-card p { margin-bottom: 0; font-size: 0.92rem; }
-.strength-toggle-hint { display: block; font-size: 0.78rem; color: var(--blue-600); margin-top: 10px; font-weight: 700; }
-.strength-card[open] .strength-toggle-hint::after { content: "閉じる ▲"; }
-.strength-card:not([open]) .strength-toggle-hint::after { content: "詳しく見る ▼"; }
 .strength-detail { margin-top: var(--sp-3); padding-top: var(--sp-3); border-top: 1px dashed var(--border); }
 .strength-detail h4 { margin: 0 0 6px; font-size: 0.9rem; font-weight: 700; color: var(--blue-700); }
 .strength-detail p { margin: 0; font-size: 0.88rem; color: var(--text-600); }
@@ -379,11 +369,11 @@ button.exp-bar-fill-label.is-jump {
   flex: 0 0 auto;
   background: var(--blue-600);
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 999px;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* ---------- Chips（精通している業界・職種。ボタン要素でクリック可能） ---------- */
