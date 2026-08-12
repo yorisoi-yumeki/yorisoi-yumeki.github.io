@@ -28,24 +28,9 @@
   // ============================================================
   var SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyBzczS8Jd1Jr10-oe5ISgzoevGN8apWiddjM_SpQyMozUT2BdLrNi3ivhoroiQQavF/exec"; // ← この "" の中に、URLを貼り付ける（例: "https://script.google.com/macros/s/xxxxxxxxxxxx/exec"）
 
-  /* STEP 4「GitHubで開いて反映する」用の設定。
-   * GitHubは、既存ファイルと同じパスを指定して /new/{branch}?filename=...&value=... を開くと、
-   * その内容が入力済みの状態でファイル編集画面が開き、コミット時に既存ファイルの更新として
-   * 扱われる。これを利用してコピー&ペースト操作自体をなくす（GitHubトークンなどの追加設定は不要）。
-   * URLが長くなりすぎる（掲載件数が多い等）場合は、後方にある「コードを生成してコピー」の
-   * 手動フローに自動でフォールバックする。 */
-  var GITHUB_NEW_FILE_URL = "https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/new/main";
-  var TESTIMONIALS_PATH = "assets/js/testimonials.js";
-  // 日本語を含む内容はURLエンコードすると1文字が最大9文字("%XX%XX%XX")に膨れ上がるため、
-  // 見た目の文字数以上にURLが長くなりやすい。多くのサーバーが安全に扱える目安(8000文字前後)
-  // より少し手前の値をリミットにし、超えたら自動でコピー&貼り付け方式にフォールバックする。
-  var URL_LENGTH_SAFE_LIMIT = 7500;
+  // ---- testimonials.js のうち、STEP 4で生成するコードでも変えずに使う部分 ----
 
-  // ---- testimonials.js のうち、STEP 3で生成するコードでも変えずに使う部分 ----
-
-  // FILE_HEADER/FOOTERはコメントを最小限にしてある。GitHubの「/new/」プリフィルURLに
-  // URLエンコードして載せる都合上、日本語コメントはUTF-8の1文字が"%XX%XX%XX"の9文字に
-  // 膨れ上がりURL長を圧迫するため（詳しい運用方法はREADME.md「④」に集約してある）。
+  // FILE_HEADER/FOOTERはコメントを最小限にしてある（詳しい運用方法はREADME.md「④」に集約してある）。
   var FILE_HEADER =
     "/**\n" +
     " * testimonials.js（admin.htmlで生成。運用方法はREADME.md「④」参照）\n" +
@@ -427,36 +412,6 @@
       );
     }
 
-    function buildGitHubPrefillUrl(code) {
-      var url = GITHUB_NEW_FILE_URL
-        + "?filename=" + encodeURIComponent(TESTIMONIALS_PATH)
-        + "&value=" + encodeURIComponent(code);
-      return url.length <= URL_LENGTH_SAFE_LIMIT ? url : null;
-    }
-
-    var publishBtn = document.getElementById("admin-publish-btn");
-    var publishStatus = document.getElementById("admin-publish-status");
-    var manualFlowDetails = document.getElementById("admin-manual-flow");
-
-    publishBtn.addEventListener("click", function () {
-      var code = buildTestimonialsFile();
-      var url = buildGitHubPrefillUrl(code);
-
-      if (!url) {
-        publishStatus.textContent = "掲載件数が多く、内容が長すぎるため自動リンクが使えません。下の「コードを生成してコピーする」からお進みください。";
-        publishStatus.style.color = "#B4562F";
-        publishStatus.hidden = false;
-        if (manualFlowDetails) manualFlowDetails.open = true;
-        manualFlowDetails.scrollIntoView({ behavior: "smooth", block: "start" });
-        return;
-      }
-
-      window.open(url, "_blank", "noopener");
-      publishStatus.textContent = "新しいタブでGitHubの編集画面を開きました。内容を確認し、ページ下部の緑色の「Commit changes」ボタンを押すとサイトに反映されます。";
-      publishStatus.style.color = "";
-      publishStatus.hidden = false;
-    });
-
     generateBtn.addEventListener("click", function () {
       var code = buildTestimonialsFile();
       codeOutput.value = code;
@@ -551,7 +506,7 @@
         return { published: false, badgeClass: "is-draft", label: "掲載不可", warning: "この回答者は「今回は掲載しないで欲しい」を選んでいます。取り込む場合も掲載は控えてください。", blocked: true };
       }
       if (pref.indexOf("イニシャル") !== -1) {
-        return { published: false, badgeClass: "is-draft", label: "イニシャル希望", warning: "「イニシャルなら可」の回答です。下の「お名前」を本名からイニシャルに書き換えてから掲載してください。", blocked: false };
+        return { published: false, badgeClass: "is-draft", label: "イニシャル希望", warning: "「イニシャルなら可」の回答です。下の「お名前」を本名からイニシャルに書き換えてから掲載してください（例：「K様」のように「様」を付けてください）。", blocked: false };
       }
       if (pref.indexOf("名前付き") !== -1) {
         return { published: true, badgeClass: "is-published", label: "名前付きOK", warning: "", blocked: false };

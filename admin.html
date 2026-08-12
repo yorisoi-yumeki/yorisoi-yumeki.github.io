@@ -183,8 +183,8 @@
           <textarea id="admin-quote" rows="4" required></textarea>
         </div>
         <div class="form-row">
-          <label for="admin-name">お名前<span class="form-optional">（未入力の場合は「匿名」として表示）</span></label>
-          <input type="text" id="admin-name" placeholder="例：山田 太郎 / Y.T.">
+          <label for="admin-name">お名前<span class="form-optional">（未入力の場合は「匿名」として表示。イニシャルの場合は「K様」のように様を付けてください）</span></label>
+          <input type="text" id="admin-name" placeholder="例：山田 太郎 / K様">
         </div>
         <div class="form-row">
           <label for="admin-company">会社名・肩書<span class="form-optional">（未入力の場合は非表示）</span></label>
@@ -227,35 +227,22 @@
   <section>
     <div class="container" style="max-width: 720px;">
       <span class="section-label">STEP 4</span>
-      <h2>サイトに反映する</h2>
+      <h2>コードを生成してサイトに反映する</h2>
       <p>ここでの編集はサイトにはまだ反映されていません。以下の手順でGitHub側に保存すると公開されます。</p>
       <ol>
-        <li>下の「GitHubで開いて反映する」ボタンを押す（GitHubへのログインが必要です）</li>
-        <li>新しいタブでGitHubの編集画面が開き、内容は入力済みの状態になっています。念のため内容を確認してください</li>
+        <li>下の「コードを生成」ボタンを押す</li>
+        <li>「コピーする」ボタンでコードをコピー</li>
+        <li><a href="https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/edit/main/assets/js/testimonials.js" target="_blank" rel="noopener">GitHub上のtestimonials.js編集画面</a>を開く（要ログイン）</li>
+        <li>編集画面の中身を全選択（クリックして Ctrl+A / ⌘+A）して削除し、コピーしたコードを貼り付ける</li>
         <li>ページ下部までスクロールし、緑色の「Commit changes」ボタンを押す</li>
         <li>数分待つとサイトに反映されます</li>
       </ol>
-      <button type="button" class="btn btn-dark" id="admin-publish-btn">GitHubで開いて反映する</button>
-      <p id="admin-publish-status" class="form-note" hidden></p>
-
-      <details id="admin-manual-flow" style="margin-top: var(--sp-3);">
-        <summary style="cursor:pointer; font-weight:700; font-size:0.9rem; color: var(--text-600);">自動リンクが開けない場合／掲載件数が多くリンクが使えない場合は、コピー&貼り付けでも反映できます</summary>
-        <div style="margin-top: var(--sp-2);">
-          <ol>
-            <li>下の「コードを生成」ボタンを押す</li>
-            <li>「コピーする」ボタンでコードをコピー</li>
-            <li><a href="https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/edit/main/assets/js/testimonials.js" target="_blank" rel="noopener">GitHub上のtestimonials.js編集画面</a>を開く（要ログイン）</li>
-            <li>編集画面の中身を全選択（クリックして Ctrl+A / ⌘+A）して削除し、コピーしたコードを貼り付ける</li>
-            <li>ページ下部までスクロールし、緑色の「Commit changes」ボタンを押す</li>
-          </ol>
-          <div class="admin-code-actions">
-            <button type="button" class="btn btn-secondary" id="admin-generate-btn">コードを生成</button>
-            <button type="button" class="btn btn-secondary" id="admin-copy-btn" hidden>コピーする</button>
-            <span id="admin-copy-status" class="form-note" hidden>コピーしました！</span>
-          </div>
-          <textarea id="admin-code-output" rows="18" readonly hidden></textarea>
-        </div>
-      </details>
+      <div class="admin-code-actions">
+        <button type="button" class="btn btn-dark" id="admin-generate-btn">コードを生成</button>
+        <button type="button" class="btn btn-secondary" id="admin-copy-btn" hidden>コピーする</button>
+        <span id="admin-copy-status" class="form-note" hidden>コピーしました！</span>
+      </div>
+      <textarea id="admin-code-output" rows="18" readonly hidden></textarea>
     </div>
   </section>
 
