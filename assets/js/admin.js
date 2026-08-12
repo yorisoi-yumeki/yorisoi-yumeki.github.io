@@ -26,7 +26,7 @@
   // このファイル内に「SHEET_API_URL」という文字は他にも出てくるが、書き換えるのは
   // このすぐ下の1行だけでよい（他の箇所はこの値を読み取って使っているだけ）。
   // ============================================================
-  var SHEET_API_URL = ""; // ← この "" の中に、URLを貼り付ける（例: "https://script.google.com/macros/s/xxxxxxxxxxxx/exec"）
+  var SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyBzczS8Jd1Jr10-oe5ISgzoevGN8apWiddjM_SpQyMozUT2BdLrNi3ivhoroiQQavF/exec"; // ← この "" の中に、URLを貼り付ける（例: "https://script.google.com/macros/s/xxxxxxxxxxxx/exec"）
 
   // ---- testimonials.js のうち、STEP 3で生成するコードでも変えずに使う部分 ----
 
