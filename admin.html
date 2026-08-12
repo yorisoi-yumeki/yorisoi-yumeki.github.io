@@ -183,12 +183,26 @@
           <textarea id="admin-quote" rows="4" required></textarea>
         </div>
         <div class="form-row">
-          <label for="admin-name">お名前<span class="form-optional">（未入力の場合は「匿名」として表示。イニシャルの場合は「K様」のように様を付けてください）</span></label>
-          <input type="text" id="admin-name" placeholder="例：山田 太郎 / K様">
+          <label for="admin-name">お名前<span class="form-optional">（未入力の場合は「匿名」として表示。「様」は自動で付くので入力不要です）</span></label>
+          <input type="text" id="admin-name" placeholder="例：山田 太郎 / K">
         </div>
         <div class="form-row">
           <label for="admin-company">会社名・肩書<span class="form-optional">（未入力の場合は非表示）</span></label>
           <input type="text" id="admin-company" placeholder="例：株式会社サンプル">
+        </div>
+        <div class="form-row">
+          <label for="admin-relation">関係性<span class="form-optional">（未入力の場合は非表示）</span></label>
+          <select id="admin-relation">
+            <option value="">（未選択）</option>
+            <option value="同僚">同僚</option>
+            <option value="上司／先輩">上司／先輩</option>
+            <option value="部下／後輩">部下／後輩</option>
+            <option value="取引先">取引先</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="admin-goodpoints">良かった点<span class="form-optional">（複数ある場合は「、」または「,」区切りで入力。未入力の場合は非表示）</span></label>
+          <input type="text" id="admin-goodpoints" placeholder="例：潜在ニーズを引き出すヒアリング、社内営業力">
         </div>
         <div class="form-row admin-checkbox-row">
           <input type="checkbox" id="admin-published" checked>

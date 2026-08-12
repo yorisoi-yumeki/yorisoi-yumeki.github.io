@@ -9,7 +9,12 @@
  * 2. 下の TESTIMONIALS 配列に 1 オブジェクト追加する。
  *    - quote: 一言コメント本文
  *    - name: お名前（未回答・匿名希望の場合は "匿名" のままでOK）
+ *      ※表示時に自動で「様」が付く（すでに「様」「さん」等が付いている場合はそのまま）。
+ *        「匿名」はそのまま「匿名」と表示される。
  *    - company: 会社名（未回答の場合は空文字 "" のままでOK）
+ *    - relation: 関係性（例："同僚"。未回答の場合は空文字 "" のままでOK。名前の横に(同僚)のように表示）
+ *    - goodPoints: 良かった点（複数ある場合は "、" または "," 区切りで1つの文字列に。
+ *      未回答の場合は空文字 "" のままでOK。カード内にタグとして表示）
  * 3. 2〜3件程度たまったら、下の SHOW_TESTIMONIALS を true に書き換えて公開する。
  *    （false のままでも「声を届ける」導線と空状態メッセージは表示され続けます）
  *
@@ -52,6 +57,23 @@ var TESTIMONIALS = [
 (function () {
   "use strict";
 
+  // 名前の表示形を整える（末尾に「様」等が無ければ自動で付与）。
+  function formatDisplayName(rawName) {
+    var name = (rawName || "").trim();
+    if (!name || name === "匿名") return name || "匿名";
+    if (/(様|さん|さま|殿|氏)$/.test(name)) return name;
+    return name + "様";
+  }
+
+  // "良かった点" の文字列（読点/カンマ区切り）をタグの配列に変換する。
+  function parseGoodPoints(raw) {
+    if (!raw) return [];
+    return raw
+      .split(/[、,，]/)
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return s; });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     var section = document.getElementById("testimonials");
     var list = document.getElementById("testimonial-list");
@@ -73,15 +95,29 @@ var TESTIMONIALS = [
       var quote = document.createElement("p");
       quote.className = "testimonial-quote";
       quote.textContent = item.quote || "";
+      card.appendChild(quote);
+
+      var goodPoints = parseGoodPoints(item.goodPoints);
+      if (goodPoints.length) {
+        var tags = document.createElement("div");
+        tags.className = "testimonial-tags";
+        goodPoints.forEach(function (point) {
+          var tag = document.createElement("span");
+          tag.className = "testimonial-tag";
+          tag.textContent = point;
+          tags.appendChild(tag);
+        });
+        card.appendChild(tags);
+      }
 
       var meta = document.createElement("p");
       meta.className = "testimonial-meta";
-      var name = item.name && item.name.trim() ? item.name : "匿名";
-      var company = item.company && item.company.trim() ? " / " + item.company : "";
-      meta.textContent = name + company;
-
-      card.appendChild(quote);
+      var name = formatDisplayName(item.name);
+      var relation = item.relation && item.relation.trim() ? "（" + item.relation.trim() + "）" : "";
+      var company = item.company && item.company.trim() ? " / " + item.company.trim() : "";
+      meta.textContent = name + relation + company;
       card.appendChild(meta);
+
       list.appendChild(card);
     });
 

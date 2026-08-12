@@ -48,8 +48,7 @@
     </p>
 
     <div class="hero-actions">
-      <!-- TODO: サイト公開前に、下のメールアドレスをサイト専用の実アドレスへ差し替えてください -->
-      <a class="btn btn-primary" href="mailto:contact@example.com">メールで相談する</a>
+      <a class="btn btn-primary" href="#contact">お問い合わせはこちら ↓</a>
       <a class="btn btn-dark" href="#achievements">実績を見る ↓</a>
     </div>
 
@@ -497,10 +496,10 @@
             </div>
           </details>
 
-          <details class="career-card career-extra" id="career-wjc" data-method="新規開拓 飛び込み営業" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行" data-audience-industry="キャバクラ・ガールズバー" data-audience-job="店舗責任者・オーナー">
+          <details class="career-card career-extra" id="career-wjc" data-method="新規開拓 飛び込み営業 フィールドセールス" data-target="対法人" data-stance="プレイヤー" data-employment="営業代行" data-audience-industry="キャバクラ・ガールズバー" data-audience-job="店舗責任者・オーナー">
             <summary>
               <span class="career-company">(株)WJC</span>
-              <span class="career-tags"><span class="career-tag tag-green">新規開拓</span><span class="career-tag tag-green">飛び込み営業</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
+              <span class="career-tags"><span class="career-tag tag-green">新規開拓</span><span class="career-tag tag-green">飛び込み営業</span><span class="career-tag tag-green">フィールドセールス</span><span class="career-tag tag-amber">対法人</span><span class="career-tag tag-slate">プレイヤー</span></span>
               <span class="career-headline">業界大手「<span class="num-highlight">プリンスグループ</span>」の契約を獲得</span>
               <span class="career-toggle-hint"></span>
             </summary>
@@ -509,7 +508,7 @@
                 <p>業界初（＝世界初）のキャバクラ嬢と利用客のマッチングサービス「CLICKED.」の新規開拓営業（法人）を担当。夜遊びを失敗したくないユーザーとキャバクラ嬢をマッチングするサービスで、キャバクラ店舗単位での加入形態のため、キャバクラやガールズバーの店長・オーナーを商談相手に、新規開拓100%で訪問営業を行った。</p>
                 <ul>
                   <li>キャバクラ業界大手グループ「<span class="num-highlight">プリンスグループ</span>」の契約を獲得</li>
-                  <li>【工夫したこと】プリンスグループへの導入にあたり、自ら店舗責任者が集まる会議への出席を打診。責任者15名が集まる場でプレゼンテーションを行う機会を得たことが、契約獲得のきっかけとなった</li>
+                  <li>【工夫したこと】プリンスグループへの提案にあたり、自ら店舗責任者が集まる会議への出席を打診。責任者15名が集まる場でプレゼンテーションを行う機会を得たことが、契約獲得のきっかけとなった</li>
                 </ul>
               </div>
               <p class="career-detail-period">業務委託 / 直契約・2021年11月〜（1年間）</p>
@@ -568,13 +567,48 @@
 
   <!-- ============ 連絡先 ============ -->
   <section class="contact-section" id="contact">
-    <div class="container">
+    <div class="container" style="max-width: 640px;">
       <p class="section-label" style="color:var(--cyan-400)">Contact</p>
       <h2>ご連絡はこちらから</h2>
-      <p>商談・お仕事のご相談、お気軽にご連絡ください。</p>
-      <div class="contact-actions">
-        <!-- TODO: サイト公開前に、下のメールアドレスをサイト専用の実アドレスへ差し替えてください -->
-        <a class="btn btn-primary" href="mailto:contact@example.com">contact@example.com</a>
+      <p>商談・お仕事のご相談、お気軽にお問い合わせください。</p>
+
+      <!-- 見た目は完全にこのサイト独自のフォームだが、送信するとJS(assets/js/contact-form.js)が
+           Googleフォームの回答送信エンドポイントへ直接データを送る（画面遷移なし、メーラーも起動しない）。
+           回答は通常のGoogleフォーム回答と同様に、紐づくスプレッドシートに集計される。
+           JSが無効な環境向けに、下に元のGoogleフォームへのリンクをフォールバックとして用意している。
+           セットアップ方法はREADME.md「② お問い合わせフォームの設定」参照。 -->
+      <div class="contact-form-card">
+        <form id="contact-form" novalidate>
+          <div class="form-row">
+            <label for="contact-name">お名前 <span class="form-required">*</span></label>
+            <input type="text" id="contact-name" autocomplete="name" required>
+          </div>
+          <div class="form-row">
+            <label for="contact-company">会社名<span class="form-optional">（任意）</span></label>
+            <input type="text" id="contact-company" autocomplete="organization">
+          </div>
+          <div class="form-row">
+            <label for="contact-email">ご返信先メールアドレス <span class="form-required">*</span></label>
+            <input type="email" id="contact-email" autocomplete="email" required>
+          </div>
+          <div class="form-row">
+            <label for="contact-message">ご相談内容 <span class="form-required">*</span></label>
+            <textarea id="contact-message" rows="5" required></textarea>
+          </div>
+
+          <p class="form-error" id="contact-form-error" hidden>必須項目（※）が未入力です。ご確認のうえ、もう一度お試しください。</p>
+
+          <button type="submit" class="btn btn-primary" id="contact-form-submit">送信する</button>
+        </form>
+
+        <div class="contact-form-done" id="contact-form-done" hidden>
+          <p class="contact-form-done-title">送信しました！</p>
+          <p>お問い合わせいただき、ありがとうございます。内容を確認のうえ、ご入力いただいたメールアドレス宛にご返信いたします。</p>
+        </div>
+
+        <noscript>
+          <p class="form-note">このフォームの送信にはJavaScriptが必要です。JSが無効な場合は、下記メールアドレスへ直接ご連絡ください：<br><a href="mailto:contact@example.com">contact@example.com</a></p>
+        </noscript>
       </div>
     </div>
   </section>
@@ -588,6 +622,7 @@
 <a href="#top" class="back-to-top" aria-label="ページ上部に戻る">↑</a>
 
 <script src="assets/js/testimonials.js"></script>
+<script src="assets/js/contact-form.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

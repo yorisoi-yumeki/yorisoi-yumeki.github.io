@@ -40,6 +40,23 @@
     "\n(function () {\n" +
     "  \"use strict\";\n" +
     "\n" +
+    "  // 名前の表示形を整える（末尾に「様」等が無ければ自動で付与）。\n" +
+    "  function formatDisplayName(rawName) {\n" +
+    "    var name = (rawName || \"\").trim();\n" +
+    "    if (!name || name === \"匿名\") return name || \"匿名\";\n" +
+    "    if (/(様|さん|さま|殿|氏)$/.test(name)) return name;\n" +
+    "    return name + \"様\";\n" +
+    "  }\n" +
+    "\n" +
+    "  // \"良かった点\" の文字列（読点/カンマ区切り）をタグの配列に変換する。\n" +
+    "  function parseGoodPoints(raw) {\n" +
+    "    if (!raw) return [];\n" +
+    "    return raw\n" +
+    "      .split(/[、,，]/)\n" +
+    "      .map(function (s) { return s.trim(); })\n" +
+    "      .filter(function (s) { return s; });\n" +
+    "  }\n" +
+    "\n" +
     "  document.addEventListener(\"DOMContentLoaded\", function () {\n" +
     "    var section = document.getElementById(\"testimonials\");\n" +
     "    var list = document.getElementById(\"testimonial-list\");\n" +
@@ -58,15 +75,29 @@
     "      var quote = document.createElement(\"p\");\n" +
     "      quote.className = \"testimonial-quote\";\n" +
     "      quote.textContent = item.quote || \"\";\n" +
+    "      card.appendChild(quote);\n" +
+    "\n" +
+    "      var goodPoints = parseGoodPoints(item.goodPoints);\n" +
+    "      if (goodPoints.length) {\n" +
+    "        var tags = document.createElement(\"div\");\n" +
+    "        tags.className = \"testimonial-tags\";\n" +
+    "        goodPoints.forEach(function (point) {\n" +
+    "          var tag = document.createElement(\"span\");\n" +
+    "          tag.className = \"testimonial-tag\";\n" +
+    "          tag.textContent = point;\n" +
+    "          tags.appendChild(tag);\n" +
+    "        });\n" +
+    "        card.appendChild(tags);\n" +
+    "      }\n" +
     "\n" +
     "      var meta = document.createElement(\"p\");\n" +
     "      meta.className = \"testimonial-meta\";\n" +
-    "      var name = item.name && item.name.trim() ? item.name : \"匿名\";\n" +
-    "      var company = item.company && item.company.trim() ? \" / \" + item.company : \"\";\n" +
-    "      meta.textContent = name + company;\n" +
-    "\n" +
-    "      card.appendChild(quote);\n" +
+    "      var name = formatDisplayName(item.name);\n" +
+    "      var relation = item.relation && item.relation.trim() ? \"（\" + item.relation.trim() + \"）\" : \"\";\n" +
+    "      var company = item.company && item.company.trim() ? \" / \" + item.company.trim() : \"\";\n" +
+    "      meta.textContent = name + relation + company;\n" +
     "      card.appendChild(meta);\n" +
+    "\n" +
     "      list.appendChild(card);\n" +
     "    });\n" +
     "\n" +
@@ -100,6 +131,26 @@
     "})();\n";
 
   // ---------------------------------------------------------------
+
+  // STEP3プレビューは実サイト（testimonials.js）と同じ見た目にする必要があるため、
+  // FILE_FOOTERに埋め込んでいる表示ロジックと同じ内容の関数をここにも用意する
+  // （ファイルを跨いで共有できないため、やむを得ず二重管理。ロジックを変える場合は
+  // 上のFILE_FOOTER文字列とここの両方を直すこと）。
+
+  function formatDisplayName(rawName) {
+    var name = (rawName || "").trim();
+    if (!name || name === "匿名") return name || "匿名";
+    if (/(様|さん|さま|殿|氏)$/.test(name)) return name;
+    return name + "様";
+  }
+
+  function parseGoodPoints(raw) {
+    if (!raw) return [];
+    return raw
+      .split(/[、,，]/)
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return s; });
+  }
 
   var drafts = [];
   var editingId = null;
@@ -135,6 +186,8 @@
     var quoteInput = document.getElementById("admin-quote");
     var nameInput = document.getElementById("admin-name");
     var companyInput = document.getElementById("admin-company");
+    var relationInput = document.getElementById("admin-relation");
+    var goodPointsInput = document.getElementById("admin-goodpoints");
     var publishedInput = document.getElementById("admin-published");
     var errorMsg = document.getElementById("admin-form-error");
     var submitBtn = document.getElementById("admin-submit-btn");
@@ -187,15 +240,29 @@
         var quote = document.createElement("p");
         quote.className = "testimonial-quote";
         quote.textContent = item.quote || "";
+        card.appendChild(quote);
+
+        var goodPoints = parseGoodPoints(item.goodPoints);
+        if (goodPoints.length) {
+          var tags = document.createElement("div");
+          tags.className = "testimonial-tags";
+          goodPoints.forEach(function (point) {
+            var tag = document.createElement("span");
+            tag.className = "testimonial-tag";
+            tag.textContent = point;
+            tags.appendChild(tag);
+          });
+          card.appendChild(tags);
+        }
 
         var meta = document.createElement("p");
         meta.className = "testimonial-meta";
-        var name = item.name && item.name.trim() ? item.name : "匿名";
-        var company = item.company && item.company.trim() ? " / " + item.company : "";
-        meta.textContent = name + company;
-
-        card.appendChild(quote);
+        var name = formatDisplayName(item.name);
+        var relation = item.relation && item.relation.trim() ? "（" + item.relation.trim() + "）" : "";
+        var company = item.company && item.company.trim() ? " / " + item.company.trim() : "";
+        meta.textContent = name + relation + company;
         card.appendChild(meta);
+
         previewGrid.appendChild(card);
       });
     }
@@ -241,20 +308,18 @@
 
         var meta = document.createElement("p");
         meta.className = "admin-list-item-meta";
-        var name = item.name && item.name.trim() ? item.name : "匿名";
-        var company = item.company && item.company.trim() ? " / " + item.company : "";
-        meta.textContent = name + company;
+        var name = formatDisplayName(item.name);
+        var relationLabel = item.relation && item.relation.trim() ? "（" + item.relation.trim() + "）" : "";
+        var company = item.company && item.company.trim() ? " / " + item.company.trim() : "";
+        meta.textContent = name + relationLabel + company;
         body.appendChild(meta);
 
-        // 取り込み時の参考情報（関係性・良かった点）。本番には出さず、この管理画面内だけの
-        // 参考メモとして表示する。手動追加分にはこれらのフィールドが無いため何も出ない。
-        if (item.relation || item.goodPoints) {
+        // 良かった点は、この一覧では確認用にテキストのまま表示する
+        // （実際のサイト・上のPREVIEWではタグとして表示される）。
+        if (item.goodPoints) {
           var refInfo = document.createElement("p");
           refInfo.className = "admin-list-item-ref";
-          var parts = [];
-          if (item.relation) parts.push("関係性: " + item.relation);
-          if (item.goodPoints) parts.push("良かった点: " + item.goodPoints);
-          refInfo.textContent = parts.join(" ｜ ");
+          refInfo.textContent = "良かった点: " + item.goodPoints;
           body.appendChild(refInfo);
         }
 
@@ -313,6 +378,8 @@
       quoteInput.value = item.quote || "";
       nameInput.value = item.name || "";
       companyInput.value = item.company || "";
+      relationInput.value = item.relation || "";
+      goodPointsInput.value = item.goodPoints || "";
       publishedInput.checked = !!item.published;
       formTitle.textContent = "声を編集する";
       submitBtn.textContent = "更新する";
@@ -350,14 +417,15 @@
         quote: quote,
         name: nameInput.value.trim(),
         company: companyInput.value.trim(),
+        relation: relationInput.value.trim(),
+        goodPoints: goodPointsInput.value.trim(),
         published: publishedInput.checked
       };
 
       if (editingId !== null) {
         var index = drafts.findIndex(function (d) { return d.id === editingId; });
         if (index !== -1) {
-          // 取り込み時に保持した参考情報（関係性・良かった点）などは、このフォームには
-          // 入力欄が無いため、元のdraftを土台にしてvaluesで上書きする（丸ごと置き換えると消えてしまう）
+          // 元のdraftを土台にしてvaluesで上書きする（idなど、このフォームに無い項目を保持するため）
           drafts[index] = Object.assign({}, drafts[index], values, { id: editingId });
         }
       } else {
@@ -388,7 +456,9 @@
             "  {\n" +
             "    quote: " + jsString(item.quote) + ",\n" +
             "    name: " + jsString(name) + ",\n" +
-            "    company: " + jsString(item.company) + "\n" +
+            "    company: " + jsString(item.company) + ",\n" +
+            "    relation: " + jsString(item.relation) + ",\n" +
+            "    goodPoints: " + jsString(item.goodPoints) + "\n" +
             "  }"
           );
         });

@@ -526,6 +526,8 @@ button.exp-bar-fill-label.is-jump {
   font-weight: 700;
   color: var(--text-600);
   min-width: 5.5em;
+  padding-right: 10px;
+  border-right: 1px solid var(--border);
 }
 .career-filter-btn {
   background: var(--surface);
@@ -606,6 +608,16 @@ button.exp-bar-fill-label.is-jump {
 }
 .testimonial-quote { font-size: 0.95rem; color: var(--text-900); margin-bottom: var(--sp-2); }
 .testimonial-quote::before { content: "\201C"; color: var(--blue-600); font-size: 1.4em; }
+.testimonial-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--sp-2); }
+.testimonial-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--blue-600);
+  background: #EAF1FF;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
 .testimonial-meta { font-size: 0.8rem; color: var(--text-600); }
 .testimonial-cta { margin-top: var(--sp-3); }
 
@@ -700,6 +712,21 @@ button.exp-bar-fill-label.is-jump {
 .contact-section h2 { color: #fff; }
 .contact-section p { color: #DCE7FF; margin-left: auto; margin-right: auto; }
 .contact-actions { margin-top: var(--sp-3); display: flex; gap: var(--sp-2); justify-content: center; flex-wrap: wrap; }
+
+.contact-form-card {
+  background: #fff;
+  border-radius: var(--radius-m);
+  padding: var(--sp-4);
+  margin-top: var(--sp-4);
+  text-align: left;
+  box-shadow: var(--shadow-card);
+}
+.contact-form-card p { color: var(--text-900); }
+.contact-form-card .form-note { color: var(--text-600); }
+.contact-form-card .form-error { color: #C0392B; }
+#contact-form-submit { width: 100%; }
+.contact-form-done { text-align: center; padding: var(--sp-3) 0; }
+.contact-form-done-title { font-weight: 700; font-size: 1.3rem; color: var(--blue-700); margin: 0 0 var(--sp-1); }
 
 footer {
   text-align: center;
