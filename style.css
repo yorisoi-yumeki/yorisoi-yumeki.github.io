@@ -612,8 +612,9 @@ button.exp-bar-fill-label.is-jump {
   box-shadow: var(--shadow-card);
   border-top: 4px solid var(--cyan-400);
 }
-.testimonial-quote { font-size: 0.95rem; color: var(--text-900); margin-bottom: var(--sp-2); }
+.testimonial-quote { font-size: 0.95rem; color: var(--text-900); margin-bottom: var(--sp-2); white-space: pre-line; }
 .testimonial-quote::before { content: "\201C"; color: var(--blue-600); font-size: 1.4em; }
+.testimonial-tags-label { font-size: 0.7rem; font-weight: 700; color: var(--text-600); margin-bottom: 4px; }
 .testimonial-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--sp-2); }
 .testimonial-tag {
   display: inline-block;

@@ -87,6 +87,11 @@ var TESTIMONIALS = [
 
       var goodPoints = parseGoodPoints(item.goodPoints);
       if (goodPoints.length) {
+        var tagsLabel = document.createElement("p");
+        tagsLabel.className = "testimonial-tags-label";
+        tagsLabel.textContent = "良かった点";
+        card.appendChild(tagsLabel);
+
         var tags = document.createElement("div");
         tags.className = "testimonial-tags";
         goodPoints.forEach(function (point) {

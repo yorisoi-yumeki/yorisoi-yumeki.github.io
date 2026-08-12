@@ -79,6 +79,11 @@
     "\n" +
     "      var goodPoints = parseGoodPoints(item.goodPoints);\n" +
     "      if (goodPoints.length) {\n" +
+    "        var tagsLabel = document.createElement(\"p\");\n" +
+    "        tagsLabel.className = \"testimonial-tags-label\";\n" +
+    "        tagsLabel.textContent = \"良かった点\";\n" +
+    "        card.appendChild(tagsLabel);\n" +
+    "\n" +
     "        var tags = document.createElement(\"div\");\n" +
     "        tags.className = \"testimonial-tags\";\n" +
     "        goodPoints.forEach(function (point) {\n" +
@@ -244,6 +249,11 @@
 
         var goodPoints = parseGoodPoints(item.goodPoints);
         if (goodPoints.length) {
+          var tagsLabel = document.createElement("p");
+          tagsLabel.className = "testimonial-tags-label";
+          tagsLabel.textContent = "良かった点";
+          card.appendChild(tagsLabel);
+
           var tags = document.createElement("div");
           tags.className = "testimonial-tags";
           goodPoints.forEach(function (point) {
