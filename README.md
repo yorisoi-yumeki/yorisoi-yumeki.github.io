@@ -86,7 +86,8 @@ Claudeが自動で有効化できなかった場合のみ、以下を手動で�
 2. [`docs/apps-script-sheet-api.gs.txt`](docs/apps-script-sheet-api.gs.txt) の中身を全部コピーして貼り付け、保存
 3. 右上の「デプロイ」→「新しいデプロイ」→ 種類「ウェブアプリ」を選択 →「次のユーザーとして実行」は自分、「アクセスできるユーザー」は**全員**にして「デプロイ」（Googleアカウントの承認画面が出たら許可する）
 4. 発行された `https://script.google.com/macros/s/xxxxx/exec` のようなURLをコピー
-5. `assets/js/admin.js` の先頭付近にある `var SHEET_API_URL = "";` の `""` の中に、そのURLを貼り付けて保存
+5. `assets/js/admin.js` をGitHub上で開く（[編集画面](https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/edit/main/assets/js/admin.js)）→ ファイル冒頭の「★ ここだけ書き換えればOK ★」というコメントのすぐ下にある `var SHEET_API_URL = "";` の行を見つけ、`""` の中に、そのURLを貼り付けて保存
+   - 同じ「SHEET_API_URL」という文字はファイル内に他にも出てきますが、書き換えるのは冒頭のこの1箇所だけです（他は値を読み取って使っているだけなので、触らないでください）
    - このAPIは「今回は掲載しないで欲しい」と回答した人のデータをあらかじめ除外して返す実装になっているため、このURL自体は公開ソースコードに含まれても実害はありません（万一URLが第三者に知られても、非公開希望者のデータは含まれません）
 
 質問の列を追加・変更してこの並び（タイムスタンプ〜掲載について）と変わった場合は、`docs/apps-script-sheet-api.gs.txt` 内の `PUBLISH_COL` の番号を実際の列位置に合わせて修正し、Apps Script側で再度「デプロイ」→「デプロイを管理」→ 既存のデプロイを編集 → バージョン「新バージョン」で更新してください。
