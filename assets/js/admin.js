@@ -28,19 +28,27 @@
   // ============================================================
   var SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyBzczS8Jd1Jr10-oe5ISgzoevGN8apWiddjM_SpQyMozUT2BdLrNi3ivhoroiQQavF/exec"; // ← この "" の中に、URLを貼り付ける（例: "https://script.google.com/macros/s/xxxxxxxxxxxx/exec"）
 
+  /* STEP 4「GitHubで開いて反映する」用の設定。
+   * GitHubは、既存ファイルと同じパスを指定して /new/{branch}?filename=...&value=... を開くと、
+   * その内容が入力済みの状態でファイル編集画面が開き、コミット時に既存ファイルの更新として
+   * 扱われる。これを利用してコピー&ペースト操作自体をなくす（GitHubトークンなどの追加設定は不要）。
+   * URLが長くなりすぎる（掲載件数が多い等）場合は、後方にある「コードを生成してコピー」の
+   * 手動フローに自動でフォールバックする。 */
+  var GITHUB_NEW_FILE_URL = "https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/new/main";
+  var TESTIMONIALS_PATH = "assets/js/testimonials.js";
+  // 日本語を含む内容はURLエンコードすると1文字が最大9文字("%XX%XX%XX")に膨れ上がるため、
+  // 見た目の文字数以上にURLが長くなりやすい。多くのサーバーが安全に扱える目安(8000文字前後)
+  // より少し手前の値をリミットにし、超えたら自動でコピー&貼り付け方式にフォールバックする。
+  var URL_LENGTH_SAFE_LIMIT = 7500;
+
   // ---- testimonials.js のうち、STEP 3で生成するコードでも変えずに使う部分 ----
 
+  // FILE_HEADER/FOOTERはコメントを最小限にしてある。GitHubの「/new/」プリフィルURLに
+  // URLエンコードして載せる都合上、日本語コメントはUTF-8の1文字が"%XX%XX%XX"の9文字に
+  // 膨れ上がりURL長を圧迫するため（詳しい運用方法はREADME.md「④」に集約してある）。
   var FILE_HEADER =
     "/**\n" +
-    " * testimonials.js\n" +
-    " * 「周囲からの声」セクション（お客様・同僚・上司など、様々な立場からの声）のデータと表示制御。\n" +
-    " *\n" +
-    " * 【運用方法】\n" +
-    " * admin.html（管理画面）で内容を編集し、「コードを生成」で書き出したこのファイル一式を\n" +
-    " * GitHub上のこのファイルの編集画面に貼り付けて保存する（README.md「④」参照）。\n" +
-    " *\n" +
-    " * 入力値は textContent で挿入しているため、HTMLタグを含む文字列を貼り付けても\n" +
-    " * 画面が壊れたり意図しないコードとして実行されたりしません（安全な実装）。\n" +
+    " * testimonials.js（admin.htmlで生成。運用方法はREADME.md「④」参照）\n" +
     " */\n";
 
   var FILE_FOOTER =
@@ -53,9 +61,6 @@
     "    var emptyMsg = document.getElementById(\"testimonial-empty\");\n" +
     "    if (!section || !list) return;\n" +
     "\n" +
-    "    // 実際の声がまだ無い場合でも、セクション自体（と「声を届ける」導線）は\n" +
-    "    // 表示したまま、代わりに空状態メッセージを見せる（voice-form.htmlへの\n" +
-    "    // 投稿を後押しするため、以前のようにセクションごと非表示にはしない）。\n" +
     "    if (!SHOW_TESTIMONIALS || TESTIMONIALS.length === 0) {\n" +
     "      if (emptyMsg) emptyMsg.hidden = false;\n" +
     "      return;\n" +
@@ -82,7 +87,6 @@
     "\n" +
     "    section.style.display = \"\";\n" +
     "\n" +
-    "    // 動的に追加したカードにもフェードイン演出を適用する\n" +
     "    if (window.matchMedia && window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) {\n" +
     "      list.querySelectorAll(\".fade-target\").forEach(function (el) {\n" +
     "        el.classList.add(\"is-visible\");\n" +
@@ -227,10 +231,23 @@
         var body = document.createElement("div");
         body.className = "admin-list-item-body";
 
+        var publishToggle = document.createElement("label");
+        publishToggle.className = "admin-publish-toggle";
+        var publishCheckbox = document.createElement("input");
+        publishCheckbox.type = "checkbox";
+        publishCheckbox.checked = !!item.published;
+        publishCheckbox.setAttribute("aria-label", "サイトに掲載する");
+        publishCheckbox.addEventListener("change", function () {
+          item.published = publishCheckbox.checked;
+          save();
+          renderAll();
+        });
         var badge = document.createElement("span");
         badge.className = "admin-badge " + (item.published ? "is-published" : "is-draft");
         badge.textContent = item.published ? "掲載する" : "下書き（非掲載）";
-        body.appendChild(badge);
+        publishToggle.appendChild(publishCheckbox);
+        publishToggle.appendChild(badge);
+        body.appendChild(publishToggle);
 
         var quote = document.createElement("p");
         quote.className = "admin-list-item-quote";
@@ -243,6 +260,18 @@
         var company = item.company && item.company.trim() ? " / " + item.company : "";
         meta.textContent = name + company;
         body.appendChild(meta);
+
+        // 取り込み時の参考情報（関係性・良かった点）。本番には出さず、この管理画面内だけの
+        // 参考メモとして表示する。手動追加分にはこれらのフィールドが無いため何も出ない。
+        if (item.relation || item.goodPoints) {
+          var refInfo = document.createElement("p");
+          refInfo.className = "admin-list-item-ref";
+          var parts = [];
+          if (item.relation) parts.push("関係性: " + item.relation);
+          if (item.goodPoints) parts.push("良かった点: " + item.goodPoints);
+          refInfo.textContent = parts.join(" ｜ ");
+          body.appendChild(refInfo);
+        }
 
         var actions = document.createElement("div");
         actions.className = "admin-list-item-actions";
@@ -342,7 +371,9 @@
       if (editingId !== null) {
         var index = drafts.findIndex(function (d) { return d.id === editingId; });
         if (index !== -1) {
-          drafts[index] = Object.assign({ id: editingId }, values);
+          // 取り込み時に保持した参考情報（関係性・良かった点）などは、このフォームには
+          // 入力欄が無いため、元のdraftを土台にしてvaluesで上書きする（丸ごと置き換えると消えてしまう）
+          drafts[index] = Object.assign({}, drafts[index], values, { id: editingId });
         }
       } else {
         drafts.push(Object.assign({ id: nextId++ }, values));
@@ -380,9 +411,8 @@
       }
 
       var showComment = published.length === 0
-        ? "// ⚠ 掲載する項目がありません（下は false のままにしています）。\n" +
-          "// admin.htmlで「掲載する」をオンにした項目を作ると、ここが自動的に true になります。\n"
-        : "// 推薦文が2〜3件集まったら true に変更してください（現在は自動的に true になっています）\n";
+        ? "// ⚠ 掲載する項目がありません（admin.htmlから追加してください）\n"
+        : "// admin.htmlで生成（true=掲載中）\n";
 
       var showLine = "var SHOW_TESTIMONIALS = " + (published.length > 0 ? "true" : "false") + ";\n";
 
@@ -396,6 +426,36 @@
         FILE_FOOTER
       );
     }
+
+    function buildGitHubPrefillUrl(code) {
+      var url = GITHUB_NEW_FILE_URL
+        + "?filename=" + encodeURIComponent(TESTIMONIALS_PATH)
+        + "&value=" + encodeURIComponent(code);
+      return url.length <= URL_LENGTH_SAFE_LIMIT ? url : null;
+    }
+
+    var publishBtn = document.getElementById("admin-publish-btn");
+    var publishStatus = document.getElementById("admin-publish-status");
+    var manualFlowDetails = document.getElementById("admin-manual-flow");
+
+    publishBtn.addEventListener("click", function () {
+      var code = buildTestimonialsFile();
+      var url = buildGitHubPrefillUrl(code);
+
+      if (!url) {
+        publishStatus.textContent = "掲載件数が多く、内容が長すぎるため自動リンクが使えません。下の「コードを生成してコピーする」からお進みください。";
+        publishStatus.style.color = "#B4562F";
+        publishStatus.hidden = false;
+        if (manualFlowDetails) manualFlowDetails.open = true;
+        manualFlowDetails.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      window.open(url, "_blank", "noopener");
+      publishStatus.textContent = "新しいタブでGitHubの編集画面を開きました。内容を確認し、ページ下部の緑色の「Commit changes」ボタンを押すとサイトに反映されます。";
+      publishStatus.style.color = "";
+      publishStatus.hidden = false;
+    });
 
     generateBtn.addEventListener("click", function () {
       var code = buildTestimonialsFile();
@@ -614,7 +674,9 @@
           checkbox: checkbox,
           nameInput: nameInput,
           quoteTextarea: quoteTextarea,
-          published: pref.published
+          published: pref.published,
+          relation: row.relation,
+          goodPoints: row.goodPoints
         });
       });
     }
@@ -703,7 +765,9 @@
           quote: quote,
           name: row.nameInput.value.trim(),
           company: "",
-          published: row.published
+          published: row.published,
+          relation: row.relation,
+          goodPoints: row.goodPoints
         });
         added++;
       });

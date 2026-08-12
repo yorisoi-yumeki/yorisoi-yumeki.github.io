@@ -41,13 +41,16 @@
   .admin-list-item-body { flex: 1 1 auto; min-width: 0; }
   .admin-list-item-quote { color: var(--text-900); margin-bottom: 4px; }
   .admin-list-item-meta { font-size: 0.8rem; color: var(--text-600); margin-bottom: 0; }
+  .admin-list-item-ref { font-size: 0.76rem; color: var(--text-600); background: var(--bg); border-radius: 6px; padding: 4px 8px; margin: 6px 0 0; }
+  .admin-publish-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; margin-bottom: 6px; }
+  .admin-publish-toggle input { width: auto; margin: 0; }
   .admin-badge {
     display: inline-block;
     font-size: 0.72rem;
     font-weight: 700;
     padding: 2px 10px;
     border-radius: 999px;
-    margin-bottom: 6px;
+    margin-bottom: 0;
   }
   .admin-badge.is-published { background: #E1F5EA; color: #1C7C3F; }
   .admin-badge.is-draft { background: #EEF0F4; color: #666F87; }
@@ -123,7 +126,7 @@
     <h1 style="max-width:100%;">「周囲の声」<br><span class="hl">管理画面</span></h1>
     <p class="hero-lede">
       掲載する推薦文の追加・編集・並び替えができるツールです。<br>
-      サイトの見た目や内容には自動反映されません。「STEP 4」でコードを生成し、GitHub上に貼り付けて保存すると初めて公開されます。
+      サイトの見た目や内容には自動反映されません。「STEP 4」でGitHub側に反映すると初めて公開されます。
     </p>
   </div>
 </header>
@@ -133,7 +136,7 @@
   <section class="on-light">
     <div class="container" style="max-width: 780px;">
       <p class="admin-storage-note">
-        この画面に入力した内容は、<strong>この端末のこのブラウザ内だけ</strong>に保存されます（他の端末やブラウザ、シークレットモードでは表示されません）。ブラウザの閲覧データを消去すると内容も消えるため、こまめに「STEP 4」でコードを生成してGitHub側に保存することをおすすめします。
+        この画面に入力した内容は、<strong>この端末のこのブラウザ内だけ</strong>に保存されます（他の端末やブラウザ、シークレットモードでは表示されません）。ブラウザの閲覧データを消去すると内容も消えるため、こまめに「STEP 4」でGitHub側に保存することをおすすめします。
       </p>
 
       <span class="section-label">STEP 1</span>
@@ -214,7 +217,8 @@
     <div class="container">
       <span class="section-label">STEP 3</span>
       <h2>登録済み一覧（下書き含む全件）</h2>
-      <p>並び順がそのままサイトでの表示順になります。▲▼で並び替えできます。</p>
+      <p>並び順がそのままサイトでの表示順になります。▲▼で並び替え、名前横のチェックで掲載・非掲載をその場で切り替えられます。</p>
+      <p class="form-note">※この一覧は管理用の一覧です。実際のサイトでの見え方は、上の「PREVIEW」をご確認ください。</p>
       <div id="admin-list"></div>
       <p id="admin-list-empty" class="form-note" hidden>まだ何も登録されていません。上のフォームから追加してください。</p>
     </div>
@@ -223,22 +227,35 @@
   <section>
     <div class="container" style="max-width: 720px;">
       <span class="section-label">STEP 4</span>
-      <h2>コードを生成してサイトに反映する</h2>
+      <h2>サイトに反映する</h2>
       <p>ここでの編集はサイトにはまだ反映されていません。以下の手順でGitHub側に保存すると公開されます。</p>
       <ol>
-        <li>下の「コードを生成」ボタンを押す</li>
-        <li>「コピーする」ボタンでコードをコピー</li>
-        <li><a href="https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/edit/main/assets/js/testimonials.js" target="_blank" rel="noopener">GitHub上のtestimonials.js編集画面</a>を開く（要ログイン）</li>
-        <li>編集画面の中身を全選択（クリックして Ctrl+A / ⌘+A）して削除し、コピーしたコードを貼り付ける</li>
+        <li>下の「GitHubで開いて反映する」ボタンを押す（GitHubへのログインが必要です）</li>
+        <li>新しいタブでGitHubの編集画面が開き、内容は入力済みの状態になっています。念のため内容を確認してください</li>
         <li>ページ下部までスクロールし、緑色の「Commit changes」ボタンを押す</li>
         <li>数分待つとサイトに反映されます</li>
       </ol>
-      <div class="admin-code-actions">
-        <button type="button" class="btn btn-dark" id="admin-generate-btn">コードを生成</button>
-        <button type="button" class="btn btn-secondary" id="admin-copy-btn" hidden>コピーする</button>
-        <span id="admin-copy-status" class="form-note" hidden>コピーしました！</span>
-      </div>
-      <textarea id="admin-code-output" rows="18" readonly hidden></textarea>
+      <button type="button" class="btn btn-dark" id="admin-publish-btn">GitHubで開いて反映する</button>
+      <p id="admin-publish-status" class="form-note" hidden></p>
+
+      <details id="admin-manual-flow" style="margin-top: var(--sp-3);">
+        <summary style="cursor:pointer; font-weight:700; font-size:0.9rem; color: var(--text-600);">自動リンクが開けない場合／掲載件数が多くリンクが使えない場合は、コピー&貼り付けでも反映できます</summary>
+        <div style="margin-top: var(--sp-2);">
+          <ol>
+            <li>下の「コードを生成」ボタンを押す</li>
+            <li>「コピーする」ボタンでコードをコピー</li>
+            <li><a href="https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/edit/main/assets/js/testimonials.js" target="_blank" rel="noopener">GitHub上のtestimonials.js編集画面</a>を開く（要ログイン）</li>
+            <li>編集画面の中身を全選択（クリックして Ctrl+A / ⌘+A）して削除し、コピーしたコードを貼り付ける</li>
+            <li>ページ下部までスクロールし、緑色の「Commit changes」ボタンを押す</li>
+          </ol>
+          <div class="admin-code-actions">
+            <button type="button" class="btn btn-secondary" id="admin-generate-btn">コードを生成</button>
+            <button type="button" class="btn btn-secondary" id="admin-copy-btn" hidden>コピーする</button>
+            <span id="admin-copy-status" class="form-note" hidden>コピーしました！</span>
+          </div>
+          <textarea id="admin-code-output" rows="18" readonly hidden></textarea>
+        </div>
+      </details>
     </div>
   </section>
 
