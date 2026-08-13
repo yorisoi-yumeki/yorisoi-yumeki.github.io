@@ -623,21 +623,47 @@
       return rowsArrayToImportObjects(raw);
     }
 
+    // 取り込み済み判定：前後空白除去・連続空白の圧縮をした文字列を返す（表記ゆれの吸収）。
+    function normalizeForDedup(s) {
+      return String(s || "").trim().replace(/\s+/g, "");
+    }
+
+    // 既に取り込み済み（drafts）のタイムスタンプ集合と「本文＋名前」集合を作る。
+    // タイムスタンプは今回の変更以降に取り込んだ行にのみ記録されるため、
+    // それ以前に取り込んだ既存データの救済用に本文＋名前の完全一致も判定に使う。
+    function collectKnownImportSignatures() {
+      var timestamps = {};
+      var contents = {};
+      drafts.forEach(function (d) {
+        if (d.sourceTimestamp) timestamps[d.sourceTimestamp] = true;
+        var quoteKey = normalizeForDedup(d.quote);
+        if (quoteKey) contents[quoteKey + "|" + normalizeForDedup(d.name)] = true;
+      });
+      return { timestamps: timestamps, contents: contents };
+    }
+
     function renderImportRows(rows) {
       importRowsEl.innerHTML = "";
       importedRows = [];
 
+      var known = collectKnownImportSignatures();
+
       rows.forEach(function (row) {
         var pref = classifyPublishPref(row.publishPrefRaw);
+        var contentKey = normalizeForDedup(row.comment) + "|" + normalizeForDedup(row.name);
+        var isAlreadyImported = !!(
+          (row.timestamp && known.timestamps[row.timestamp]) ||
+          (row.comment && known.contents[contentKey])
+        );
 
         var card = document.createElement("div");
-        card.className = "import-row-card" + (pref.blocked ? " is-excluded" : "");
+        card.className = "import-row-card" + ((pref.blocked || isAlreadyImported) ? " is-excluded" : "");
 
         var checkWrap = document.createElement("label");
         checkWrap.className = "import-row-check";
         var checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.checked = !pref.blocked;
+        checkbox.checked = !pref.blocked && !isAlreadyImported;
         var checkLabel = document.createElement("span");
         checkLabel.textContent = "取り込む";
         checkWrap.appendChild(checkbox);
@@ -652,6 +678,12 @@
         badge.className = "admin-badge " + pref.badgeClass;
         badge.textContent = pref.label;
         meta.appendChild(badge);
+        if (isAlreadyImported) {
+          var dupBadge = document.createElement("span");
+          dupBadge.className = "admin-badge is-draft";
+          dupBadge.textContent = "取り込み済み";
+          meta.appendChild(dupBadge);
+        }
         if (row.timestamp) meta.appendChild(document.createTextNode("日時: " + row.timestamp));
         if (row.relation) meta.appendChild(document.createTextNode("関係性: " + row.relation));
         if (row.columnCount !== 6) {
@@ -711,7 +743,8 @@
           quoteTextarea: quoteTextarea,
           published: pref.published,
           relation: row.relation,
-          goodPoints: row.goodPoints
+          goodPoints: row.goodPoints,
+          sourceTimestamp: row.timestamp
         });
       });
     }
@@ -802,7 +835,8 @@
           company: "",
           published: row.published,
           relation: row.relation,
-          goodPoints: row.goodPoints
+          goodPoints: row.goodPoints,
+          sourceTimestamp: row.sourceTimestamp
         });
         added++;
       });
