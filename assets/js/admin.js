@@ -12,6 +12,12 @@
   "use strict";
 
   var STORAGE_KEY = "yorisoiTestimonialDrafts_v1";
+  // 「取り込み済みなので次回から表示しない」と判定されたスプレッドシート行の
+  // タイムスタンプ一覧。取り込み時に自動で追加される他、内容が編集されていて
+  // 自動判定が効かない行を「非表示にする」ボタンで手動追加することもできる
+  // （drafts側のsourceTimestampだけに頼ると、この機能の追加前に取り込み済みだった
+  // 行を検出できないため、こちらを正としたロジックにしている）。
+  var IMPORT_DISMISSED_KEY = "yorisoiDismissedImportTimestamps_v1";
 
   // ============================================================
   // ★ ここだけ書き換えればOK ★
@@ -188,6 +194,33 @@
     }
   }
 
+  var dismissedTimestamps = [];
+
+  function loadDismissed() {
+    try {
+      var raw = window.localStorage.getItem(IMPORT_DISMISSED_KEY);
+      if (!raw) return;
+      var parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) dismissedTimestamps = parsed;
+    } catch (e) {
+      dismissedTimestamps = [];
+    }
+  }
+
+  function saveDismissed() {
+    try {
+      window.localStorage.setItem(IMPORT_DISMISSED_KEY, JSON.stringify(dismissedTimestamps));
+    } catch (e) {
+      // 保存に失敗しても致命的ではないため、ここでは黙って無視する（次回また非表示にし直せばよい）
+    }
+  }
+
+  function markTimestampDismissed(ts) {
+    if (!ts || dismissedTimestamps.indexOf(ts) !== -1) return;
+    dismissedTimestamps.push(ts);
+    saveDismissed();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     var form = document.getElementById("admin-form");
     var quoteInput = document.getElementById("admin-quote");
@@ -213,6 +246,7 @@
     var codeOutput = document.getElementById("admin-code-output");
 
     load();
+    loadDismissed();
     renderAll();
 
     function resetForm() {
@@ -630,9 +664,14 @@
       return String(s || "").trim().replace(/\s+/g, "");
     }
 
-    // 既に取り込み済み（drafts）のタイムスタンプ集合と「本文＋名前」集合を作る。
-    // タイムスタンプは今回の変更以降に取り込んだ行にのみ記録されるため、
-    // それ以前に取り込んだ既存データの救済用に本文＋名前の完全一致も判定に使う。
+    // 既に取り込み済みと判定するための2つの集合を作る。
+    // ・timestamps: 「もう表示しなくてよい」と確定している行（dismissedTimestamps＝
+    //   このツールで取り込んだ行、または「非表示にする」ボタンで手動指定した行）。
+    //   これに一致した行はrenderImportRows()で完全に非表示にする。
+    // ・contents: drafts（登録済み一覧）の本文＋名前の完全一致。タイムスタンプが
+    //   記録される前（この機能の追加前）に取り込んだ既存データの救済用の緩い判定で、
+    //   本文を編集済み・お名前をイニシャル化済みだと一致しないため、完全ではない。
+    //   こちらは非表示にはせず、チェックを外した状態で目視確認できるように残す。
     function collectKnownImportSignatures() {
       var timestamps = {};
       var contents = {};
@@ -641,22 +680,33 @@
         var quoteKey = normalizeForDedup(d.quote);
         if (quoteKey) contents[quoteKey + "|" + normalizeForDedup(d.name)] = true;
       });
+      dismissedTimestamps.forEach(function (ts) { if (ts) timestamps[ts] = true; });
       return { timestamps: timestamps, contents: contents };
     }
 
+    var lastImportRows = []; // 直近に取得・貼り付けした行（「非表示にした行を表示する」の再描画用）
+    var showDismissedRows = false;
+    var importHiddenNoteEl = document.getElementById("import-hidden-note");
+
     function renderImportRows(rows) {
+      lastImportRows = rows;
       importRowsEl.innerHTML = "";
       importedRows = [];
 
       var known = collectKnownImportSignatures();
+      var hiddenCount = 0;
 
       rows.forEach(function (row) {
         var pref = classifyPublishPref(row.publishPrefRaw);
         var contentKey = normalizeForDedup(row.comment) + "|" + normalizeForDedup(row.name);
-        var isAlreadyImported = !!(
-          (row.timestamp && known.timestamps[row.timestamp]) ||
-          (row.comment && known.contents[contentKey])
-        );
+        var isDismissed = !!(row.timestamp && known.timestamps[row.timestamp]);
+        var isContentMatch = !isDismissed && !!(row.comment && known.contents[contentKey]);
+        var isAlreadyImported = isDismissed || isContentMatch;
+
+        if (isDismissed && !showDismissedRows) {
+          hiddenCount++;
+          return; // 完全に非表示（一覧に描画しない）
+        }
 
         var card = document.createElement("div");
         card.className = "import-row-card" + ((pref.blocked || isAlreadyImported) ? " is-excluded" : "");
@@ -685,6 +735,17 @@
           dupBadge.className = "admin-badge is-draft";
           dupBadge.textContent = "取り込み済み";
           meta.appendChild(dupBadge);
+        }
+        if (row.timestamp) {
+          var dismissBtn = document.createElement("button");
+          dismissBtn.type = "button";
+          dismissBtn.className = "import-row-dismiss";
+          dismissBtn.textContent = "非表示にする（次回から表示しない）";
+          dismissBtn.addEventListener("click", function () {
+            markTimestampDismissed(row.timestamp);
+            renderImportRows(lastImportRows); // 再描画してこの行を消す・件数を更新する
+          });
+          meta.appendChild(dismissBtn);
         }
         if (row.timestamp) meta.appendChild(document.createTextNode("日時: " + row.timestamp));
         if (row.relation) meta.appendChild(document.createTextNode("関係性: " + row.relation));
@@ -749,6 +810,32 @@
           sourceTimestamp: row.timestamp
         });
       });
+
+      renderImportHiddenNote(hiddenCount);
+    }
+
+    function renderImportHiddenNote(hiddenCount) {
+      if (!importHiddenNoteEl) return;
+      importHiddenNoteEl.innerHTML = "";
+      if (hiddenCount === 0 && !showDismissedRows) {
+        importHiddenNoteEl.hidden = true;
+        return;
+      }
+      importHiddenNoteEl.hidden = false;
+      var text = document.createElement("span");
+      text.textContent = showDismissedRows
+        ? "非表示にした回答も含めて表示しています。"
+        : "取り込み済み・非表示に設定した回答が" + hiddenCount + "件あるため隠しています。";
+      importHiddenNoteEl.appendChild(text);
+      var toggleBtn = document.createElement("button");
+      toggleBtn.type = "button";
+      toggleBtn.className = "import-hidden-toggle";
+      toggleBtn.textContent = showDismissedRows ? "隠す" : "表示する";
+      toggleBtn.addEventListener("click", function () {
+        showDismissedRows = !showDismissedRows;
+        renderImportRows(lastImportRows);
+      });
+      importHiddenNoteEl.appendChild(toggleBtn);
     }
 
     // ---- 自動取得（Apps Script API 経由。設定手順はREADME.md参照） ----
@@ -785,6 +872,7 @@
             return;
           }
           importFetchStatus.hidden = true;
+          showDismissedRows = false;
           renderImportRows(rows);
           importPreviewWrap.hidden = false;
           importCommitStatus.hidden = true;
@@ -818,6 +906,7 @@
       }
 
       importErrorEl.hidden = true;
+      showDismissedRows = false;
       renderImportRows(rows);
       importPreviewWrap.hidden = false;
       importCommitStatus.hidden = true;
@@ -840,6 +929,9 @@
           goodPoints: row.goodPoints,
           sourceTimestamp: row.sourceTimestamp
         });
+        // 取り込んだ行は「次回から表示しない」対象として記録する
+        // （drafts側のsourceTimestampだけでなく、こちらの一覧を正として判定するため）
+        if (row.sourceTimestamp) markTimestampDismissed(row.sourceTimestamp);
         added++;
       });
 

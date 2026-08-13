@@ -116,6 +116,32 @@
   .import-row-goodpoints { font-size: 0.82rem; color: var(--text-600); background: var(--bg); border-radius: 8px; padding: 6px 10px; }
   .import-row-warning { font-size: 0.78rem; color: #B4562F; font-weight: 700; margin: var(--sp-1) 0 0; }
   .import-row-warning.is-blocked { color: #C23A3A; }
+  .import-row-dismiss {
+    font: inherit;
+    font-size: 0.74rem;
+    color: var(--blue-600);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .import-row-dismiss:hover { color: var(--blue-700); }
+  #import-hidden-note { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .import-hidden-toggle {
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--blue-600);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .import-hidden-toggle:hover { color: var(--blue-700); }
 </style>
 </head>
 <body>
@@ -162,7 +188,8 @@
 
       <div id="import-preview" hidden style="margin-top: var(--sp-3);">
         <h3>読み込み結果（内容を確認し、掲載するものにチェックを入れてください）</h3>
-        <p class="form-note">「掲載について」の回答に応じて、チェックの初期状態と注意書きを自動で出しています。氏名や一言コメントの文面は、この場で直接編集できます。<br>すでに取り込み済みの回答は自動でチェックが外れ「取り込み済み」と表示されます（重複掲載を防ぐためです）。もう一度取り込みたい場合はチェックを入れ直してください。</p>
+        <p class="form-note">「掲載について」の回答に応じて、チェックの初期状態と注意書きを自動で出しています。氏名や一言コメントの文面は、この場で直接編集できます。<br>一度「取り込む」で追加した回答は、次回以降の取得では自動的に一覧から消えます。内容を編集していて自動で気づけない場合は、各回答の「非表示にする」ボタンを押せば、次回からは表示されなくなります。</p>
+        <p class="form-note" id="import-hidden-note" hidden></p>
         <div id="import-rows"></div>
         <div class="admin-form-actions" style="margin-top: var(--sp-2);">
           <button type="button" class="btn btn-primary" id="import-commit-btn">チェックした回答を取り込む</button>
