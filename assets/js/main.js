@@ -42,7 +42,7 @@
   var TAG_AXIS_MAP = {
     "対法人": "target",
     "対個人": "target",
-    "新規開拓": "method",
+    "新規開拓": "role",
     "カスタマーサクセス": "role",
     "マネジメント・育成": "role",
     "プレイヤー": "stance",
