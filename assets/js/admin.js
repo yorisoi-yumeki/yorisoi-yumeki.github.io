@@ -78,6 +78,8 @@
     "      card.appendChild(quote);\n" +
     "\n" +
     "      var goodPoints = parseGoodPoints(item.goodPoints);\n" +
+    "      card.setAttribute(\"data-relation\", (item.relation || \"\").trim());\n" +
+    "      card.setAttribute(\"data-goodpoints\", goodPoints.join(\" \"));\n" +
     "      if (goodPoints.length) {\n" +
     "        var tagsLabel = document.createElement(\"p\");\n" +
     "        tagsLabel.className = \"testimonial-tags-label\";\n" +

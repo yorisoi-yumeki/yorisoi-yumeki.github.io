@@ -580,6 +580,18 @@
       <p class="section-label">Voices</p>
       <h2>周囲からの声</h2>
       <p>同僚や上司・協業パートナーなど、一緒に仕事をした方々からいただいた声です。</p>
+
+      <div class="testimonial-filter" id="testimonial-filter" hidden>
+        <div class="testimonial-filter-toolbar">
+          <button type="button" class="testimonial-filter-reset is-active" id="testimonial-filter-reset">すべて表示</button>
+          <button type="button" class="testimonial-filter-toggle" id="testimonial-filter-toggle" aria-expanded="true" aria-controls="testimonial-filter-groups">
+            <span class="testimonial-filter-toggle-label">絞り込む</span> <span class="testimonial-filter-toggle-arrow">▾</span>
+          </button>
+        </div>
+        <div class="testimonial-filter-groups" id="testimonial-filter-groups"></div>
+      </div>
+      <p class="testimonial-filter-empty" id="testimonial-filter-empty" hidden>該当する声が見つかりませんでした。</p>
+
       <div class="testimonial-grid" id="testimonial-list"></div>
       <p id="testimonial-empty" class="form-note" hidden>まだ声は届いていません。ぜひ最初の一言をお聞かせください。</p>
       <div class="testimonial-cta">

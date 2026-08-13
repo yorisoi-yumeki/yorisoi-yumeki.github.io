@@ -147,6 +147,8 @@ var TESTIMONIALS = [
       card.appendChild(quote);
 
       var goodPoints = parseGoodPoints(item.goodPoints);
+      card.setAttribute("data-relation", (item.relation || "").trim());
+      card.setAttribute("data-goodpoints", goodPoints.join(" "));
       if (goodPoints.length) {
         var tagsLabel = document.createElement("p");
         tagsLabel.className = "testimonial-tags-label";

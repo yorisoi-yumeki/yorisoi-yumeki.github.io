@@ -338,6 +338,162 @@
     updateButtonStates(); // 初期状態（すべて表示）でもaria-pressedを正しくセットしておく
   }
 
+  /* ---------------- 周囲からの声の絞り込み ----------------
+   * career-filterと見た目・操作感を揃えるが、testimonials.jsが生成する
+   * .testimonial-card は関係性・良かった点ともに固定の語彙ではないため
+   * （良かった点は自由記述タグ）、career-filterのようにボタンを index.html に
+   * ハードコードせず、実際のカードの data-relation / data-goodpoints から
+   * ボタン自体を動的に生成する。
+   *
+   * ボタンの属性名は data-axis/data-value ではなく data-t-axis/data-t-value を
+   * 使う。career-filter側の updateButtonStates() が
+   * document.querySelectorAll("[data-axis][data-value]") でページ全体を
+   * 同期しているため、同じ属性名を使うとcareer-filter操作時にこちらの
+   * ボタンの見た目まで（意図せず非アクティブへ）巻き込まれてしまうのを防ぐため。 */
+  function initTestimonialFilter() {
+    var list = document.getElementById("testimonial-list");
+    var filterWrap = document.getElementById("testimonial-filter");
+    var groupsWrap = document.getElementById("testimonial-filter-groups");
+    var resetBtn = document.getElementById("testimonial-filter-reset");
+    var toggleBtn = document.getElementById("testimonial-filter-toggle");
+    var toggleLabel = toggleBtn && toggleBtn.querySelector(".testimonial-filter-toggle-label");
+    var emptyMsg = document.getElementById("testimonial-filter-empty");
+    if (!list || !filterWrap || !groupsWrap || !resetBtn) return;
+
+    var cards = Array.prototype.slice.call(list.querySelectorAll(".testimonial-card"));
+    if (cards.length < 2) return; // 声が少ないうちは絞り込み自体を出さない
+
+    var RELATION_ORDER = ["同僚", "上司／先輩", "部下／後輩", "取引先"];
+
+    // 軸ごとに、実際にカードに存在する値と出現回数を集計する（space区切りの複数値に対応）
+    function collectAxisValues(axis) {
+      var counts = {};
+      var order = [];
+      cards.forEach(function (card) {
+        var raw = card.getAttribute("data-" + axis) || "";
+        raw.split(" ").forEach(function (v) {
+          if (!v) return;
+          if (!(v in counts)) order.push(v);
+          counts[v] = (counts[v] || 0) + 1;
+        });
+      });
+      return { counts: counts, order: order };
+    }
+
+    function buildGroup(axis, label, values, ariaLabel) {
+      if (values.length < 2) return null; // 選択肢が1つ以下なら絞り込む意味が無い
+      var group = document.createElement("div");
+      group.className = "testimonial-filter-group";
+      group.setAttribute("role", "group");
+      group.setAttribute("aria-label", ariaLabel);
+      var labelEl = document.createElement("span");
+      labelEl.className = "testimonial-filter-group-label";
+      labelEl.textContent = label;
+      group.appendChild(labelEl);
+      values.forEach(function (v) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "testimonial-filter-btn";
+        btn.setAttribute("data-t-axis", axis);
+        btn.setAttribute("data-t-value", v);
+        btn.setAttribute("aria-pressed", "false");
+        btn.textContent = v;
+        group.appendChild(btn);
+      });
+      return group;
+    }
+
+    var relationData = collectAxisValues("relation");
+    var relationValues = RELATION_ORDER.filter(function (v) { return relationData.counts[v]; }).concat(
+      relationData.order.filter(function (v) { return RELATION_ORDER.indexOf(v) === -1; })
+    );
+
+    var goodPointsData = collectAxisValues("goodpoints");
+    var goodPointsValues = goodPointsData.order.slice().sort(function (a, b) {
+      return goodPointsData.counts[b] - goodPointsData.counts[a];
+    });
+
+    var relationGroup = buildGroup("relation", "関係性", relationValues, "関係性で絞り込み");
+    var goodPointsGroup = buildGroup("goodpoints", "良かった点", goodPointsValues, "良かった点で絞り込み");
+    if (!relationGroup && !goodPointsGroup) return; // 絞り込める軸が無ければ表示しない
+
+    if (relationGroup) groupsWrap.appendChild(relationGroup);
+    if (goodPointsGroup) groupsWrap.appendChild(goodPointsGroup);
+    filterWrap.hidden = false;
+
+    // career-filterと同じく、既定は折りたたみ。JSが動かない環境ではそもそも
+    // filterWrapがhiddenのままなので、この折りたたみ自体が影響しない。
+    function setGroupsCollapsed(collapsed) {
+      if (!toggleBtn) return;
+      groupsWrap.classList.toggle("is-collapsed", collapsed);
+      toggleBtn.setAttribute("aria-expanded", String(!collapsed));
+      if (toggleLabel) toggleLabel.textContent = collapsed ? "絞り込む" : "閉じる";
+    }
+    if (toggleBtn) {
+      setGroupsCollapsed(true);
+      toggleBtn.addEventListener("click", function () {
+        setGroupsCollapsed(!groupsWrap.classList.contains("is-collapsed"));
+      });
+    }
+
+    var activeFilters = { relation: [], goodpoints: [] }; // 軸内OR・軸間AND（career-filterと同じ判定）
+
+    function isEngaged() {
+      return Object.keys(activeFilters).some(function (axis) { return activeFilters[axis].length > 0; });
+    }
+
+    function updateButtonStates() {
+      resetBtn.classList.toggle("is-active", !isEngaged());
+      resetBtn.setAttribute("aria-pressed", String(!isEngaged()));
+      groupsWrap.querySelectorAll(".testimonial-filter-btn").forEach(function (btn) {
+        var axis = btn.getAttribute("data-t-axis");
+        var value = btn.getAttribute("data-t-value");
+        var isActive = activeFilters[axis].indexOf(value) !== -1;
+        btn.classList.toggle("is-active", isActive);
+        btn.setAttribute("aria-pressed", String(isActive));
+      });
+    }
+
+    function cardMatchesFilters(card) {
+      return Object.keys(activeFilters).every(function (axis) {
+        var selected = activeFilters[axis];
+        if (!selected.length) return true;
+        var cardValues = (card.getAttribute("data-" + axis) || "").split(" ");
+        return selected.some(function (v) { return cardValues.indexOf(v) !== -1; });
+      });
+    }
+
+    function applyVisibility() {
+      var anyVisible = false;
+      cards.forEach(function (card) {
+        var match = cardMatchesFilters(card);
+        card.style.display = match ? "" : "none";
+        if (match) anyVisible = true;
+      });
+      if (emptyMsg) emptyMsg.hidden = anyVisible;
+    }
+
+    resetBtn.addEventListener("click", function () {
+      activeFilters = { relation: [], goodpoints: [] };
+      updateButtonStates();
+      applyVisibility();
+    });
+
+    groupsWrap.addEventListener("click", function (event) {
+      var btn = event.target.closest(".testimonial-filter-btn");
+      if (!btn) return;
+      var axis = btn.getAttribute("data-t-axis");
+      var value = btn.getAttribute("data-t-value");
+      var idx = activeFilters[axis].indexOf(value);
+      if (idx === -1) activeFilters[axis].push(value);
+      else activeFilters[axis].splice(idx, 1);
+      updateButtonStates();
+      applyVisibility();
+    });
+
+    updateButtonStates();
+  }
+
   /* ---------------- プロフィール写真の自動検出 ----------------
    * assets/img/ に profile.jpg という決まった名前でアップロードしなくても、
    * GitHubの公開API経由でフォルダの中身を確認し、写真らしきファイル
@@ -381,6 +537,7 @@
     initFadeIn();
     initCareerExpander();
     initCareerFilter();
+    initTestimonialFilter();
     initLogoJumpLinks();
     initExpBarJumpLinks();
     initDomainChipJumpLinks();

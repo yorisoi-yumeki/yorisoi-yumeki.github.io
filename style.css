@@ -476,19 +476,22 @@ button.exp-bar-fill-label.is-jump {
   transition: box-shadow 300ms ease;
 }
 
-/* ---------- 職務経歴の絞り込み ----------
-   軸（営業手法／役割／相手の業界／相手の職種／対象・スタンス）ごとにグループ化。
+/* ---------- 職務経歴・周囲の声の絞り込み（共通スタイル） ----------
+   career-filter=職務経歴（営業手法／役割／相手の業界／相手の職種／対象・スタンス）、
+   testimonial-filter=周囲の声（関係性／良かった点）。見た目・操作感を完全に
+   揃えるため、同じ宣言をクラスごとに複製せず両方のセレクタで共有している
+   （スタイルを変える際は1箇所の変更が両方に反映される）。
    表示・非表示の最終判断はJS側でstyle.displayを直接操作するため（main.js参照）、
    このセクションにCSS詳細度で表示状態を制御するルールは置かない。 */
-.career-filter { margin-top: var(--sp-3); }
-.career-filter-toolbar {
+.career-filter, .testimonial-filter { margin-top: var(--sp-3); }
+.career-filter-toolbar, .testimonial-filter-toolbar {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
   margin-bottom: var(--sp-2);
 }
-.career-filter-reset {
+.career-filter-reset, .testimonial-filter-reset {
   display: inline-block;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -500,13 +503,13 @@ button.exp-bar-fill-label.is-jump {
   cursor: pointer;
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
-.career-filter-reset:hover { border-color: var(--blue-500); color: var(--blue-700); }
-.career-filter-reset.is-active {
+.career-filter-reset:hover, .testimonial-filter-reset:hover { border-color: var(--blue-500); color: var(--blue-700); }
+.career-filter-reset.is-active, .testimonial-filter-reset.is-active {
   background: var(--blue-600);
   border-color: var(--blue-600);
   color: #fff;
 }
-.career-filter-toggle {
+.career-filter-toggle, .testimonial-filter-toggle {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -518,18 +521,19 @@ button.exp-bar-fill-label.is-jump {
   padding: 6px 4px;
   cursor: pointer;
 }
-.career-filter-toggle:hover { color: var(--blue-700); text-decoration: underline; text-underline-offset: 3px; }
-.career-filter-toggle-arrow { display: inline-block; transition: transform 150ms ease; }
-.career-filter-toggle[aria-expanded="true"] .career-filter-toggle-arrow { transform: rotate(180deg); }
-.career-filter-groups.is-collapsed { display: none; }
-.career-filter-group {
+.career-filter-toggle:hover, .testimonial-filter-toggle:hover { color: var(--blue-700); text-decoration: underline; text-underline-offset: 3px; }
+.career-filter-toggle-arrow, .testimonial-filter-toggle-arrow { display: inline-block; transition: transform 150ms ease; }
+.career-filter-toggle[aria-expanded="true"] .career-filter-toggle-arrow,
+.testimonial-filter-toggle[aria-expanded="true"] .testimonial-filter-toggle-arrow { transform: rotate(180deg); }
+.career-filter-groups.is-collapsed, .testimonial-filter-groups.is-collapsed { display: none; }
+.career-filter-group, .testimonial-filter-group {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-top: 8px;
 }
-.career-filter-group-label {
+.career-filter-group-label, .testimonial-filter-group-label {
   flex: 0 0 auto;
   font-size: 0.76rem;
   font-weight: 700;
@@ -538,7 +542,7 @@ button.exp-bar-fill-label.is-jump {
   padding-right: 10px;
   border-right: 1px solid var(--border);
 }
-.career-filter-btn {
+.career-filter-btn, .testimonial-filter-btn {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-600);
@@ -549,13 +553,13 @@ button.exp-bar-fill-label.is-jump {
   cursor: pointer;
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
-.career-filter-btn:hover { border-color: var(--blue-500); color: var(--blue-700); }
-.career-filter-btn.is-active {
+.career-filter-btn:hover, .testimonial-filter-btn:hover { border-color: var(--blue-500); color: var(--blue-700); }
+.career-filter-btn.is-active, .testimonial-filter-btn.is-active {
   background: var(--blue-600);
   border-color: var(--blue-600);
   color: #fff;
 }
-.career-filter-empty {
+.career-filter-empty, .testimonial-filter-empty {
   margin: var(--sp-3) 0 0;
   font-size: 0.9rem;
   color: var(--text-600);
