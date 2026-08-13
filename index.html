@@ -1,7 +1,23 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js): アクセス解析用（Googleアナリティクス4）。管理画面はanalytics.google.com -->
+<!-- Google tag (gtag.js): アクセス解析用（Googleアナリティクス4）。管理画面はanalytics.google.com
+     自分自身のアクセスを計測対象から除外したい場合は、一度だけ
+     https://yorisoi-yumeki.github.io/?noanalytics のように末尾に ?noanalytics を
+     付けてこのブラウザでアクセスする（以後そのブラウザでは自動的に計測されなくなる。
+     解除したい場合はブラウザの開発者ツールでlocalStorageの ga_opt_out を削除）。 -->
+<script>
+  (function () {
+    if (new URLSearchParams(location.search).has("noanalytics")) {
+      try { localStorage.setItem("ga_opt_out", "1"); } catch (e) {}
+    }
+    try {
+      if (localStorage.getItem("ga_opt_out") === "1") {
+        window["ga-disable-G-HVG9CE5MBE"] = true;
+      }
+    } catch (e) {}
+  })();
+</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HVG9CE5MBE"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
