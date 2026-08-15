@@ -22,7 +22,7 @@
   // ============================================================
   // ★ ここだけ書き換えればOK ★（手順はREADME.md「② お問い合わせフォームの設定」参照）
   // ============================================================
-  var FORM_ACTION = ""; // 例: "https://docs.google.com/forms/d/e/1FAIpQLxxxxxxxx/formResponse"
+  var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSeDI9cb8bmpDPXPvBcf_x25c8F4dkMuzGrl94uOcPas4KI58w/formResponse";
   var ENTRY_IDS = {
     name: "",    // 例: "entry.123456789"
     company: "", // 空文字のままなら「会社名」は送信データから省かれる
