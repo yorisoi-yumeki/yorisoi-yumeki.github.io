@@ -24,9 +24,9 @@
   // ============================================================
   var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSeDI9cb8bmpDPXPvBcf_x25c8F4dkMuzGrl94uOcPas4KI58w/formResponse";
   var ENTRY_IDS = {
-    name: "",    // 例: "entry.123456789"
-    company: "", // 空文字のままなら「会社名」は送信データから省かれる
-    message: ""
+    name: "entry.249794007",
+    company: "entry.744229405", // 空文字のままなら「会社名」は送信データから省かれる
+    message: "entry.1938120368"
   };
   // ============================================================
 
