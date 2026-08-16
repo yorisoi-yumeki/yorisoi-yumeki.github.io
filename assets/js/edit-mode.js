@@ -53,6 +53,11 @@
     // ままにする。
     function handleEnterKey(event) {
       if (event.key !== "Enter") return;
+      // 日本語入力などIME変換中は、変換候補を確定するためにEnterを押す。
+      // このEnterまで改行として奪ってしまうと、変換確定と同時に意図しない
+      // 改行が入ってしまうため、変換確定中のEnterは素通りさせる
+      // （isComposingが取れないブラウザ向けにkeyCode 229もあわせて見ておく）。
+      if (event.isComposing || event.keyCode === 229) return;
       event.preventDefault();
       document.execCommand("insertLineBreak");
     }
@@ -97,12 +102,49 @@
       document.execCommand("bold");
     });
 
+    function findHighlightAncestor(node) {
+      while (node && node.nodeType) {
+        if (node.nodeType === Node.ELEMENT_NODE && node.classList && node.classList.contains("num-highlight")) {
+          return node;
+        }
+        node = node.parentNode;
+      }
+      return null;
+    }
+
+    // ドラッグ選択なら commonAncestorContainer は通常spanの中のテキストノードになるが、
+    // トリプルクリックや要素単位の選択では選択範囲の親要素そのものになることがある。
+    // その場合でも「中身がハイライトspan1つだけ」なら、そのspanを対象とみなす。
+    function resolveHighlightTarget(range) {
+      var direct = findHighlightAncestor(range.commonAncestorContainer);
+      if (direct) return direct;
+      var container = range.commonAncestorContainer;
+      if (container.nodeType === Node.ELEMENT_NODE && container.children.length === 1) {
+        var onlyChild = container.children[0];
+        if (onlyChild.classList && onlyChild.classList.contains("num-highlight")) return onlyChild;
+      }
+      return null;
+    }
+
     // 選択範囲を<span class="num-highlight">で囲む。このクラスは経歴カード等で
     // 既に使われている「青字太字」の強調スタイルをそのまま再利用する（新しいCSSは増やさない）。
+    // 選択範囲が既にハイライト済み（.num-highlightの中）の場合は、逆に解除する
+    // （spanを外して中身をその場に展開する）トグル動作にする。
     document.getElementById("edit-mode-highlight").addEventListener("click", function () {
       var sel = window.getSelection();
       if (!sel.rangeCount || sel.isCollapsed) return;
       var range = sel.getRangeAt(0);
+
+      var existingHighlight = resolveHighlightTarget(range);
+      if (existingHighlight) {
+        var parent = existingHighlight.parentNode;
+        while (existingHighlight.firstChild) {
+          parent.insertBefore(existingHighlight.firstChild, existingHighlight);
+        }
+        parent.removeChild(existingHighlight);
+        return;
+      }
+
       var span = document.createElement("span");
       span.className = "num-highlight";
       span.appendChild(range.extractContents());
