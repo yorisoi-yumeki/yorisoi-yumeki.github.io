@@ -157,16 +157,32 @@
 
     // 保険：paste/Enterキーの対策をすり抜けて<div>やstyle付きの要素が紛れ込んでいた場合でも、
     // 書き出し時に最終防衛として安全なタグだけを残す構造へ組み直す。
-    // 許可するのは：BR、STRONG/B/EM/I（書式）、class が ALLOWED_SPAN_CLASSES と完全一致する
-    // SPAN（ハイライト）、IMG（hero-badgeの写真など、imgを含むaタグの保険）。
+    // 許可するのは：BR、STRONG/B/EM/I（書式）、class が ALLOWED_SPAN_CLASS_TOKENS だけで
+    // 構成されるSPAN（ハイライト・サイト既存の装飾）、IMG（hero-badgeの写真など、imgを含む
+    // aタグの保険）、コメントノード（写真差し替え手順などの運用コメント）。
     // DIV/Pはタグ自体を捨てて前後に<br>を入れ、それ以外の未知タグ・style付き要素・
     // data-path-to-node等の異物はタグの皮だけ剥いで中身（テキスト・許可された子要素）を残す。
     var ALLOWED_INLINE_TAGS = { STRONG: "strong", B: "b", EM: "em", I: "i" };
-    var ALLOWED_SPAN_CLASSES = ["num-highlight"];
+    // num-highlight: 編集モードのハイライト機能用。hl: ヒーロー見出しの強調色。
+    // en: 英語表記部分の装飾。personality-highlight系: Personalityセクションの強調（複数
+    // クラスを同時に持つため、完全一致ではなく「全クラスがこのリストに含まれるか」で判定する）。
+    var ALLOWED_SPAN_CLASS_TOKENS = [
+      "num-highlight", "hl", "en",
+      "personality-highlight", "personality-highlight--amber", "personality-highlight--green"
+    ];
+
+    function isAllowedSpanClass(className) {
+      if (!className || !className.trim()) return false;
+      var tokens = className.trim().split(/\s+/);
+      return tokens.every(function (t) { return ALLOWED_SPAN_CLASS_TOKENS.indexOf(t) !== -1; });
+    }
 
     function cleanNode(node) {
       if (node.nodeType === Node.TEXT_NODE) {
         return [document.createTextNode(node.textContent)];
+      }
+      if (node.nodeType === Node.COMMENT_NODE) {
+        return [document.createComment(node.textContent)];
       }
       if (node.nodeType !== Node.ELEMENT_NODE) return [];
 
@@ -187,7 +203,7 @@
         children.forEach(function (c) { inlineEl.appendChild(c); });
         return [inlineEl];
       }
-      if (tag === "SPAN" && node.className && ALLOWED_SPAN_CLASSES.indexOf(node.className.trim()) !== -1) {
+      if (tag === "SPAN" && isAllowedSpanClass(node.className)) {
         var span = document.createElement("span");
         span.className = node.className.trim();
         children.forEach(function (c) { span.appendChild(c); });
@@ -198,7 +214,8 @@
     }
 
     function sanitizeEditableElement(el) {
-      var hasForeignMarkup = el.querySelector("div, p, span:not(.num-highlight), [data-path-to-node], [style]");
+      var hasForeignMarkup = el.querySelector("div, p, [data-path-to-node], [style]") ||
+        Array.prototype.some.call(el.querySelectorAll("span"), function (s) { return !isAllowedSpanClass(s.className); });
       if (!hasForeignMarkup) return;
       var cleaned = [];
       Array.prototype.forEach.call(el.childNodes, function (child) {
@@ -218,6 +235,14 @@
         sanitizeEditableElement(el);
         el.removeAttribute("contenteditable");
       });
+
+      // #testimonial-list はtestimonials.jsがページ読み込みのたびに動的に生成する
+      // （testimonials.js内のTESTIMONIALS配列が唯一の情報源）。ここで書き出すHTMLに
+      // 生成済みのカードをそのまま焼き込んでしまうと、次にページを開いた時に
+      // testimonials.jsがその上へさらにカードを追加してしまい、表示が二重・三重に
+      // 増えていく（実際にこの不具合が起きていたため、空に戻してから書き出す）。
+      var clonedTestimonialList = clone.querySelector("#testimonial-list");
+      if (clonedTestimonialList) clonedTestimonialList.innerHTML = "";
       var cloneToolbar = clone.querySelector("#edit-mode-toolbar");
       if (cloneToolbar) cloneToolbar.remove();
       var cloneStyle = clone.querySelector("#edit-mode-style");
