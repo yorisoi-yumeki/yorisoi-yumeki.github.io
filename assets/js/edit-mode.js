@@ -39,10 +39,30 @@
       card.open = true;
     });
 
+    // 貼り付け時、他のアプリ（Word/Notion/Googleドキュメント等）由来の書式・タグが
+    // そのまま入り込むと、文字サイズの崩れや無効なHTMLの原因になる。プレーンテキストとして
+    // 挿入することでこれを防ぐ。
+    function handlePaste(event) {
+      event.preventDefault();
+      var text = (event.clipboardData || window.clipboardData).getData("text/plain");
+      document.execCommand("insertText", false, text);
+    }
+
+    // Enterキーは既定だと新しい<div>や<p>をネストして作ってしまい、見出し(h4)などの中に
+    // 無効な入れ子構造ができてしまう。代わりに<br>を挿入することで、常に1つの要素の
+    // ままにする。
+    function handleEnterKey(event) {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      document.execCommand("insertLineBreak");
+    }
+
     var editableEls = [];
     document.querySelectorAll(EDITABLE_SELECTOR).forEach(function (el) {
       if (el.closest(EXCLUDE_ANCESTOR_SELECTOR)) return;
       el.setAttribute("contenteditable", "true");
+      el.addEventListener("paste", handlePaste);
+      el.addEventListener("keydown", handleEnterKey);
       editableEls.push(el);
     });
 
@@ -69,11 +89,46 @@
       '<button type="button" id="edit-mode-generate">変更をコードとして書き出す</button>';
     document.body.appendChild(toolbar);
 
+    // 保険：paste/Enterキーの対策をすり抜けて<div>やstyle付きの要素が紛れ込んでいた場合でも、
+    // 書き出し時に最終防衛としてテキスト+<br>だけの構造へ強制的に平坦化する。
+    function flattenToLines(el) {
+      var lines = [""];
+      function walk(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          lines[lines.length - 1] += node.textContent;
+          return;
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        if (node.tagName === "BR") { lines.push(""); return; }
+        var isBlock = node.tagName === "DIV" || node.tagName === "P";
+        if (isBlock) lines.push("");
+        Array.prototype.forEach.call(node.childNodes, walk);
+        if (isBlock) lines.push("");
+      }
+      Array.prototype.forEach.call(el.childNodes, walk);
+      // 先頭・末尾の空行だけ取り除く（内部の意図的な空行はそのまま残す）
+      while (lines.length > 1 && lines[0] === "") lines.shift();
+      while (lines.length > 1 && lines[lines.length - 1] === "") lines.pop();
+      return lines;
+    }
+
+    function sanitizeEditableElement(el) {
+      var hasForeignMarkup = el.querySelector("div, p, span[style], [data-path-to-node], [style]");
+      if (!hasForeignMarkup) return;
+      var lines = flattenToLines(el);
+      while (el.firstChild) el.removeChild(el.firstChild);
+      lines.forEach(function (line, i) {
+        if (i > 0) el.appendChild(document.createElement("br"));
+        el.appendChild(document.createTextNode(line));
+      });
+    }
+
     document.getElementById("edit-mode-generate").addEventListener("click", function () {
       // クローン上でcontenteditable属性・ツールバー・編集用styleを取り除いてから書き出す
       // （実際のページ・editableEls・originalOpenStatesはそのまま、編集を続けられる）。
       var clone = document.documentElement.cloneNode(true);
       clone.querySelectorAll('[contenteditable]').forEach(function (el) {
+        sanitizeEditableElement(el);
         el.removeAttribute("contenteditable");
       });
       var cloneToolbar = clone.querySelector("#edit-mode-toolbar");
