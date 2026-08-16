@@ -78,6 +78,8 @@
       'border-radius: 8px; padding: 8px 14px; border: none; margin-right: 8px; margin-top: 6px; }\n' +
       '#edit-mode-generate { background: #2563eb; color: #fff; }\n' +
       '#edit-mode-copy { background: #fff; color: #0B1B33; }\n' +
+      '#edit-mode-bold, #edit-mode-highlight { background: rgba(255,255,255,0.15); color: #fff; }\n' +
+      '#edit-mode-bold:hover, #edit-mode-highlight:hover { background: rgba(255,255,255,0.28); }\n' +
       '#edit-mode-output { width: 100%; box-sizing: border-box; margin-top: 8px; font-size: 0.72rem; ' +
       'font-family: "SFMono-Regular", Consolas, monospace; }\n';
     document.head.appendChild(style);
@@ -85,42 +87,85 @@
     var toolbar = document.createElement("div");
     toolbar.id = "edit-mode-toolbar";
     toolbar.innerHTML =
-      "<p><strong>文章の編集モード</strong><br>文章をクリックして書き換えたら、下のボタンでコードを書き出してください。</p>" +
+      "<p><strong>文章の編集モード</strong><br>文章をクリックして書き換えたら、下のボタンでコードを書き出してください。範囲を選択して「太字」「ハイライト」も使えます。</p>" +
+      '<button type="button" id="edit-mode-bold">太字</button>' +
+      '<button type="button" id="edit-mode-highlight">ハイライト</button>' +
       '<button type="button" id="edit-mode-generate">変更をコードとして書き出す</button>';
     document.body.appendChild(toolbar);
 
+    document.getElementById("edit-mode-bold").addEventListener("click", function () {
+      document.execCommand("bold");
+    });
+
+    // 選択範囲を<span class="num-highlight">で囲む。このクラスは経歴カード等で
+    // 既に使われている「青字太字」の強調スタイルをそのまま再利用する（新しいCSSは増やさない）。
+    document.getElementById("edit-mode-highlight").addEventListener("click", function () {
+      var sel = window.getSelection();
+      if (!sel.rangeCount || sel.isCollapsed) return;
+      var range = sel.getRangeAt(0);
+      var span = document.createElement("span");
+      span.className = "num-highlight";
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      sel.removeAllRanges();
+      var newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      sel.addRange(newRange);
+    });
+
     // 保険：paste/Enterキーの対策をすり抜けて<div>やstyle付きの要素が紛れ込んでいた場合でも、
-    // 書き出し時に最終防衛としてテキスト+<br>だけの構造へ強制的に平坦化する。
-    function flattenToLines(el) {
-      var lines = [""];
-      function walk(node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-          lines[lines.length - 1] += node.textContent;
-          return;
-        }
-        if (node.nodeType !== Node.ELEMENT_NODE) return;
-        if (node.tagName === "BR") { lines.push(""); return; }
-        var isBlock = node.tagName === "DIV" || node.tagName === "P";
-        if (isBlock) lines.push("");
-        Array.prototype.forEach.call(node.childNodes, walk);
-        if (isBlock) lines.push("");
+    // 書き出し時に最終防衛として安全なタグだけを残す構造へ組み直す。
+    // 許可するのは：BR、STRONG/B/EM/I（書式）、class が ALLOWED_SPAN_CLASSES と完全一致する
+    // SPAN（ハイライト）、IMG（hero-badgeの写真など、imgを含むaタグの保険）。
+    // DIV/Pはタグ自体を捨てて前後に<br>を入れ、それ以外の未知タグ・style付き要素・
+    // data-path-to-node等の異物はタグの皮だけ剥いで中身（テキスト・許可された子要素）を残す。
+    var ALLOWED_INLINE_TAGS = { STRONG: "strong", B: "b", EM: "em", I: "i" };
+    var ALLOWED_SPAN_CLASSES = ["num-highlight"];
+
+    function cleanNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return [document.createTextNode(node.textContent)];
       }
-      Array.prototype.forEach.call(el.childNodes, walk);
-      // 先頭・末尾の空行だけ取り除く（内部の意図的な空行はそのまま残す）
-      while (lines.length > 1 && lines[0] === "") lines.shift();
-      while (lines.length > 1 && lines[lines.length - 1] === "") lines.pop();
-      return lines;
+      if (node.nodeType !== Node.ELEMENT_NODE) return [];
+
+      var tag = node.tagName;
+      if (tag === "BR") return [document.createElement("br")];
+      if (tag === "IMG") return [node.cloneNode(false)];
+
+      var children = [];
+      Array.prototype.forEach.call(node.childNodes, function (child) {
+        children = children.concat(cleanNode(child));
+      });
+
+      if (tag === "DIV" || tag === "P") {
+        return [document.createElement("br")].concat(children).concat([document.createElement("br")]);
+      }
+      if (ALLOWED_INLINE_TAGS[tag]) {
+        var inlineEl = document.createElement(ALLOWED_INLINE_TAGS[tag]);
+        children.forEach(function (c) { inlineEl.appendChild(c); });
+        return [inlineEl];
+      }
+      if (tag === "SPAN" && node.className && ALLOWED_SPAN_CLASSES.indexOf(node.className.trim()) !== -1) {
+        var span = document.createElement("span");
+        span.className = node.className.trim();
+        children.forEach(function (c) { span.appendChild(c); });
+        return [span];
+      }
+      // 許可されていないタグは皮を剥いで中身だけ残す
+      return children;
     }
 
     function sanitizeEditableElement(el) {
-      var hasForeignMarkup = el.querySelector("div, p, span[style], [data-path-to-node], [style]");
+      var hasForeignMarkup = el.querySelector("div, p, span:not(.num-highlight), [data-path-to-node], [style]");
       if (!hasForeignMarkup) return;
-      var lines = flattenToLines(el);
-      while (el.firstChild) el.removeChild(el.firstChild);
-      lines.forEach(function (line, i) {
-        if (i > 0) el.appendChild(document.createElement("br"));
-        el.appendChild(document.createTextNode(line));
+      var cleaned = [];
+      Array.prototype.forEach.call(el.childNodes, function (child) {
+        cleaned = cleaned.concat(cleanNode(child));
       });
+      while (cleaned.length && cleaned[0].tagName === "BR") cleaned.shift();
+      while (cleaned.length && cleaned[cleaned.length - 1].tagName === "BR") cleaned.pop();
+      while (el.firstChild) el.removeChild(el.firstChild);
+      cleaned.forEach(function (n) { el.appendChild(n); });
     }
 
     document.getElementById("edit-mode-generate").addEventListener("click", function () {
