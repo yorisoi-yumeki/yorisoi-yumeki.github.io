@@ -51,6 +51,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P3TSD6G5');</script>
+<!-- End Google Tag Manager -->
+
+<!-- GA4 イベント計測用dataLayerスクリプト -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("details").forEach(function(detail) {
+      detail.addEventListener("toggle", function() {
+        if (detail.open) {
+          var parentSection = detail.closest("section");
+          var sectionTitle = parentSection ? (parentSection.querySelector("h2, p")?.innerText.trim() || "その他") : "その他";
+          var itemTitle = detail.querySelector("summary")?.innerText.trim().split("\n")[0] || "不明";
+
+          window.dataLayer.push({
+            'event': 'content_interaction',
+            'section_name': sectionTitle,
+            'content_name': itemTitle
+          });
+        }
+      });
+    });
+  });
+</script>
 </head>
 <body id="top">
 
