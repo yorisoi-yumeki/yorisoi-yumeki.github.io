@@ -115,6 +115,14 @@
         .then(function () {
           form.hidden = true;
           doneMsg.hidden = false;
+
+          // GA4コンバージョン計測用：一言メッセージフォーム送信完了をdataLayerに記録
+          // （GTM側で「generate_lead」等のGA4イベントとして送信するタグを設定して利用する）。
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            'event': 'testimonial_form_submit',
+            'form_name': '一言メッセージフォーム'
+          });
         });
     });
   });

@@ -88,6 +88,14 @@
         .then(function () {
           form.hidden = true;
           doneMsg.hidden = false;
+
+          // GA4コンバージョン計測用：お問い合わせフォーム送信完了をdataLayerに記録
+          // （GTM側で「generate_lead」等のGA4イベントとして送信するタグを設定して利用する）。
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            'event': 'contact_form_submit',
+            'form_name': 'お問い合わせフォーム'
+          });
         });
     });
   });

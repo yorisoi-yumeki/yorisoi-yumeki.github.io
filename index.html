@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="ja">
 <head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P3TSD6G5');</script>
+<!-- End Google Tag Manager -->
+
 <!-- Google tag (gtag.js): アクセス解析用（Googleアナリティクス4）。管理画面はanalytics.google.com
      自分自身のアクセスを計測対象から除外したい場合は、一度だけ
      https://yorisoi-yumeki.github.io/?noanalytics のように末尾に ?noanalytics を
@@ -51,8 +59,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+
+<!-- GA4 イベント計測用dataLayerスクリプト -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("details").forEach(function(detail) {
+      detail.addEventListener("toggle", function() {
+        if (detail.open) {
+          var parentSection = detail.closest("section");
+          var sectionTitle = parentSection ? (parentSection.querySelector("h2, p")?.innerText.trim() || "その他") : "その他";
+          var itemTitle = detail.querySelector("summary")?.innerText.trim().split("\n")[0] || "不明";
+
+          window.dataLayer.push({
+            'event': 'content_interaction',
+            'section_name': sectionTitle,
+            'content_name': itemTitle
+          });
+        }
+      });
+    });
+  });
+</script>
 </head>
 <body id="top">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P3TSD6G5"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <!-- ============ ヒーロー ============ -->
 <header class="hero">
