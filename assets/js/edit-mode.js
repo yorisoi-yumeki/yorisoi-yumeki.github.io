@@ -236,13 +236,19 @@
         el.removeAttribute("contenteditable");
       });
 
-      // #testimonial-list はtestimonials.jsがページ読み込みのたびに動的に生成する
-      // （testimonials.js内のTESTIMONIALS配列が唯一の情報源）。ここで書き出すHTMLに
-      // 生成済みのカードをそのまま焼き込んでしまうと、次にページを開いた時に
-      // testimonials.jsがその上へさらにカードを追加してしまい、表示が二重・三重に
-      // 増えていく（実際にこの不具合が起きていたため、空に戻してから書き出す）。
+      // #testimonial-list はtestimonials.jsが、#testimonial-filter-groups は
+      // main.jsのinitTestimonialFilter()が、どちらもページ読み込みのたびに動的に
+      // 生成・追記する（generated data-driven要素）。ここで書き出すHTMLに生成済みの
+      // 中身をそのまま焼き込んでしまうと、次にページを開いた時にJSがその上へさらに
+      // 追加してしまい、表示・絞り込みボタンが二重・三重に増えていく（実際に両方で
+      // この不具合が起きていたため、空に戻し、#testimonial-filterもJS介入前の
+      // 初期状態(hidden)に戻してから書き出す）。
       var clonedTestimonialList = clone.querySelector("#testimonial-list");
       if (clonedTestimonialList) clonedTestimonialList.innerHTML = "";
+      var clonedFilterGroups = clone.querySelector("#testimonial-filter-groups");
+      if (clonedFilterGroups) clonedFilterGroups.innerHTML = "";
+      var clonedFilterWrap = clone.querySelector("#testimonial-filter");
+      if (clonedFilterWrap) clonedFilterWrap.hidden = true;
       var cloneToolbar = clone.querySelector("#edit-mode-toolbar");
       if (cloneToolbar) cloneToolbar.remove();
       var cloneStyle = clone.querySelector("#edit-mode-style");
