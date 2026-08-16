@@ -174,6 +174,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 .hero-badge span { font-size: 0.85rem; color: #EAF1FF; font-weight: 600; line-height: 1.5; }
 .hero-badge .en { font-family: var(--font-en); color: #C7D8FF; font-weight: 400; }
+.hero-badge-name { color: #EAF1FF; }
 
 .hero h1 { color: #fff; max-width: 18em; }
 .hero h1 .hl { color: var(--cyan-400); }
