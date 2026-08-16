@@ -67,7 +67,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       detail.addEventListener("toggle", function() {
         if (detail.open) {
           var parentSection = detail.closest("section");
-          var sectionTitle = parentSection ? (parentSection.querySelector("h2, p")?.innerText.trim() || "その他") : "その他";
+          var sectionTitle = parentSection ? (parentSection.querySelector("h2")?.innerText.trim() || parentSection.querySelector("p")?.innerText.trim() || "その他") : "その他";
           var itemTitle = detail.querySelector("summary")?.innerText.trim().split("\n")[0] || "不明";
 
           window.dataLayer.push({
