@@ -34,7 +34,7 @@
   var CATEGORY_LABELS = {
     fulltime: "正社員",
     contract: "業務委託",
-    dispatch: "派遣社員",
+    dispatch: "派遣",
     commission: "完全歩合制"
   };
 
@@ -87,8 +87,12 @@
       var endYm = isOngoing ? null : parseYearMonth(endAttr);
       if (!isOngoing && !endYm) return;
 
+      // タイムラインは横幅が限られるため、正式名称（(株)等の法人格・「Japan」等を含む、
+      // career-cardの.career-companyそのまま）ではなく、data-timeline-companyで
+      // 指定した短縮表記を優先する（無ければ.career-companyへフォールバック）。
       var companyEl = card.querySelector(".career-company");
-      var company = companyEl ? companyEl.textContent.trim() : card.id;
+      var company = card.getAttribute("data-timeline-company") ||
+        (companyEl ? companyEl.textContent.trim() : card.id);
 
       entries.push({
         id: card.id,
