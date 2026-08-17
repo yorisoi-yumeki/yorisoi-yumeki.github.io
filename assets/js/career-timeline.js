@@ -193,9 +193,13 @@
       // 期間（＋注記）はバーの下の別行ではなく、バーの右端（過去側の端）のすぐ外側に
       // バーと同じ縦位置で配置する（.exp-bar-fill-labelと同じ「セグメント端に添えて、
       // 狭ければ外へはみ出させる」パターン。これにより行の縦幅を増やさずに済む）。
+      // 起点はrightPct（日付通りの右端）ではなく、実際に描画されるバーの右端
+      // （leftPct + widthPct。widthPctは最小幅2.2%でクランプされている）を使う。
+      // 短期契約（例：2ヶ月）はrightPct - leftPctが2.2%未満になり、バーだけが
+      // 右へ広がるため、rightPct基準のままだとラベルがバーの内側に重なってしまう。
       var durationEl = document.createElement("span");
       durationEl.className = "career-timeline-row-duration career-timeline-row-duration--" + entry.category;
-      durationEl.style.left = "calc(" + rightPct + "% + 6px)";
+      durationEl.style.left = "calc(" + (leftPct + widthPct) + "% + 6px)";
       durationEl.setAttribute("aria-hidden", "true");
       durationEl.textContent = displayText;
       row.appendChild(durationEl);

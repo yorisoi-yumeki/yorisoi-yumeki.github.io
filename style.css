@@ -499,12 +499,12 @@ button.exp-bar-fill-label.is-jump {
 }
 .career-timeline-legend-item { display: inline-flex; align-items: center; gap: 6px; }
 .career-timeline-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
-.career-timeline-swatch--fulltime { background: var(--tl-fulltime); }
-.career-timeline-swatch--contract { background: var(--tl-contract); }
-.career-timeline-swatch--dispatch { background: var(--tl-dispatch); }
-.career-timeline-swatch--commission { background: var(--tl-commission); }
+.career-timeline-swatch--fulltime { background: var(--tl-fulltime-bg); border: 1.5px solid var(--tl-fulltime); }
+.career-timeline-swatch--contract { background: var(--tl-contract-bg); border: 1.5px solid var(--tl-contract); }
+.career-timeline-swatch--dispatch { background: var(--tl-dispatch-bg); border: 1.5px solid var(--tl-dispatch); }
+.career-timeline-swatch--commission { background: var(--tl-commission-bg); border: 1.5px solid var(--tl-commission); }
 /* バー本体は淡い塗り＋濃い縁取りの「チップ」調（career-tag/testimonial-tagと同じトーン）。
-   凡例のスウォッチだけは12px角と小さく淡色だと視認性が落ちるため、濃い方の色で単色塗り。 */
+   凡例のスウォッチもバーと同じ「淡い塗り＋縁取り」にして、実際のバーの見た目と一致させる。 */
 .career-timeline-bar--fulltime { background: var(--tl-fulltime-bg); border: 1.5px solid var(--tl-fulltime); }
 .career-timeline-bar--contract { background: var(--tl-contract-bg); border: 1.5px solid var(--tl-contract); }
 .career-timeline-bar--dispatch { background: var(--tl-dispatch-bg); border: 1.5px solid var(--tl-dispatch); }
