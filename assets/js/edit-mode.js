@@ -27,7 +27,7 @@
     ".domain-tag"
   ].join(", ");
 
-  var EXCLUDE_ANCESTOR_SELECTOR = ".career-filter, .testimonial-filter, .chip-group, .exp-bars, form";
+  var EXCLUDE_ANCESTOR_SELECTOR = ".career-filter, .testimonial-filter, .chip-group, .exp-bars, .career-timeline-chart, form";
 
   document.addEventListener("DOMContentLoaded", function () {
     // 経歴カードは編集中だけ全部開いておく（閉じたままだと詳細文が編集できないため）。
@@ -249,6 +249,12 @@
       if (clonedFilterGroups) clonedFilterGroups.innerHTML = "";
       var clonedFilterWrap = clone.querySelector("#testimonial-filter");
       if (clonedFilterWrap) clonedFilterWrap.hidden = true;
+      // #career-timeline-chart も career-timeline.js がページ読み込みのたびに
+      // career-cardのdata-timeline-*属性から動的に軸・バーを生成するgenerated要素。
+      // 同じ理由で空に戻してから書き出す（そのまま書き出すと、次回読み込み時のJSが
+      // 生成済みの中身の上へさらにバーを重ねて二重・三重に増殖してしまう）。
+      var clonedTimelineChart = clone.querySelector("#career-timeline-chart");
+      if (clonedTimelineChart) clonedTimelineChart.innerHTML = "";
       var cloneToolbar = clone.querySelector("#edit-mode-toolbar");
       if (cloneToolbar) cloneToolbar.remove();
       var cloneStyle = clone.querySelector("#edit-mode-style");

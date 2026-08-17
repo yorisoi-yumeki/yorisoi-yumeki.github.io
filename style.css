@@ -20,6 +20,14 @@
   --amber-700: #B5730A;  /* Personalityの各項目ラベルの強調色（career-tagのamberと共通） */
   --amber-100: #FFF3DE;  /* amberの薄いハイライト背景 */
 
+  /* 経歴タイムラインの雇用形態カラー（専用パレット。career-tagが以前の「4色塗り分け→
+     目立ちすぎるため1色に統一」という経緯があるため、既存のブランドカラー（--blue-600等）を
+     そのまま流用せず、タイムライン専用の落ち着いた4色を新たに用意している） */
+  --tl-fulltime: #2F7D6B;   /* 正社員 */
+  --tl-contract: #6B7CA8;   /* 業務委託・副業 */
+  --tl-dispatch: #C98A3A;   /* 派遣社員 */
+  --tl-commission: #8A5FB0; /* 完全歩合制 */
+
   /* Spacing scale (8px base) */
   --sp-1: 8px;
   --sp-2: 16px;
@@ -475,6 +483,97 @@ button.exp-bar-fill-label.is-jump {
 .career-card.is-highlighted {
   box-shadow: 0 0 0 3px var(--cyan-400), var(--shadow-card-lg);
   transition: box-shadow 300ms ease;
+}
+
+/* ---------- 経歴タイムライン（ガントチャート風） ---------- */
+.career-timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-2) 0 var(--sp-3);
+  font-size: 0.8rem;
+  color: var(--text-600);
+}
+.career-timeline-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.career-timeline-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+.career-timeline-swatch--fulltime, .career-timeline-bar--fulltime { background: var(--tl-fulltime); }
+.career-timeline-swatch--contract, .career-timeline-bar--contract { background: var(--tl-contract); }
+.career-timeline-swatch--dispatch, .career-timeline-bar--dispatch { background: var(--tl-dispatch); }
+.career-timeline-swatch--commission, .career-timeline-bar--commission { background: var(--tl-commission); }
+
+/* スマホでは横スクロールでPCと同じ見た目を保つ（縦積みの別レイアウトにはしない）。
+   .career-timeline-chart に最小幅を持たせることでバー・ラベルの縮小崩れを防ぐ。 */
+.career-timeline-scroll-hint { display: none; font-size: 0.76rem; color: var(--text-600); margin: 0 0 4px; }
+.career-timeline-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--sp-1);
+}
+.career-timeline-chart {
+  position: relative;
+  min-width: 760px;
+  padding-top: 22px; /* 年ラベルの表示分 */
+}
+.career-timeline-axis { position: absolute; inset: 0; top: 22px; pointer-events: none; }
+.career-timeline-today-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--cyan-400);
+}
+.career-timeline-today-label {
+  position: absolute;
+  top: -22px;
+  left: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--blue-700);
+  white-space: nowrap;
+}
+.career-timeline-year-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.career-timeline-year-label {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--text-600);
+  white-space: nowrap;
+}
+
+.career-timeline-rows { position: relative; display: flex; flex-direction: column; }
+.career-timeline-row { position: relative; height: 64px; }
+.career-timeline-row-name {
+  position: absolute;
+  top: 6px;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-900);
+}
+.career-timeline-bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  min-width: 16px;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  padding: 0;
+}
+.career-timeline-bar:hover { filter: brightness(1.08); }
+.career-timeline-row-duration {
+  position: absolute;
+  bottom: 8px;
+  white-space: nowrap;
+  font-size: 0.74rem;
+  color: var(--text-600);
+}
+
+@media (max-width: 768px) {
+  .career-timeline-scroll-hint { display: block; }
 }
 
 /* ---------- 職務経歴・周囲の声の絞り込み（共通スタイル） ----------

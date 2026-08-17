@@ -187,6 +187,10 @@ voice-form.html           「周囲からの声」収集フォーム
 admin.html                「周囲からの声」管理画面（非公開・ブックマーク専用）
 style.css                デザイン（カラー・レイアウト定義）
 assets/js/main.js        スクロール演出・経歴カードの開閉制御・絞り込み・ジャンプ連動
+assets/js/career-timeline.js 経歴タイムライン（ガントチャート風）の描画。career-cardの
+                          data-timeline-start/-end/-category属性を読んで生成する
+                          （期間の文言と別に手で持っているため、経歴の期間を変える際は
+                          career-detail-periodと両方を更新すること）
 assets/js/testimonials.js 周囲からの声のデータとON/OFF切り替え
 assets/js/voice-form.js  一言メッセージフォームのGoogleフォーム送信連携
 assets/js/contact-form.js お問い合わせフォームのGoogleフォーム送信連携（②参照）
