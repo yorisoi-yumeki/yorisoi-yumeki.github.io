@@ -166,13 +166,20 @@
     // num-highlight: 編集モードのハイライト機能用。hl: ヒーロー見出しの強調色。
     // en: 英語表記部分の装飾。personality-highlight系: Personalityセクションの強調（複数
     // クラスを同時に持つため、完全一致ではなく「全クラスがこのリストに含まれるか」で判定する）。
+    // hero-badge-name: ヒーローバッジ内の氏名部分の装飾。
     var ALLOWED_SPAN_CLASS_TOKENS = [
-      "num-highlight", "hl", "en",
+      "num-highlight", "hl", "en", "hero-badge-name",
       "personality-highlight", "personality-highlight--amber", "personality-highlight--green"
     ];
 
+    // class属性を持たない素のSPAN（例: hero-badgeの外側span。折り返し制御のための
+    // 構造用ラッパーで、装飾クラスは付いていない）は、style属性も持たなければ無害なので
+    // そのまま許可する。foreign markup検知（hasForeignMarkup内の[style]セレクタ）が
+    // style付きの持ち込み要素は別途弾くため、ここで緩めても外部由来の書式が紛れ込む
+    // ことはない（過去に「クラス無しspanは全て不許可」としていたため、この
+    // hero-badgeの構造spanまで剥がされてスマホでの折り返しが崩れる不具合が起きていた）。
     function isAllowedSpanClass(className) {
-      if (!className || !className.trim()) return false;
+      if (!className || !className.trim()) return true;
       var tokens = className.trim().split(/\s+/);
       return tokens.every(function (t) { return ALLOWED_SPAN_CLASS_TOKENS.indexOf(t) !== -1; });
     }
@@ -231,6 +238,49 @@
       // クローン上でcontenteditable属性・ツールバー・編集用styleを取り除いてから書き出す
       // （実際のページ・editableEls・originalOpenStatesはそのまま、編集を続けられる）。
       var clone = document.documentElement.cloneNode(true);
+
+      // ブラウザ拡張機能（Tag Assistant、ブックマークサイドバー系、Text Blaze等）が
+      // ライブDOMへ注入した属性・要素・<style>を書き出し前に取り除く。
+      // これらは実際にページを操作しているブラウザに拡張機能が入っていると生DOMへ
+      // 混入し、documentElementをそのままクローン→outerHTMLで書き出す本機能の性質上、
+      // 気づかないまま静的ファイルへ焼き込まれてしまう（実際にGTMスクリプトタグの
+      // 重複や、<html>への不要属性、</body>直前への謎要素の混入が本番で起きたため、
+      // 再発防止として機械的に除去する）。
+      //   1. <html>の属性はlang="ja"だけへリセットする（main.jsがJS実行時に付与する
+      //      class="js"は次回読み込み時にmain.js自身が再度付け直すため、ここで
+      //      焼き込む必要はない）。
+      clone.getAttributeNames().forEach(function (name) { clone.removeAttribute(name); });
+      clone.setAttribute("lang", "ja");
+      //   2. このサイトは自前のカスタム要素を一切使っていないため、タグ名にハイフンを
+      //      含む要素（<text-blaze-app-reference>、<bookmark-sidebar-xxxxx>等）は
+      //      すべて拡張機能由来と判断してよい。
+      Array.prototype.forEach.call(clone.querySelectorAll("*"), function (el) {
+        if (el.tagName.indexOf("-") !== -1) el.remove();
+      });
+      //   3. 既知の拡張機能が付与するclass/id/要素の名残り（"redeviation"、
+      //      "tag-assistant"）を持つ要素も、念のため個別に除去する
+      //      （<style class="redeviation-bs-style">等、タグ名にハイフンを含まない
+      //      ものを拾うためのセーフティネット）。
+      Array.prototype.forEach.call(clone.querySelectorAll("[class*='redeviation'], [id*='redeviation'], [class*='tag-assistant'], [id*='tag-assistant']"), function (el) {
+        el.remove();
+      });
+      //   4. Google Tag Managerのスニペットは読み込み時に自身で<script src="...">を
+      //      1本<head>先頭へ挿入する。拡張機能や再編集の繰り返しでこれが複数本
+      //      混入していた場合に備え、<head>内の<script src>をsrc値ごとに重複排除する
+      //      （1本目だけ残す）。
+      var headClone = clone.querySelector("head");
+      if (headClone) {
+        var seenScriptSrc = {};
+        Array.prototype.forEach.call(headClone.querySelectorAll("script[src]"), function (scriptEl) {
+          var src = scriptEl.getAttribute("src");
+          if (seenScriptSrc[src]) {
+            scriptEl.remove();
+          } else {
+            seenScriptSrc[src] = true;
+          }
+        });
+      }
+
       clone.querySelectorAll('[contenteditable]').forEach(function (el) {
         sanitizeEditableElement(el);
         el.removeAttribute("contenteditable");
