@@ -20,13 +20,16 @@
   --amber-700: #B5730A;  /* Personalityの各項目ラベルの強調色（career-tagのamberと共通） */
   --amber-100: #FFF3DE;  /* amberの薄いハイライト背景 */
 
-  /* 経歴タイムラインの雇用形態カラー（専用パレット。career-tagが以前の「4色塗り分け→
-     目立ちすぎるため1色に統一」という経緯があるため、既存のブランドカラー（--blue-600等）を
-     そのまま流用せず、タイムライン専用の落ち着いた4色を新たに用意している） */
-  --tl-fulltime: #2F7D6B;   /* 正社員 */
-  --tl-contract: #6B7CA8;   /* 業務委託・副業 */
-  --tl-dispatch: #C98A3A;   /* 派遣社員 */
-  --tl-commission: #8A5FB0; /* 完全歩合制 */
+  /* 経歴タイムラインの雇用形態カラー：サイト内の既存ハイライト系統（青・深緑・アンバー・
+     新規バイオレット）から作った、淡い背景＋濃い文字/縁取りのチップ調パレット
+     （testimonial-tag・Personalityの強調表示と同じトーンに揃えている） */
+  --blue-100: #EAF1FF;
+  --violet-600: #7C5CD1;
+  --violet-100: #EFE9FB;
+  --tl-fulltime: var(--forest-700);   --tl-fulltime-bg: var(--forest-100);
+  --tl-contract: var(--blue-600);     --tl-contract-bg: var(--blue-100);
+  --tl-dispatch: var(--amber-700);    --tl-dispatch-bg: var(--amber-100);
+  --tl-commission: var(--violet-600); --tl-commission-bg: var(--violet-100);
 
   /* Spacing scale (8px base) */
   --sp-1: 8px;
@@ -496,10 +499,20 @@ button.exp-bar-fill-label.is-jump {
 }
 .career-timeline-legend-item { display: inline-flex; align-items: center; gap: 6px; }
 .career-timeline-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
-.career-timeline-swatch--fulltime, .career-timeline-bar--fulltime { background: var(--tl-fulltime); }
-.career-timeline-swatch--contract, .career-timeline-bar--contract { background: var(--tl-contract); }
-.career-timeline-swatch--dispatch, .career-timeline-bar--dispatch { background: var(--tl-dispatch); }
-.career-timeline-swatch--commission, .career-timeline-bar--commission { background: var(--tl-commission); }
+.career-timeline-swatch--fulltime { background: var(--tl-fulltime); }
+.career-timeline-swatch--contract { background: var(--tl-contract); }
+.career-timeline-swatch--dispatch { background: var(--tl-dispatch); }
+.career-timeline-swatch--commission { background: var(--tl-commission); }
+/* バー本体は淡い塗り＋濃い縁取りの「チップ」調（career-tag/testimonial-tagと同じトーン）。
+   凡例のスウォッチだけは12px角と小さく淡色だと視認性が落ちるため、濃い方の色で単色塗り。 */
+.career-timeline-bar--fulltime { background: var(--tl-fulltime-bg); border: 1.5px solid var(--tl-fulltime); }
+.career-timeline-bar--contract { background: var(--tl-contract-bg); border: 1.5px solid var(--tl-contract); }
+.career-timeline-bar--dispatch { background: var(--tl-dispatch-bg); border: 1.5px solid var(--tl-dispatch); }
+.career-timeline-bar--commission { background: var(--tl-commission-bg); border: 1.5px solid var(--tl-commission); }
+.career-timeline-row-duration--fulltime { color: var(--tl-fulltime); }
+.career-timeline-row-duration--contract { color: var(--tl-contract); }
+.career-timeline-row-duration--dispatch { color: var(--tl-dispatch); }
+.career-timeline-row-duration--commission { color: var(--tl-commission); }
 
 /* スマホでは横スクロールでPCと同じ見た目を保つ（縦積みの別レイアウトにはしない）。
    .career-timeline-chart に最小幅を持たせることでバー・ラベルの縮小崩れを防ぐ。 */
@@ -543,33 +556,35 @@ button.exp-bar-fill-label.is-jump {
 }
 
 .career-timeline-rows { position: relative; display: flex; flex-direction: column; }
-.career-timeline-row { position: relative; height: 64px; }
+/* 1行＝会社名（上段）＋バーと在籍期間を同じライン上に重ねた1段、の2段構成。
+   期間テキストを別行に分けないことで、以前より行の縦幅を大きく縮めている。 */
+.career-timeline-row { position: relative; height: 40px; }
 .career-timeline-row-name {
   position: absolute;
-  top: 6px;
+  top: 0;
   white-space: nowrap;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-900);
 }
 .career-timeline-bar {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 18px;
+  top: 20px;
+  height: 16px;
   min-width: 16px;
-  border: none;
-  border-radius: 9px;
+  border-radius: 8px;
   cursor: pointer;
   padding: 0;
 }
-.career-timeline-bar:hover { filter: brightness(1.08); }
+.career-timeline-bar:hover { filter: brightness(0.97); }
 .career-timeline-row-duration {
   position: absolute;
-  bottom: 8px;
+  top: 20px;
+  height: 16px;
+  line-height: 16px;
   white-space: nowrap;
-  font-size: 0.74rem;
-  color: var(--text-600);
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {
@@ -749,6 +764,11 @@ button.exp-bar-fill-label.is-jump {
 }
 .testimonial-meta { font-size: 0.8rem; color: var(--text-600); }
 .testimonial-cta { margin-top: var(--sp-3); }
+
+/* career-extra（経歴の「もっと見る」）と同じパターン。7件目以降を初期非表示にする */
+.testimonial-extra { display: none; }
+.testimonial-grid.is-expanded .testimonial-extra { display: block; }
+#testimonial-more-btn.is-hidden { display: none; }
 
 /* ---------- Forms (voice-form.html 等) ---------- */
 .form-row { margin-bottom: var(--sp-3); }

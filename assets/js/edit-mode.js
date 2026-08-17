@@ -244,7 +244,18 @@
       // この不具合が起きていたため、空に戻し、#testimonial-filterもJS介入前の
       // 初期状態(hidden)に戻してから書き出す）。
       var clonedTestimonialList = clone.querySelector("#testimonial-list");
-      if (clonedTestimonialList) clonedTestimonialList.innerHTML = "";
+      if (clonedTestimonialList) {
+        clonedTestimonialList.innerHTML = "";
+        // 編集中に「もっと見る」や絞り込みを操作していると is-expanded が付いたままになる。
+        // 中身を空にしても、このクラスだけ残ると次回読み込み時に「最初の6件だけ表示」が
+        // 効かず、生成された瞬間から全件展開状態になってしまうため、あわせて外す。
+        clonedTestimonialList.classList.remove("is-expanded");
+      }
+      var clonedMoreBtn = clone.querySelector("#testimonial-more-btn");
+      if (clonedMoreBtn) {
+        clonedMoreBtn.hidden = true;
+        clonedMoreBtn.classList.remove("is-hidden");
+      }
       var clonedFilterGroups = clone.querySelector("#testimonial-filter-groups");
       if (clonedFilterGroups) clonedFilterGroups.innerHTML = "";
       var clonedFilterWrap = clone.querySelector("#testimonial-filter");

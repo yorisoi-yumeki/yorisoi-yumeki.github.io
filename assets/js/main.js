@@ -88,6 +88,19 @@
     });
   }
 
+  /* ---------------- 周囲の声カードの「もっと見る」展開 ----------------
+   * initCareerExpander()と同型（testimonials.jsが7件目以降のカードに
+   * .testimonial-extraを付与している前提）。 */
+  function initTestimonialExpander() {
+    var btn = document.getElementById("testimonial-more-btn");
+    var grid = document.getElementById("testimonial-list");
+    if (!btn || !grid) return;
+    btn.addEventListener("click", function () {
+      grid.classList.add("is-expanded");
+      btn.classList.add("is-hidden");
+    });
+  }
+
   /* ---------------- 「実績を積んできた企業」ロゴ → 経歴カードへジャンプ ----------------
    * クリックされた企業名から対応する職務経歴カード（<details id="career-xxx">）を開き、
    * スムーズスクロールで表示する。対象が「もっと見る」で隠れている場合は先に展開する。
@@ -358,6 +371,7 @@
     var toggleBtn = document.getElementById("testimonial-filter-toggle");
     var toggleLabel = toggleBtn && toggleBtn.querySelector(".testimonial-filter-toggle-label");
     var emptyMsg = document.getElementById("testimonial-filter-empty");
+    var moreBtn = document.getElementById("testimonial-more-btn");
     if (!list || !filterWrap || !groupsWrap || !resetBtn) return;
 
     var cards = Array.prototype.slice.call(list.querySelectorAll(".testimonial-card"));
@@ -464,6 +478,17 @@
     }
 
     function applyVisibility() {
+      if (!isEngaged()) {
+        // 絞り込み解除時は、もっと見る／testimonial-extraのCSSに表示制御を返す
+        // （career-filter側のapplyVisibility()と同じ考え方）
+        cards.forEach(function (card) { card.style.display = ""; });
+        if (emptyMsg) emptyMsg.hidden = true;
+        return;
+      }
+      if (!list.classList.contains("is-expanded")) {
+        list.classList.add("is-expanded");
+        if (moreBtn) moreBtn.classList.add("is-hidden");
+      }
       var anyVisible = false;
       cards.forEach(function (card) {
         var match = cardMatchesFilters(card);
@@ -536,6 +561,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initFadeIn();
     initCareerExpander();
+    initTestimonialExpander();
     initCareerFilter();
     initTestimonialFilter();
     initLogoJumpLinks();

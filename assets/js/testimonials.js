@@ -200,9 +200,12 @@ var TESTIMONIALS = [
       return;
     }
 
-    TESTIMONIALS.forEach(function (item) {
+    TESTIMONIALS.forEach(function (item, index) {
       var card = document.createElement("div");
       card.className = "testimonial-card fade-target";
+      // 経歴カードの「もっと見る」（career-extra）と同じパターン。最初の6件だけ表示し、
+      // 残りは#testimonial-more-btnで展開する（style.css .testimonial-extra 参照）。
+      if (index >= 6) card.classList.add("testimonial-extra");
 
       var quote = document.createElement("p");
       quote.className = "testimonial-quote";
@@ -239,6 +242,17 @@ var TESTIMONIALS = [
 
       list.appendChild(card);
     });
+
+    // 7件目以降がある場合だけ「もっと見る」ボタンを表示し、実際の残り件数を文言に反映する
+    // （TESTIMONIALSの件数が変わってもHTML側を手で直さなくて済むように、件数はここで決める）。
+    var moreBtn = document.getElementById("testimonial-more-btn");
+    if (moreBtn) {
+      var extraCount = TESTIMONIALS.length - 6;
+      if (extraCount > 0) {
+        moreBtn.textContent = "その他の声を見る（" + extraCount + "件）";
+        moreBtn.hidden = false;
+      }
+    }
 
     section.style.display = "";
 

@@ -33,7 +33,7 @@
 
   var CATEGORY_LABELS = {
     fulltime: "正社員",
-    contract: "業務委託・副業",
+    contract: "業務委託",
     dispatch: "派遣社員",
     commission: "完全歩合制"
   };
@@ -94,6 +94,7 @@
         id: card.id,
         company: company,
         category: card.getAttribute("data-timeline-category") || "contract",
+        note: card.getAttribute("data-timeline-note") || "", // 例: WJC「夜間のみ稼働」、PLAINER「展示会時のみ稼働」
         startDate: toDate(startYm),
         endDate: isOngoing ? null : toDate(endYm),
         isOngoing: isOngoing
@@ -158,6 +159,9 @@
 
       var durationMonths = monthsBetween(entry.startDate, endForOffset);
       var durationText = formatDuration(durationMonths);
+      // 表示用ラベルは「期間（＋注記があれば注記）」を1つの文字列にまとめる。
+      // 新しい行を増やさず、バーの隣にこのまま添えることで縦幅を増やさないようにしている。
+      var displayText = durationText + (entry.note ? "・" + entry.note : "");
       var periodText = formatYearMonth(entry.startDate) + "〜" + (entry.isOngoing ? "現在" : formatYearMonth(entry.endDate));
       var categoryLabel = CATEGORY_LABELS[entry.category] || entry.category;
 
@@ -179,18 +183,21 @@
       bar.style.width = widthPct + "%";
       bar.setAttribute(
         "aria-label",
-        entry.company + "：" + categoryLabel + "、" + periodText + "（" + durationText + "）。クリックすると経歴カードへ移動します。"
+        entry.company + "：" + categoryLabel + "、" + periodText + "（" + displayText + "）。クリックすると経歴カードへ移動します。"
       );
       bar.addEventListener("click", function () {
         jumpToCareerCard(entry.id);
       });
       row.appendChild(bar);
 
+      // 期間（＋注記）はバーの下の別行ではなく、バーの右端（過去側の端）のすぐ外側に
+      // バーと同じ縦位置で配置する（.exp-bar-fill-labelと同じ「セグメント端に添えて、
+      // 狭ければ外へはみ出させる」パターン。これにより行の縦幅を増やさずに済む）。
       var durationEl = document.createElement("span");
-      durationEl.className = "career-timeline-row-duration";
-      durationEl.style.left = leftPct + "%";
+      durationEl.className = "career-timeline-row-duration career-timeline-row-duration--" + entry.category;
+      durationEl.style.left = "calc(" + rightPct + "% + 6px)";
       durationEl.setAttribute("aria-hidden", "true");
-      durationEl.textContent = durationText;
+      durationEl.textContent = displayText;
       row.appendChild(durationEl);
 
       rows.appendChild(row);
