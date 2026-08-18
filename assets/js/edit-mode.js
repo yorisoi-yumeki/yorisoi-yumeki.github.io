@@ -265,21 +265,28 @@
         el.remove();
       });
       //   4. Google Tag Managerのスニペットは読み込み時に自身で<script src="...">を
-      //      1本<head>先頭へ挿入する。拡張機能や再編集の繰り返しでこれが複数本
-      //      混入していた場合に備え、<head>内の<script src>をsrc値ごとに重複排除する
-      //      （1本目だけ残す）。
+      //      1本<head>先頭へ挿入する。これは元から静的HTML側で毎回自動的に挿入される
+      //      ものなので、書き出すHTMLに焼き込む必要はない（焼き込むと次回読み込み時に
+      //      GTMが自分でもう1本挿入し、2本に増える）。<head>内、GTMのgtm.js宛の
+      //      <script src>は無条件で除去する（重複排除ではなく、常にゼロ本にする）。
       var headClone = clone.querySelector("head");
       if (headClone) {
-        var seenScriptSrc = {};
-        Array.prototype.forEach.call(headClone.querySelectorAll("script[src]"), function (scriptEl) {
-          var src = scriptEl.getAttribute("src");
-          if (seenScriptSrc[src]) {
-            scriptEl.remove();
-          } else {
-            seenScriptSrc[src] = true;
-          }
+        Array.prototype.forEach.call(headClone.querySelectorAll('script[src*="googletagmanager.com/gtm.js"]'), function (scriptEl) {
+          scriptEl.remove();
         });
       }
+      //   5. 一部のブラウザ拡張機能（フォーム自動入力系・GTMデバッグ系等）は、
+      //      個別の要素にdata-*属性を直接付与する（class/idにパターンが出ない）。
+      //      既知のもの（フォーム自動入力の"furigana-filler"、GTMデバッグの
+      //      "gtm-form-interact"）を属性名パターンで機械的に除去する。
+      //      新しい未知の拡張機能までは網羅できないため、あくまで既知パターンの
+      //      セーフティネット。
+      var KNOWN_EXTENSION_ATTR_PATTERN = /furigana-filler|gtm-form-interact/;
+      Array.prototype.forEach.call(clone.querySelectorAll("*"), function (el) {
+        el.getAttributeNames().forEach(function (name) {
+          if (KNOWN_EXTENSION_ATTR_PATTERN.test(name)) el.removeAttribute(name);
+        });
+      });
 
       clone.querySelectorAll('[contenteditable]').forEach(function (el) {
         sanitizeEditableElement(el);
@@ -310,6 +317,15 @@
       if (clonedFilterGroups) clonedFilterGroups.innerHTML = "";
       var clonedFilterWrap = clone.querySelector("#testimonial-filter");
       if (clonedFilterWrap) clonedFilterWrap.hidden = true;
+      // 「実績・経歴」の#career-gridも、testimonial-listと同じ「もっと見る」パターン
+      // （main.js側でクリック時に is-expanded / is-hidden を付与する）。編集中に
+      // カード編集のため「もっと見る」を開いたままだと、その展開状態がそのまま
+      // 書き出されてしまい、全訪問者に対して初期表示から10社全部が開いた状態＝
+      // 「もっと見る」ボタン非表示、になってしまうため、書き出し前に初期状態へ戻す。
+      var clonedCareerGrid = clone.querySelector("#career-grid");
+      if (clonedCareerGrid) clonedCareerGrid.classList.remove("is-expanded");
+      var clonedCareerMoreBtn = clone.querySelector("#career-more-btn");
+      if (clonedCareerMoreBtn) clonedCareerMoreBtn.classList.remove("is-hidden");
       // #career-timeline-chart も career-timeline.js がページ読み込みのたびに
       // career-cardのdata-timeline-*属性から動的に軸・バーを生成するgenerated要素。
       // 同じ理由で空に戻してから書き出す（そのまま書き出すと、次回読み込み時のJSが
