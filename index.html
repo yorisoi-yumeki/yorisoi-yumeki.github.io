@@ -638,7 +638,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- career-timeline.js が、上の各career-cardに付与された data-timeline-start/-end/-category
        属性を読み取り、#career-timeline-chart の中へガントチャート風のバーを動的に生成する。
        期間の文言（career-detail-period）とdata-timeline-*は別々に手で持っているので、
-       将来どちらかの経歴の期間を変更する際は両方を更新すること。 -->
+       将来どちらかの経歴の期間を変更する際は両方を更新すること。
+       計測：バーのクリックは career-timeline.js 側で dataLayer に timeline_bar_click イベント
+       として記録している（GTM/GA4側でのトリガー・タグ設定は別途必要。計測ガイドのArtifact参照）。 -->
   <section id="career-timeline">
     <div class="container">
       <p class="section-label">Timeline</p>

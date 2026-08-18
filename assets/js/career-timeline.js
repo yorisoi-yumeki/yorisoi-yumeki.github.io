@@ -20,6 +20,15 @@
  * #career-timeline-chart はページ読み込みのたびにここで中身を生成し直す
  * （generated要素）。edit-mode.js の書き出し機能は、この中身を空へ戻してから
  * 書き出す（さもないと次回読み込み時にJSが生成済みの中身の上へさらに追加してしまう）。
+ *
+ * 計測：バーをクリックすると、index.html側の汎用<details>トグル計測により
+ * 「実績・経歴」セクションの content_interaction は既に自動で飛ぶ（target.open = true が
+ * toggleイベントを発火させるため）。それとは別に、ここでは「タイムラインというUI経由で
+ * 見られた」ことを区別できるよう、クリック直後にもう1つ dataLayer イベント
+ * （timeline_bar_click）を独自に積む。section_name / content_name は content_interaction と
+ * 同じキー名にしてあるので、GTM側は同じデータレイヤー変数（DLV - section_name /
+ * DLV - content_name）をそのまま流用でき、GA4カスタムディメンション（company / section）も
+ * 新規登録が不要（新しく必要になるのは「トリガー」と「タグ」の2つだけ）。
  */
 (function () {
   "use strict";
@@ -93,10 +102,15 @@
       var companyEl = card.querySelector(".career-company");
       var company = card.getAttribute("data-timeline-company") ||
         (companyEl ? companyEl.textContent.trim() : card.id);
+      // 計測イベント用：チャート表示の短縮表記ではなく、正式名称（法人格つき）を使う。
+      // index.html側の汎用<details>トグル計測が content_name にこちらを使っているため、
+      // GA4の「company」ディメンションの値をカード直接クリックと揃えるための対応。
+      var fullCompany = companyEl ? companyEl.textContent.trim() : company;
 
       entries.push({
         id: card.id,
         company: company,
+        fullCompany: fullCompany,
         category: card.getAttribute("data-timeline-category") || "contract",
         note: card.getAttribute("data-timeline-note") || "", // 例: WJC「夜間のみ稼働」、PLAINER「展示会時のみ稼働」
         startDate: toDate(startYm),
@@ -190,6 +204,14 @@
         entry.company + "：" + categoryLabel + "、" + periodText + "（" + displayText + "）。クリックすると経歴カードへ移動します。"
       );
       bar.addEventListener("click", function () {
+        // GA4計測用：タイムラインのバー経由でカードが見られたことを記録する
+        // （GTM側で「view_career_timeline」等のGA4イベントとして送信するタグを設定して利用する）。
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          "event": "timeline_bar_click",
+          "section_name": "経歴タイムライン",
+          "content_name": entry.fullCompany
+        });
         jumpToCareerCard(entry.id);
       });
       row.appendChild(bar);
