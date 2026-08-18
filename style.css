@@ -592,7 +592,7 @@ button.exp-bar-fill-label.is-jump {
 }
 
 /* ---------- 職務経歴・周囲の声の絞り込み（共通スタイル） ----------
-   career-filter=職務経歴（営業手法／役割／相手の業界／相手の職種／対象・スタンス）、
+   career-filter=職務経歴（営業手法／役割／成果物／相手の業界／相手の職種／対象・スタンス）、
    testimonial-filter=周囲の声（関係性／良かった点）。見た目・操作感を完全に
    揃えるため、同じ宣言をクラスごとに複製せず両方のセレクタで共有している
    （スタイルを変える際は1箇所の変更が両方に反映される）。
@@ -678,6 +678,17 @@ button.exp-bar-fill-label.is-jump {
   margin: var(--sp-3) 0 0;
   font-size: 0.9rem;
   color: var(--text-600);
+}
+/* 狭い画面幅ではボタンがグループ内で複数行に折り返り、ラベルのborder-rightだけでは
+   カテゴリの切れ目が分かりづらくなるため、グループ間に薄い区切り線を追加する。
+   768px以下に設定しているのは、タブレット幅でも「関わる職種」等の8ボタン
+   グループが折り返るため。 */
+@media (max-width: 768px) {
+  .career-filter-group + .career-filter-group,
+  .testimonial-filter-group + .testimonial-filter-group {
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
 }
 
 /* ---------- Human touch section (自己紹介) ---------- */
