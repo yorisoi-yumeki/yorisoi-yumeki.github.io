@@ -19,12 +19,15 @@
  * BACKOFFICE_VOICE_THEMES の count は上記マクロ集計の値。BACKOFFICE_VOICES は
  * そのうち実際に引用として掲載する声で、①別の設問（満足度の理由／印象に残ったこと）の
  * 回答が無関係に連結されて文脈が破綻しているもの、②担当者個人ではなく診断内容そのものに
- * ついての言及、③「丁寧な対応で良かったです」のような具体性の無い一言だけの回答、を
- * 除外している。そのため count（マクロ件数）と実際に掲載される声の件数は一致しない
- * （意図的な仕様。UIでは両者を明示的に分けて表示する）。
+ * ついての言及、③具体性の無い一言・似た表現が重複するもの、を除外している。そのため
+ * count（マクロ件数）と実際に掲載される声の件数は一致しない（意図的な仕様。UIでは
+ * 両者を明示的に分けて表示する）。
  *
  * 「安心感」は掲載できる具体的な声が0件（内容がいずれも診断内容＝制度理解への安心で、
  * 対応者個人への言及ではなかったため）。excerptもnull。
+ *
+ * excerpt（グラフのバー内に表示する代表的な一言）は、必ず文として完結している
+ * 引用の一部を使うこと（て形やの途中で切れる抜粋にしない）。
  *
  * 生成: 元データ（Googleフォーム回答）からPythonスクリプトで抽出・整形。
  * 掲載する声の並び順・highlight・グラフのexcerptは、scoreではなく「具体性・内容の
@@ -44,7 +47,7 @@ var BACKOFFICE_SURVEY_STATS = {
 // テーマ別マクロ集計（292件中、そのテーマに言及した件数）とグラフの代表一言。
 // excerptがnullのテーマは、掲載できる具体的な声が無かったことを示す。
 var BACKOFFICE_VOICE_THEMES = [
-  { id: "polite", label: "丁寧な対応", count: 34, excerpt: "一つ一つ丁寧に解決策の例や他社様の事案等交えてご説明頂き" },
+  { id: "polite", label: "丁寧な対応", count: 34, excerpt: "押売りの様な印象を全く受けなかった事です。" },
   { id: "listen", label: "ヒアリング力・傾聴", count: 7, excerpt: "ヒアリング能力が高く、顧客に対して課題の意識づけがとても上手でした。 トーク内容、質問に対する対応、とても素晴らしかったです。" },
   { id: "sharp", label: "的確なアドバイス", count: 5, excerpt: "弊社の状況を的確に判断して全体的にお話いただけたので、信頼のできるお話ができました。" },
   { id: "sincere", label: "親身・誠実な姿勢", count: 5, excerpt: "弊社の相談事にも親身に、より詳しく答えていただけそうだと感じました。" },
@@ -165,39 +168,9 @@ var BACKOFFICE_VOICES = [
     highlight: false
   },
   {
-    score: 8,
-    themes: ["polite"],
-    quote: "とても丁寧な会話で、わかりやすく回答を導いてくれました。",
-    highlight: false
-  },
-  {
-    score: 8,
-    themes: ["polite"],
-    quote: "請求書の取り扱いなどに対する説明が丁寧でわかりやすかった",
-    highlight: false
-  },
-  {
-    score: 8,
-    themes: ["polite"],
-    quote: "面倒な質問にも丁寧に答えて頂き、分かりやすかったです。",
-    highlight: false
-  },
-  {
     score: 9,
     themes: ["listen"],
     quote: "冷静にヒアリング頂き、短時間で整理できたのはすばらしい",
-    highlight: false
-  },
-  {
-    score: 9,
-    themes: ["polite"],
-    quote: "現状での改善点について、丁寧にご指摘いただけました。",
-    highlight: false
-  },
-  {
-    score: 7,
-    themes: ["polite"],
-    quote: "こちらの電子保存の質問に丁寧に回答いただけたこと",
     highlight: false
   },
   {
@@ -210,12 +183,6 @@ var BACKOFFICE_VOICES = [
     score: 8,
     themes: ["sharp"],
     quote: "弊社の状況に的確なアドバイスをいただけた。",
-    highlight: false
-  },
-  {
-    score: 8,
-    themes: ["polite"],
-    quote: "親切に説明くださり聞き取りやすかったです。",
     highlight: false
   },
   {
