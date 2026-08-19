@@ -192,6 +192,11 @@ assets/js/career-timeline.js 経歴タイムライン（ガントチャート風
                           （期間の文言と別に手で持っているため、経歴の期間を変える際は
                           career-detail-periodと両方を更新すること）
 assets/js/testimonials.js 周囲からの声のデータとON/OFF切り替え
+assets/js/backoffice-survey-data.js 「バックオフィス診断でいただいた、対応への声」の集計データ
+                          （杉田個人が担当した292件のアンケートから、Pythonスクリプトで
+                          テーマ別に抽出・整形して生成。再集計する際は元データと同じ
+                          テーマキーワード辞書を使って作り直すこと）
+assets/js/backoffice-survey.js 上記データの描画とテーマ別グラフのクリック絞り込み
 assets/js/voice-form.js  一言メッセージフォームのGoogleフォーム送信連携
 assets/js/contact-form.js お問い合わせフォームのGoogleフォーム送信連携（②参照）
 assets/js/admin.js       管理画面のロジック（localStorage管理・回答取り込み・コード生成）
