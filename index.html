@@ -113,6 +113,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <nav class="hero-quicklinks" aria-label="ページ内リンク">
       <a href="#strengths">強みを見る</a>
       <a href="#testimonials">周囲の声を見る</a>
+      <a href="#backoffice-survey">顧客からの声を見る</a>
       <a href="#contact">お問い合わせはこちら</a>
     </nav>
 
@@ -378,6 +379,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <li>商談化後の成約件数および平均契約金額で<span class="num-highlight">チーム6名中1位</span></li>
                   <li>【FSへの抜擢へ繋がる】深い傾聴による「粒度の高いヒアリング」と、顧客の課題背景を緻密に言語化した「詳細な引き継ぎ」が、後続のフィールドセールス陣から「成約に直結する」と極めて高い評価を獲得。この現場での確かな実績と信頼が認められ、FSへの異動が決定</li>
                 </ul>
+                <p class="career-detail-link"><a href="#backoffice-survey">→ この診断でいただいた、対応への声を見る（292件）</a></p>
               </div>
               <div class="career-detail-phase">
                 <h4>② アウトバウンド・フィールドセールス（約1年間）</h4>
@@ -642,6 +644,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
+  <!-- ============ バックオフィス診断アンケート（対応への声） ============ -->
+  <!-- backoffice-survey-data.js の BACKOFFICE_SURVEY_STATS / BACKOFFICE_VOICE_THEMES /
+       BACKOFFICE_VOICES を、backoffice-survey.js が読み取ってこのセクションを描画する。
+       診断メニュー別の内訳は掲載しない（見る側へのアピールにならないため）。 -->
+  <section id="backoffice-survey">
+    <div class="container">
+      <p class="section-label">Client Survey</p>
+      <h2>バックオフィス診断でいただいた、対応への声</h2>
+      <p>freee(株)で「バックオフィス診断コンサルタント」として対応した相談会のアンケートより、杉田個人が担当した292件を集計。数字・引用はすべて実際の回答そのままです。</p>
+
+      <div class="voice-stat-row">
+        <div class="voice-stat-item">
+          <span class="voice-stat-num" id="voice-stat-count">−</span>
+          <span class="voice-stat-label">アンケート回答数</span>
+        </div>
+        <div class="voice-stat-item">
+          <span class="voice-stat-num" id="voice-stat-avg">−</span>
+          <span class="voice-stat-label">平均満足度</span>
+        </div>
+        <div class="voice-stat-item">
+          <span class="voice-stat-num" id="voice-stat-8plus">−</span>
+          <span class="voice-stat-label">8点以上の回答割合</span>
+        </div>
+      </div>
+
+      <h3>対応について、どんな声が届いたか</h3>
+      <p class="exp-bars-caption">バーをクリックすると、そのテーマの声だけを下に一覧表示します。</p>
+      <div class="voice-theme-bars" id="voice-theme-bars"></div>
+
+      <div class="voice-panel-head">
+        <p class="voice-panel-title" id="voice-panel-title">厳選した声</p>
+        <button type="button" class="voice-panel-reset" id="voice-panel-toggle">すべての声を見る</button>
+      </div>
+      <p class="voice-empty" id="voice-panel-empty" hidden="">該当する声が見つかりませんでした。</p>
+      <div class="testimonial-grid" id="voice-panel-list"></div>
+
+      <noscript>
+        <p class="form-note">この先の集計・声の一覧の表示にはJavaScriptが必要です。</p>
+      </noscript>
+
+      <p class="form-note" style="margin-top: var(--sp-3)">集計期間：2023年11月〜2024年6月ごろ。杉田本人が担当した診断・相談292件のうち、対応について具体的な言及があった回答をテーマ別に整理しています。</p>
+    </div>
+  </section>
+
   <!-- ============ 経歴タイムライン ============ -->
   <!-- career-timeline.js が、上の各career-cardに付与された data-timeline-start/-end/-category
        属性を読み取り、#career-timeline-chart の中へガントチャート風のバーを動的に生成する。
@@ -725,6 +771,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <a href="#top" class="back-to-top" aria-label="ページ上部に戻る">↑</a>
 
 <script src="assets/js/testimonials.js"></script>
+<script src="assets/js/backoffice-survey-data.js"></script>
+<script src="assets/js/backoffice-survey.js"></script>
 <script src="assets/js/contact-form.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/career-timeline.js"></script>
