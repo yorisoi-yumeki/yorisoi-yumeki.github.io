@@ -52,7 +52,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+/* scroll-padding-top: 常時表示ナビ(.site-nav)の高さぶん、ページ内リンクのジャンプ先が
+   ナビの下に隠れないよう余白を確保する（ナビ本体の高さは可変なのでやや余裕を持たせている） */
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
 
 body {
   margin: 0;
@@ -194,21 +196,41 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 
 .hero-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-top: var(--sp-3); }
 
-/* ヒーロー内のページ内ジャンプリンク。主導線(お問い合わせ)と視覚的な重みを分けるため、
-   ボタンではなく控えめな矢印付きテキストリンクの列にしてある */
-.hero-quicklinks { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-3); }
-.hero-quicklinks a {
-  color: #B9CBFA;
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 150ms ease;
+/* ---------- 常時表示ナビ（page内ジャンプリンク） ----------
+   ページ最上部（Google Tag Managerのnoscriptの直後・heroの直前）に置いた通常要素だが、
+   position: sticky で画面上端に貼り付き続ける。hero（濃い青背景）の上でも他セクション
+   （白背景）の上でも同じ見た目で読めるよう、背景・文字色は常に固定（白地に青文字）にしてある。 */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
-.hero-quicklinks a::after { content: "›"; font-size: 1.1em; opacity: 0.8; }
-.hero-quicklinks a:hover, .hero-quicklinks a:focus-visible { color: #fff; text-decoration: none; }
+.site-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 12px var(--sp-3);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.site-nav-inner a {
+  color: var(--blue-600);
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 4px 2px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.site-nav-inner a:hover, .site-nav-inner a:focus-visible {
+  color: var(--blue-700);
+  border-bottom-color: var(--cyan-400);
+  text-decoration: none;
+}
 
 /* Stat bar */
 .stat-bar {
