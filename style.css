@@ -890,6 +890,12 @@ button.exp-bar-fill-label.is-jump {
 }
 .voice-theme-excerpt::before { content: "\201C"; }
 .voice-theme-excerpt::after { content: "\201D"; }
+/* 掲載できる声が無いテーマ（例：安心感）向けの注記。引用ではないので引用符は付けない */
+.voice-theme-note {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-600);
+}
 
 /* 声の一覧パネル：初期状態はハイライト、バーをクリックすると内容が差し替わる */
 .voice-panel-head {
