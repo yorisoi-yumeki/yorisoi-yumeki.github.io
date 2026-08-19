@@ -50,6 +50,9 @@
     // 件数の差が大きい（最大34件・最小2件）ため、小さいバーも視認できるよう最低6%の幅を確保する。
     var maxCount = BACKOFFICE_VOICE_THEMES.reduce(function (m, t) { return Math.max(m, t.count); }, 1);
 
+    // 何らかの理由でこの初期化が2回走っても描画が二重にならないよう、まず必ず空にする。
+    barsWrap.innerHTML = "";
+
     BACKOFFICE_VOICE_THEMES.forEach(function (theme) {
       var row = document.createElement("button");
       row.type = "button";
@@ -80,9 +83,17 @@
       track.appendChild(fill);
       row.appendChild(track);
 
+      // excerptが無いテーマ（例：「安心感」）は、対応者個人への具体的な言及ではなかった
+      // ことをそのまま伝える注記を表示する（引用符付きの偽の声として見せないため、
+      // 通常のexcerptとは別クラスにしてスタイルも変える）。
       var excerpt = document.createElement("p");
-      excerpt.className = "voice-theme-excerpt";
-      excerpt.textContent = theme.excerpt;
+      if (theme.excerpt) {
+        excerpt.className = "voice-theme-excerpt";
+        excerpt.textContent = theme.excerpt;
+      } else {
+        excerpt.className = "voice-theme-note";
+        excerpt.textContent = "ご本人への具体的な言及は無く、診断内容についての回答が中心でした";
+      }
       row.appendChild(excerpt);
 
       barsWrap.appendChild(row);

@@ -2,19 +2,22 @@
  * backoffice-survey-data.js
  *
  * freee「バックオフィス診断」参加者アンケート（2023年11月〜2024年6月ごろ実施）のうち、
- * 杉田本人が担当した292件から集計。個人の対応（丁寧さ・ヒアリング力・人柄など）に
- * 言及したコメントのみをテーマ別に抽出している（診断メニュー別の内訳はここでは扱わない）。
+ * 杉田本人が担当した292件から集計。
+ *
+ * BACKOFFICE_VOICE_THEMES の count は292件全体に対するマクロ集計（テーマキーワードに
+ * 言及した件数）。BACKOFFICE_VOICES はそのうち実際に引用として掲載する声で、
+ * ①別の設問（満足度の理由／印象に残ったこと）の回答が無関係に連結されて文脈が破綻して
+ * いるもの、②担当者個人ではなく診断内容そのものについての言及、③「丁寧な対応」のような
+ * 具体性の無い一言だけの回答、を除外している。そのため count（マクロ件数）と、実際に
+ * クリックして表示される声の件数は一致しない場合がある（意図的な仕様。UIでは両者を
+ * 明示的に分けて表示する）。
+ *
+ * 「安心感」はマクロ集計としては2件あるが、内容がいずれも診断内容（制度・規定の理解）
+ * への安心であり対応者個人への言及ではないため、掲載する声は0件（excerptもnull）。
  *
  * 生成: 元データ（Googleフォーム回答）からPythonスクリプトで抽出・整形。
- * quoteは「上記満足度の理由を教えてください」と「対話の中で印象に残ったことを教えて
- * ください」という別々の設問への回答なので、テーマキーワードが実際に含まれる方の回答文だけを
- * 採用している（無関係な設問の回答を機械的に連結すると文脈が破綻するため。両方に該当語が
- * あれば両方を採用）。
- *
- * 配列の並び順・highlightの選定は、scoreの高さではなく「具体性スコア」
- * （quote文字数 + (該当テーマ数-1)×20）の降順にしている。点数が高くても内容が薄い声より、
- * 点数がやや低くても担当者の対応を具体的に描写している声を優先して見せるため。
- * 再集計する場合は、同じ抽出ロジック（テーマキーワード辞書・具体性スコア）を使って作り直すこと。
+ * 掲載する声の並び順・highlightの選定は、scoreではなく「具体性スコア」
+ * （quote文字数 + (該当テーマ数-1)×20）の降順。
  */
 
 // 292件全体の定量サマリー（杉田が担当した診断のみ。メニュー問わず全件）
@@ -25,18 +28,19 @@ var BACKOFFICE_SURVEY_STATS = {
   pct9to10: 30.5
 };
 
-// 対応（個人）への言及があったテーマ別の件数・代表的な一言（グラフの各バーに使用）
+// テーマ別マクロ集計（292件中、そのテーマに言及した件数）とグラフの代表一言。
+// excerptがnullのテーマは、掲載できる具体的な声が無かったことを示す。
 var BACKOFFICE_VOICE_THEMES = [
   { id: "polite", label: "丁寧な対応", count: 34, excerpt: "丁寧に説明してくれてありがとうございます" },
   { id: "listen", label: "ヒアリング力・傾聴", count: 7, excerpt: "こちらの課題に真摯に耳を傾けて下さったこと" },
-  { id: "sharp", label: "的確なアドバイス", count: 5, excerpt: "的確な対応で分かりやすかった" },
+  { id: "sharp", label: "的確なアドバイス", count: 5, excerpt: "弊社の状況に的確なアドバイスをいただけた" },
   { id: "sincere", label: "親身・誠実な姿勢", count: 5, excerpt: "担当者の方の誠実な対応がとてもよかった" },
   { id: "likable", label: "好印象・人柄", count: 2, excerpt: "ご担当者の自己紹介は好印象でした" },
-  { id: "assure", label: "安心感", count: 2, excerpt: "事務処理規定と索引簿の詳細が分かって安心しました" },
+  { id: "assure", label: "安心感", count: 2, excerpt: null },
 ];
 
-// 対応への言及があった声（本文）。1件が複数テーマに該当することもある。
-// 並び順・highlightは点数ではなく「具体性スコア」（文字数+テーマ数ボーナス）の降順。
+// 実際に掲載する声（本文）。1件が複数テーマに該当することもある。
+// 並び順・highlightは「具体性スコア」（文字数+テーマ数ボーナス）の降順。
 // highlight: true の声は、グラフのどのバーもクリックしていない初期状態で表示する。
 var BACKOFFICE_VOICES = [
   {
@@ -115,25 +119,13 @@ var BACKOFFICE_VOICES = [
     score: 10,
     themes: ["sharp"],
     quote: "現状を的確に把握して下さり、今後検討した方が良いことのアドバイスを頂き大変助かりました。",
-    highlight: false
+    highlight: true
   },
   {
     score: 9,
     themes: ["polite"],
     quote: "当社の現状を把握していただいて、どうすべきかの説明がとても丁寧で分かりやすかったです。",
     highlight: false
-  },
-  {
-    score: 10,
-    themes: ["assure"],
-    quote: "経理を兼務してる方、やったことがない方が他にもいると言って頂けて少し安心しました。",
-    highlight: true
-  },
-  {
-    score: 5,
-    themes: ["likable"],
-    quote: "ご担当者の自己紹介は好印象でした。",
-    highlight: true
   },
   {
     score: 8,
@@ -196,12 +188,6 @@ var BACKOFFICE_VOICES = [
     highlight: false
   },
   {
-    score: 8,
-    themes: ["assure"],
-    quote: "事務処理規定と索引簿の詳細が分かって安心しました。",
-    highlight: false
-  },
-  {
     score: 7,
     themes: ["polite"],
     quote: "こちらの電子保存の質問に丁寧に回答いただけたこと",
@@ -256,6 +242,12 @@ var BACKOFFICE_VOICES = [
     highlight: false
   },
   {
+    score: 5,
+    themes: ["likable"],
+    quote: "ご担当者の自己紹介は好印象でした。",
+    highlight: true
+  },
+  {
     score: 6,
     themes: ["polite"],
     quote: "丁寧に教えて下さり有難うございます",
@@ -265,78 +257,6 @@ var BACKOFFICE_VOICES = [
     score: 8,
     themes: ["polite"],
     quote: "丁寧な対応で話しやすかったです。",
-    highlight: false
-  },
-  {
-    score: 5,
-    themes: ["polite"],
-    quote: "丁寧に説明していただきました。",
-    highlight: false
-  },
-  {
-    score: 6,
-    themes: ["polite"],
-    quote: "丁寧にお話ししていただきました",
-    highlight: false
-  },
-  {
-    score: 10,
-    themes: ["sharp"],
-    quote: "的確な対応で分かりやすかった",
-    highlight: false
-  },
-  {
-    score: 10,
-    themes: ["polite"],
-    quote: "丁寧な対応で良かったです。",
-    highlight: false
-  },
-  {
-    score: 7,
-    themes: ["polite"],
-    quote: "丁寧に説明いただきました。",
-    highlight: false
-  },
-  {
-    score: 8,
-    themes: ["polite"],
-    quote: "丁寧に対応していただいた。",
-    highlight: false
-  },
-  {
-    score: 5,
-    themes: ["polite"],
-    quote: "全体的に丁寧な応対だった",
-    highlight: false
-  },
-  {
-    score: 8,
-    themes: ["polite"],
-    quote: "丁寧に対応いただきました",
-    highlight: false
-  },
-  {
-    score: 10,
-    themes: ["polite"],
-    quote: "丁寧に教えて頂けたこと",
-    highlight: false
-  },
-  {
-    score: 8,
-    themes: ["sincere"],
-    quote: "担当者の方の誠実な感じ",
-    highlight: false
-  },
-  {
-    score: 7,
-    themes: ["polite"],
-    quote: "丁寧な対応",
-    highlight: false
-  },
-  {
-    score: 7,
-    themes: ["polite"],
-    quote: "丁寧な説明",
     highlight: false
   },
 ];
