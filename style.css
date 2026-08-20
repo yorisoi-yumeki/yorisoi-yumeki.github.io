@@ -953,7 +953,7 @@ button.exp-bar-fill-label.is-jump {
 /* 匿名化した実例（状況／工夫／反応／資産化の4行構成）。career-detail-phase同士の
    区切りパターンを踏襲し、deliv-block内で複数並んだ際に破線で区切る。 */
 .case-study + .case-study { margin-top: var(--sp-3); padding-top: var(--sp-3); border-top: 1px dashed var(--border); }
-.case-study .testimonial-tag { display: inline-block; margin-bottom: 8px; }
+.case-study-name { margin: 0 0 8px; font-size: 0.94rem; font-weight: 700; color: var(--blue-700); }
 .case-study p { font-size: 0.86rem; margin: 0 0 6px; }
 .case-study p:last-child { margin-bottom: 0; }
 .case-study p strong { color: var(--blue-700); }
