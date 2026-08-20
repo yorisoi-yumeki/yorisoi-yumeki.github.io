@@ -29,6 +29,7 @@
     var panelTitle = document.getElementById("voice-panel-title");
     var panelToggle = document.getElementById("voice-panel-toggle");
     var panelEmpty = document.getElementById("voice-panel-empty");
+    var macroNoteEl = document.getElementById("voice-macro-note");
     if (!barsWrap || !panelList || !panelTitle || !panelToggle) return;
 
     function prefersReducedMotion() {
@@ -45,6 +46,7 @@
         BACKOFFICE_SURVEY_STATS.avgScore.toFixed(2) + '<span style="font-size:0.55em;">/10</span>';
     }
     if (plusEl) plusEl.textContent = BACKOFFICE_SURVEY_STATS.pct8plus + "%";
+    if (macroNoteEl) macroNoteEl.textContent = BACKOFFICE_SURVEY_STATS.macroNote || "";
 
     /* ---------------- テーマ別頻出グラフ ---------------- */
     // 件数の差が大きい（最大34件・最小2件）ため、小さいバーも視認できるよう最低6%の幅を確保する。

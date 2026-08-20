@@ -337,14 +337,17 @@
       // 生成済みの中身の上へさらにバーを重ねて二重・三重に増殖してしまう）。
       var clonedTimelineChart = clone.querySelector("#career-timeline-chart");
       if (clonedTimelineChart) clonedTimelineChart.innerHTML = "";
-      // #voice-theme-bars / #voice-panel-list も同じ理由（backoffice-survey.jsが
-      // backoffice-survey-data.jsから毎回動的に生成するgenerated要素）で空に戻す。
+      // #voice-theme-bars / #voice-panel-list / #voice-macro-note も同じ理由
+      // （backoffice-survey.jsがbackoffice-survey-data.jsから毎回動的に生成する
+      // generated要素）で空に戻す。
       // ここを空に戻さず書き出すと、次回読み込み時にJSがその上へ二重に追記するだけで
       // なく、データファイル（真の情報源）を更新しても書き出し済みの古い声がHTML側に
       // 残り続け、mainブランチへのマージ時にコンフリクトを起こす（実際に本セクション
       // 追加後、3回このコンフリクトが発生したための再発防止）。
       var clonedVoiceBars = clone.querySelector("#voice-theme-bars");
       if (clonedVoiceBars) clonedVoiceBars.innerHTML = "";
+      var clonedVoiceMacroNote = clone.querySelector("#voice-macro-note");
+      if (clonedVoiceMacroNote) clonedVoiceMacroNote.textContent = "";
       var clonedVoicePanelList = clone.querySelector("#voice-panel-list");
       if (clonedVoicePanelList) clonedVoicePanelList.innerHTML = "";
       var clonedVoicePanelTitle = clone.querySelector("#voice-panel-title");
