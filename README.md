@@ -179,16 +179,6 @@ GitHubアカウント名を `negi720-ui` → `yorisoi-yumeki` に、リポジト
 
 ---
 
-## ⑦ 「成果物の例」セクションを一時的に非表示にする
-
-`assets/js/deliverables-toggle.js` を開き、`var SHOW_DELIVERABLES = true;` を `false` に書き換えると、以下3箇所がまとめて非表示になります（HTML自体は消えないので、`true` に戻せばすぐ復活します）。
-
-- ナビの「成果物を見る」リンク
-- 「成果物の例」セクション本体（`#deliverables`）
-- freeeカード内の導線リンク（→ この診断で作成した、トークスクリプト…）
-
----
-
 ## ファイル構成
 
 ```
@@ -208,7 +198,6 @@ assets/js/backoffice-survey-data.js 「バックオフィス診断でいただ�
                           「対応への声」編集セクションから行える。再集計する際は元データと
                           同じテーマキーワード辞書を使って作り直すこと）
 assets/js/backoffice-survey.js 上記データの描画とテーマ別グラフのクリック絞り込み
-assets/js/deliverables-toggle.js 「成果物の例」セクションのON/OFF切り替え（⑦参照）
 assets/js/voice-form.js  一言メッセージフォームのGoogleフォーム送信連携
 assets/js/contact-form.js お問い合わせフォームのGoogleフォーム送信連携（②参照）
 assets/js/admin.js       管理画面のロジック（周囲からの声：localStorage管理・回答取り込み・コード生成）
