@@ -142,9 +142,9 @@
 
     function showHighlight() {
       setActiveTheme(null);
-      panelTitle.textContent = "厳選した声";
-      // 292件すべてを載せているわけではない（内容が具体的なものを厳選した抜粋）ため、
-      // 「すべての声」ではなく「抜粋」という言葉を使う。
+      // 292件すべてを載せているわけではない（内容が具体的なものを抜粋）ため、
+      // 「すべての声」ではなく「抜粋」という言葉で統一する（タイトル・戻るボタンとも）。
+      panelTitle.textContent = "声の抜粋";
       panelToggle.textContent = "声の抜粋をもっと見る（" + BACKOFFICE_VOICES.length + "件）";
       panelToggle.onclick = showAll;
       renderCards(highlightVoices);
@@ -153,7 +153,7 @@
     function showAll() {
       setActiveTheme(null);
       panelTitle.textContent = "対応への声（抜粋・" + BACKOFFICE_VOICES.length + "件）";
-      panelToggle.textContent = "← 厳選した声に戻る";
+      panelToggle.textContent = "← 声の抜粋に戻る";
       panelToggle.onclick = showHighlight;
       renderCards(BACKOFFICE_VOICES);
     }
@@ -162,7 +162,7 @@
       setActiveTheme(theme.id);
       var matches = BACKOFFICE_VOICES.filter(function (v) { return v.themes.indexOf(theme.id) !== -1; });
       panelTitle.textContent = "「" + theme.label + "」の声（" + matches.length + "件）";
-      panelToggle.textContent = "← 厳選した声に戻る";
+      panelToggle.textContent = "← 声の抜粋に戻る";
       panelToggle.onclick = showHighlight;
       renderCards(matches);
       panelList.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "nearest" });
@@ -170,7 +170,7 @@
 
     themeButtons.forEach(function (btn, idx) {
       btn.addEventListener("click", function () {
-        // 選択中のバーをもう一度押したら「厳選した声」に戻す（domain-chipと同じトグル挙動）
+        // 選択中のバーをもう一度押したら「声の抜粋」に戻す（domain-chipと同じトグル挙動）
         if (btn.classList.contains("is-active")) {
           showHighlight();
         } else {

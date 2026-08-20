@@ -351,7 +351,7 @@
       var clonedVoicePanelList = clone.querySelector("#voice-panel-list");
       if (clonedVoicePanelList) clonedVoicePanelList.innerHTML = "";
       var clonedVoicePanelTitle = clone.querySelector("#voice-panel-title");
-      if (clonedVoicePanelTitle) clonedVoicePanelTitle.textContent = "厳選した声";
+      if (clonedVoicePanelTitle) clonedVoicePanelTitle.textContent = "声の抜粋";
       var clonedVoicePanelToggle = clone.querySelector("#voice-panel-toggle");
       if (clonedVoicePanelToggle) clonedVoicePanelToggle.textContent = "声の抜粋をもっと見る";
       var clonedVoicePanelEmpty = clone.querySelector("#voice-panel-empty");
