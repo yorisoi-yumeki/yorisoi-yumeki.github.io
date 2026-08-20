@@ -141,14 +141,16 @@
     function showHighlight() {
       setActiveTheme(null);
       panelTitle.textContent = "厳選した声";
-      panelToggle.textContent = "すべての声を見る（" + BACKOFFICE_VOICES.length + "件）";
+      // 292件すべてを載せているわけではない（内容が具体的なものを厳選した抜粋）ため、
+      // 「すべての声」ではなく「抜粋」という言葉を使う。
+      panelToggle.textContent = "声の抜粋をもっと見る（" + BACKOFFICE_VOICES.length + "件）";
       panelToggle.onclick = showAll;
       renderCards(highlightVoices);
     }
 
     function showAll() {
       setActiveTheme(null);
-      panelTitle.textContent = "すべての声（" + BACKOFFICE_VOICES.length + "件）";
+      panelTitle.textContent = "対応への声（抜粋・" + BACKOFFICE_VOICES.length + "件）";
       panelToggle.textContent = "← 厳選した声に戻る";
       panelToggle.onclick = showHighlight;
       renderCards(BACKOFFICE_VOICES);
