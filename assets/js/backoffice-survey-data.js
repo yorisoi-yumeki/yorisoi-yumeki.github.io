@@ -5,14 +5,23 @@
  * 杉田本人が担当した292件から集計。
  *
  * マクロ集計（292件全体）：
- *   - 対応（担当者個人）について何らかの具体的な言及があった回答は292件中50件
- *     （残り242件は、対応そのものというより診断内容についての回答が中心だった）
+ *   - 対応（担当者個人）について何らかの具体的な言及があった回答は292件中74件
+ *     （残りは、対応そのものというより診断内容についての回答が中心だった）
  *   - テーマ別内訳（1件が複数テーマに触れることもあるため重複カウント）：
+ *       わかりやすい説明 36件
  *       丁寧な対応 34件
  *       ヒアリング力・傾聴 7件
  *       的確なアドバイス 5件
  *       親身・誠実な姿勢 5件
  *       好印象・人柄 2件
+ *
+ * 292件を形態素解析（janome）で頻度分析し、既存テーマのキーワードで拾えていなかった
+ * 「わかりやすい」（語幹：わかりやすい/分かりやすい/わかり易い/分かり易い）が36件と
+ * 大きな見落としだったため、新テーマ「わかりやすい説明」として追加した。同様に
+ * 「具体的」「提案」等も頻度は高かったが、内容を精査すると「もっと具体的な提案が
+ * 欲しかった」という不満の文脈が複数混ざっており、好意的な引用として使うのは
+ * リスクがあるため見送っている。「見やすい」は資料・システムへの言及で担当者個人への
+ * 言及ではないため対象外。
  *
  * BACKOFFICE_VOICE_THEMES の count は上記マクロ集計の値。BACKOFFICE_VOICES は
  * そのうち実際に引用として掲載する声（抜粋）で、①別の設問（満足度の理由／印象に
@@ -29,7 +38,7 @@
  *
  * 生成: 元データ（Googleフォーム回答）からPythonスクリプトで抽出・整形。
  * 掲載する声の並び順・highlightは、scoreではなく「具体性・内容の濃さ」を基準に
- * 選定している。ただし先頭2件目は例外的に固定（idx36の声を意図的に2番目に配置、
+ * 選定している。ただし2番目は例外的に固定（idx36の声を意図的に2番目に配置、
  * ユーザー指定）。
  */
 
@@ -39,11 +48,12 @@ var BACKOFFICE_SURVEY_STATS = {
   avgScore: 7.56,
   pct8plus: 58.6,
   pct9to10: 30.5,
-  respondedAboutHandling: 50
+  respondedAboutHandling: 74
 };
 
 // テーマ別マクロ集計（292件中、そのテーマに言及した件数）とグラフの代表一言。
 var BACKOFFICE_VOICE_THEMES = [
+  { id: "clarity", label: "わかりやすい説明", count: 36, excerpt: "フローチャートでのご説明が、現在の課題が見えやすい形でわかりやすかった。" },
   { id: "polite", label: "丁寧な対応", count: 34, excerpt: "押売りの様な印象を全く受けなかった事です。" },
   { id: "listen", label: "ヒアリング力・傾聴", count: 7, excerpt: "ヒアリング能力が高く、顧客に対して課題の意識づけがとても上手でした。 トーク内容、質問に対する対応、とても素晴らしかったです。" },
   { id: "sharp", label: "的確なアドバイス", count: 5, excerpt: "弊社の状況を的確に判断して全体的にお話いただけたので、信頼のできるお話ができました。" },
@@ -67,6 +77,12 @@ var BACKOFFICE_VOICES = [
     highlight: true
   },
   {
+    score: 8,
+    themes: ["polite", "clarity"],
+    quote: "希望する内容がなかったのに丁寧に説明をしていただき、ありがとうございました。 ゆっくり分かりやすく、こちらのペースにあわせてご説明いただき、聞きやすかったです。",
+    highlight: false
+  },
+  {
     score: 7,
     themes: ["polite"],
     quote: "システム導入以前の問題が多い(社員のIT能力等)のですが、一つ一つ丁寧に解決策の例や他社様の事案等交えてご説明頂き、私が認識すらしていなかった課題が見え、大変有意義でした。",
@@ -79,6 +95,12 @@ var BACKOFFICE_VOICES = [
     highlight: true
   },
   {
+    score: 10,
+    themes: ["polite", "sincere", "clarity"],
+    quote: "丁寧に分かり易く説明して頂いたので満足です。 押売りの様な印象を全く受けなかった事です。",
+    highlight: true
+  },
+  {
     score: 8,
     themes: ["listen"],
     quote: "ヒアリングをしていただいて私自身の頭の整理ができました。あまり時間はありませんが、電帳法の対応について検討を進めていきます。ありがとうございました。",
@@ -86,9 +108,21 @@ var BACKOFFICE_VOICES = [
   },
   {
     score: 10,
-    themes: ["polite", "sincere"],
-    quote: "丁寧に分かり易く説明して頂いたので満足です。 押売りの様な印象を全く受けなかった事です。",
+    themes: ["clarity"],
+    quote: "分かりやすく説明してもらい、会話するなかで弊社の課題の優先順位を再認識できた、当初の予定時間をオーバーして対応していただきありがとうございました",
     highlight: true
+  },
+  {
+    score: 10,
+    themes: ["polite", "clarity"],
+    quote: "今回は、前回の時よりも とても親切にわかりやす教えて頂きました。 ありがとうございました。",
+    highlight: false
+  },
+  {
+    score: 9,
+    themes: ["polite", "clarity"],
+    quote: "当社の現状を把握していただいて、どうすべきかの説明がとても丁寧で分かりやすかったです。",
+    highlight: false
   },
   {
     score: 10,
@@ -100,6 +134,12 @@ var BACKOFFICE_VOICES = [
     score: 10,
     themes: ["polite", "sincere"],
     quote: "担当者の方の誠実な対応がとてもよかった。わからないことも丁寧に教えていただいた。",
+    highlight: false
+  },
+  {
+    score: 10,
+    themes: ["clarity"],
+    quote: "弊社のこれから対応していかなければならないことをまとめていただいたので、今後の取組についてわかりやすかったです。",
     highlight: false
   },
   {
@@ -122,26 +162,20 @@ var BACKOFFICE_VOICES = [
   },
   {
     score: 10,
-    themes: ["polite"],
-    quote: "今回は、前回の時よりも とても親切にわかりやす教えて頂きました。 ありがとうございました。",
-    highlight: false
-  },
-  {
-    score: 10,
     themes: ["sharp"],
     quote: "現状を的確に把握して下さり、今後検討した方が良いことのアドバイスを頂き大変助かりました。",
     highlight: true
   },
   {
     score: 9,
-    themes: ["polite"],
-    quote: "当社の現状を把握していただいて、どうすべきかの説明がとても丁寧で分かりやすかったです。",
+    themes: ["clarity"],
+    quote: "言葉が足らないところをフォローしていただき、わかりやすく説明していただいた。",
     highlight: false
   },
   {
-    score: 8,
-    themes: ["polite"],
-    quote: "希望する内容がなかったのに丁寧に説明をしていただき、ありがとうございました。",
+    score: 7,
+    themes: ["clarity"],
+    quote: "フローチャートでのご説明が、現在の課題が見えやすい形でわかりやすかった。",
     highlight: false
   },
   {
@@ -151,9 +185,33 @@ var BACKOFFICE_VOICES = [
     highlight: false
   },
   {
+    score: 8,
+    themes: ["clarity"],
+    quote: "今現在の状況、やり方について話し易かった。説明もわかり易かったです。",
+    highlight: false
+  },
+  {
+    score: 9,
+    themes: ["clarity"],
+    quote: "わかりやすくそれぞれの分野について整理、診断していただいたと思います",
+    highlight: false
+  },
+  {
     score: 10,
     themes: ["polite"],
     quote: "説明の間で都度質問をなげかけても丁寧な対応をしていただけました",
+    highlight: false
+  },
+  {
+    score: 8,
+    themes: ["clarity"],
+    quote: "図でまとめながら話を進めていただいたので分かりやすかったです。",
+    highlight: false
+  },
+  {
+    score: 8,
+    themes: ["clarity"],
+    quote: "フォーマットを見ながら説明していただけたのでわかりやすかった。",
     highlight: false
   },
   {
@@ -164,14 +222,44 @@ var BACKOFFICE_VOICES = [
   },
   {
     score: 9,
+    themes: ["clarity"],
+    quote: "情報や改善可能な点をわかりやすく説明していただきました。",
+    highlight: false
+  },
+  {
+    score: 9,
     themes: ["listen"],
     quote: "冷静にヒアリング頂き、短時間で整理できたのはすばらしい",
     highlight: false
   },
   {
     score: 10,
+    themes: ["clarity"],
+    quote: "課題の可視化により、問題点が分かりやすくなりました",
+    highlight: false
+  },
+  {
+    score: 8,
+    themes: ["clarity"],
+    quote: "内容がうまくまとめられていて分かりやすかった。",
+    highlight: false
+  },
+  {
+    score: 10,
     themes: ["listen"],
     quote: "こちらの課題に真摯に耳を傾けて下さったこと。",
+    highlight: false
+  },
+  {
+    score: 9,
+    themes: ["clarity"],
+    quote: "自社の状況が表で整理されてわかりやすかった",
+    highlight: false
+  },
+  {
+    score: 9,
+    themes: ["clarity"],
+    quote: "画面共有での情報の整理がわかりやすい",
     highlight: false
   },
 ];
