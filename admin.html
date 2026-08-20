@@ -11,7 +11,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>管理画面（周囲の声） | 杉田夢生</title>
+<title>管理画面（周囲の声・対応への声） | 杉田夢生</title>
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
@@ -75,7 +75,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .admin-list-item-actions button:hover { background: var(--bg); }
   .admin-list-item-actions button.is-danger { color: #C23A3A; border-color: #F0C6C6; }
   .admin-list-item-actions button.is-danger:hover { background: #FDF1F1; }
-  #admin-code-output {
+  #admin-code-output, #bo-code-output {
     width: 100%;
     font-family: "SFMono-Regular", Consolas, monospace;
     font-size: 0.76rem;
@@ -164,7 +164,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h1 style="max-width:100%;">「周囲の声」<br><span class="hl">管理画面</span></h1>
     <p class="hero-lede">
       掲載する推薦文の追加・編集・並び替えができるツールです。<br>
-      サイトの見た目や内容には自動反映されません。「STEP 4」でGitHub側に反映すると初めて公開されます。
+      サイトの見た目や内容には自動反映されません。「STEP 4」でGitHub側に反映すると初めて公開されます。<br>
+      ページ下部には、バックオフィス診断アンケートの「対応への声」セクションを編集するツールもあります。
     </p>
   </div>
 </header>
@@ -309,6 +310,149 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
+  <section id="admin-backoffice-section" class="on-light" style="border-top: 1px solid var(--border);">
+    <div class="container" style="max-width: 780px;">
+      <p class="section-label">Backoffice Survey</p>
+      <h2>「対応への声」を編集する（バックオフィス診断アンケート）</h2>
+      <p>
+        トップページの「対応への声」セクション（freeeバックオフィス診断アンケート・292件のうち、対応について厳選した声）を編集するツールです。<br>
+        上の「周囲の声」とは別のデータ・別のファイル（<code>backoffice-survey-data.js</code>）です。継続的な回答フォームは無いため、STEP 1の自動取り込みに相当する機能はありません。
+      </p>
+      <p class="admin-storage-note">
+        こちらも入力内容は<strong>この端末のこのブラウザ内だけ</strong>に保存されます。編集後は一番下の「コードを生成」から、GitHub側に反映してください。
+      </p>
+    </div>
+  </section>
+
+  <section class="on-light">
+    <div class="container" style="max-width: 680px;">
+      <h3>定量サマリー（292件全体の集計値）</h3>
+      <p class="form-note">ページ上部の3つの数字タイル（回答数・平均満足度・8点以上割合など）に使われます。</p>
+      <div class="form-row">
+        <label for="bo-stat-count">回答数</label>
+        <input type="number" id="bo-stat-count" min="0" step="1">
+      </div>
+      <div class="form-row">
+        <label for="bo-stat-avg">平均満足度</label>
+        <input type="number" id="bo-stat-avg" min="0" max="10" step="0.01">
+      </div>
+      <div class="form-row">
+        <label for="bo-stat-8plus">8点以上の割合（%）</label>
+        <input type="number" id="bo-stat-8plus" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-row">
+        <label for="bo-stat-910">9〜10点の割合（%）</label>
+        <input type="number" id="bo-stat-910" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-row">
+        <label for="bo-stat-handling">対応（担当者個人）について具体的な言及があった件数</label>
+        <input type="number" id="bo-stat-handling" min="0" step="1">
+      </div>
+      <div class="admin-form-actions">
+        <button type="button" class="btn btn-primary" id="bo-stats-save-btn">この内容を保存する</button>
+        <span id="bo-stats-saved-note" class="form-note" hidden>保存しました！</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="max-width: 680px;">
+      <h3 id="bo-theme-form-title">テーマを追加する</h3>
+      <p class="form-note">グラフのバー1本＝テーマ1つです。「件数」はマクロ集計値（292件中の言及件数）で、実際に掲載する声の件数と一致しなくて構いません。「代表一言」は空欄にすると、バーの下に「具体的な言及は無かった」という注記が表示されます。</p>
+      <form id="bo-theme-form">
+        <div class="form-row">
+          <label for="bo-theme-label">テーマ名 <span class="form-required">*</span></label>
+          <input type="text" id="bo-theme-label" required placeholder="例：わかりやすい説明">
+        </div>
+        <div class="form-row">
+          <label for="bo-theme-count">件数（292件中、このテーマに言及した件数）</label>
+          <input type="number" id="bo-theme-count" min="0" step="1">
+        </div>
+        <div class="form-row">
+          <label for="bo-theme-excerpt">代表一言（バーの下に表示。空欄可）</label>
+          <textarea id="bo-theme-excerpt" rows="3"></textarea>
+        </div>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary" id="bo-theme-submit-btn">追加する</button>
+          <button type="button" class="btn btn-secondary" id="bo-theme-cancel-btn" hidden>編集をキャンセル</button>
+        </div>
+      </form>
+      <h4 style="margin-top: var(--sp-4);">テーマ一覧（表示順）</h4>
+      <div id="bo-theme-list"></div>
+    </div>
+  </section>
+
+  <section class="on-light">
+    <div class="container" style="max-width: 680px;">
+      <h3 id="bo-voice-form-title">声を追加する</h3>
+      <p class="form-note">実際に引用として掲載する声（抜粋）です。「初期表示に含める」をオンにすると、グラフのバーを何もクリックしていない初期状態で表示されます。</p>
+      <form id="bo-voice-form">
+        <div class="form-row">
+          <label for="bo-voice-quote">本文 <span class="form-required">*</span></label>
+          <textarea id="bo-voice-quote" rows="4" required></textarea>
+        </div>
+        <div class="form-row">
+          <label for="bo-voice-score">満足度スコア（0〜10）</label>
+          <input type="number" id="bo-voice-score" min="0" max="10" step="1" value="10">
+        </div>
+        <div class="form-row">
+          <label>この声が該当するテーマ <span class="form-required">*</span></label>
+          <div id="bo-voice-themes"></div>
+        </div>
+        <div class="form-row admin-checkbox-row">
+          <input type="checkbox" id="bo-voice-highlight">
+          <label for="bo-voice-highlight" style="margin:0;">初期表示に含める</label>
+        </div>
+        <p class="form-error" id="bo-voice-form-error" hidden></p>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary" id="bo-voice-submit-btn">追加する</button>
+          <button type="button" class="btn btn-secondary" id="bo-voice-cancel-btn" hidden>編集をキャンセル</button>
+        </div>
+      </form>
+      <h4 style="margin-top: var(--sp-4);">声の一覧（表示順）</h4>
+      <div id="bo-voice-list"></div>
+      <p id="bo-voice-list-empty" class="form-note" hidden>まだ何も登録されていません。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <span class="section-label">PREVIEW</span>
+      <h2>サイトでの見え方</h2>
+      <p>実際の「対応への声」セクションと同じ見た目で表示されます（テーマのバーと、「初期表示に含める」がオンの声のみ）。</p>
+      <div class="voice-theme-bars" id="bo-preview-bars"></div>
+      <div class="testimonial-grid" id="bo-preview-cards" style="margin-top: var(--sp-3);"></div>
+    </div>
+  </section>
+
+  <section class="on-light">
+    <div class="container" style="max-width: 780px;">
+      <button type="button" class="btn btn-secondary" id="bo-reset-seed-btn">編集内容を破棄して、最新の公開データから読み込み直す</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="max-width: 720px;">
+      <span class="section-label">STEP 4</span>
+      <h2>コードを生成してサイトに反映する</h2>
+      <p>ここでの編集はサイトにはまだ反映されていません。以下の手順でGitHub側に保存すると公開されます。</p>
+      <ol>
+        <li>下の「コードを生成」ボタンを押す</li>
+        <li>「コピーする」ボタンでコードをコピー</li>
+        <li><a href="https://github.com/yorisoi-yumeki/yorisoi-yumeki.github.io/edit/main/assets/js/backoffice-survey-data.js" target="_blank" rel="noopener">GitHub上のbackoffice-survey-data.js編集画面</a>を開く（要ログイン）</li>
+        <li>編集画面の中身を全選択（クリックして Ctrl+A / ⌘+A）して削除し、コピーしたコードを貼り付ける</li>
+        <li>ページ下部までスクロールし、緑色の「Commit changes」ボタンを押す</li>
+        <li>数分待つとサイトに反映されます</li>
+      </ol>
+      <div class="admin-code-actions">
+        <button type="button" class="btn btn-dark" id="bo-generate-btn">コードを生成</button>
+        <button type="button" class="btn btn-secondary" id="bo-copy-btn" hidden>コピーする</button>
+        <span id="bo-copy-status" class="form-note" hidden>コピーしました！</span>
+      </div>
+      <textarea id="bo-code-output" rows="18" readonly hidden></textarea>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -317,5 +461,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </footer>
 
 <script src="assets/js/admin.js"></script>
+<script src="assets/js/admin-backoffice.js"></script>
 </body>
 </html>

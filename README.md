@@ -184,7 +184,7 @@ GitHubアカウント名を `negi720-ui` → `yorisoi-yumeki` に、リポジト
 ```
 index.html               本体（1ページ）
 voice-form.html           「周囲からの声」収集フォーム
-admin.html                「周囲からの声」管理画面（非公開・ブックマーク専用）
+admin.html                「周囲からの声」「対応への声」管理画面（非公開・ブックマーク専用）
 style.css                デザイン（カラー・レイアウト定義）
 assets/js/main.js        スクロール演出・経歴カードの開閉制御・絞り込み・ジャンプ連動
 assets/js/career-timeline.js 経歴タイムライン（ガントチャート風）の描画。career-cardの
@@ -194,12 +194,15 @@ assets/js/career-timeline.js 経歴タイムライン（ガントチャート風
 assets/js/testimonials.js 周囲からの声のデータとON/OFF切り替え
 assets/js/backoffice-survey-data.js 「バックオフィス診断でいただいた、対応への声」の集計データ
                           （杉田個人が担当した292件のアンケートから、Pythonスクリプトで
-                          テーマ別に抽出・整形して生成。再集計する際は元データと同じ
-                          テーマキーワード辞書を使って作り直すこと）
+                          テーマ別に抽出・整形して生成。テキストの微修正はadmin.htmlの
+                          「対応への声」編集セクションから行える。再集計する際は元データと
+                          同じテーマキーワード辞書を使って作り直すこと）
 assets/js/backoffice-survey.js 上記データの描画とテーマ別グラフのクリック絞り込み
 assets/js/voice-form.js  一言メッセージフォームのGoogleフォーム送信連携
 assets/js/contact-form.js お問い合わせフォームのGoogleフォーム送信連携（②参照）
-assets/js/admin.js       管理画面のロジック（localStorage管理・回答取り込み・コード生成）
+assets/js/admin.js       管理画面のロジック（周囲からの声：localStorage管理・回答取り込み・コード生成）
+assets/js/admin-backoffice.js 管理画面のロジック（対応への声：localStorage管理・コード生成。
+                          継続的な回答フォームが無いため取り込み機能は無い）
 assets/img/               写真・アイコン類（strength-icon の3点はSVGアイコン）
 docs/apps-script-sheet-api.gs.txt  回答スプレッドシートをJSON APIとして公開するApps Scriptコード（④参照）
 .nojekyll                 GitHub PagesのJekyll処理をスキップするための空ファイル
