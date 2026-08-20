@@ -48,7 +48,8 @@ var BACKOFFICE_SURVEY_STATS = {
   avgScore: 7.56,
   pct8plus: 58.6,
   pct9to10: 30.5,
-  respondedAboutHandling: 74
+  respondedAboutHandling: 74,
+  macroNote: "※ 292件中74件が、対応（担当者個人）について具体的に言及（残りは診断内容についての回答が中心）。以下には、その中でも内容が具体的だったものを抜粋して掲載しています。"
 };
 
 // テーマ別マクロ集計（292件中、そのテーマに言及した件数）とグラフの代表一言。

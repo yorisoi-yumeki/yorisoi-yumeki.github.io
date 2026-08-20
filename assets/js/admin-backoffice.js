@@ -25,7 +25,7 @@
   // ここを更新しても、既にlocalStorageに保存済みの人には反映されない
   // （「初期データに戻す」ボタンで明示的に読み込み直した場合のみ）。
   var SEED_DATA = {
-    "stats": {"responseCount": 292, "avgScore": 7.56, "pct8plus": 58.6, "pct9to10": 30.5, "respondedAboutHandling": 74},
+    "stats": {"responseCount": 292, "avgScore": 7.56, "pct8plus": 58.6, "pct9to10": 30.5, "respondedAboutHandling": 74, "macroNote": "※ 292件中74件が、対応（担当者個人）について具体的に言及（残りは診断内容についての回答が中心）。以下には、その中でも内容が具体的だったものを抜粋して掲載しています。"},
     "themes": [
       {"id": "clarity", "label": "わかりやすい説明", "count": 36, "excerpt": "言葉が足らないところをフォローしていただき、わかりやすく説明していただいた。"},
       {"id": "polite", "label": "丁寧な対応", "count": 34, "excerpt": "担当者の方の誠実な対応がとてもよかった。"},
@@ -128,6 +128,7 @@
     var stat8plusInput = document.getElementById("bo-stat-8plus");
     var stat910Input = document.getElementById("bo-stat-910");
     var statHandlingInput = document.getElementById("bo-stat-handling");
+    var statMacroNoteInput = document.getElementById("bo-stat-macro-note");
     var statsSaveBtn = document.getElementById("bo-stats-save-btn");
     var statsSavedNote = document.getElementById("bo-stats-saved-note");
 
@@ -137,6 +138,7 @@
       stat8plusInput.value = data.stats.pct8plus;
       stat910Input.value = data.stats.pct9to10;
       statHandlingInput.value = data.stats.respondedAboutHandling;
+      statMacroNoteInput.value = data.stats.macroNote || "";
     }
 
     statsSaveBtn.addEventListener("click", function () {
@@ -145,9 +147,11 @@
         avgScore: parseFloat(statAvgInput.value) || 0,
         pct8plus: parseFloat(stat8plusInput.value) || 0,
         pct9to10: parseFloat(stat910Input.value) || 0,
-        respondedAboutHandling: parseInt(statHandlingInput.value, 10) || 0
+        respondedAboutHandling: parseInt(statHandlingInput.value, 10) || 0,
+        macroNote: statMacroNoteInput.value.trim()
       };
       save();
+      renderPreview();
       statsSavedNote.hidden = false;
       window.setTimeout(function () { statsSavedNote.hidden = true; }, 2000);
     });
@@ -453,6 +457,7 @@
 
     // ---- プレビュー（実サイトと同じクラス名で描画） ----
     var previewBars = document.getElementById("bo-preview-bars");
+    var previewMacroNote = document.getElementById("bo-preview-macro-note");
     var previewCards = document.getElementById("bo-preview-cards");
 
     function renderPreview() {
@@ -494,6 +499,8 @@
 
         previewBars.appendChild(row);
       });
+
+      if (previewMacroNote) previewMacroNote.textContent = data.stats.macroNote || "";
 
       previewCards.innerHTML = "";
       var highlighted = data.voices.filter(function (v) { return v.highlight; });
@@ -566,7 +573,8 @@
         "  avgScore: " + data.stats.avgScore + ",\n" +
         "  pct8plus: " + data.stats.pct8plus + ",\n" +
         "  pct9to10: " + data.stats.pct9to10 + ",\n" +
-        "  respondedAboutHandling: " + data.stats.respondedAboutHandling + "\n" +
+        "  respondedAboutHandling: " + data.stats.respondedAboutHandling + ",\n" +
+        "  macroNote: " + jsString(data.stats.macroNote) + "\n" +
         "};\n";
 
       var themeBlocks = data.themes.map(function (t) {
