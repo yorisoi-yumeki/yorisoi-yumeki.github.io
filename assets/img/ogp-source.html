@@ -1,0 +1,111 @@
+<!--
+  ogp.png（リンクシェア時に表示される画像）の生成元。サイトの一部として読み込まれる
+  ファイルではなく、ogp.pngを作り直す時にブラウザで開いて使うためだけの素材。
+
+  更新のしかた（12年・10社・7業界の数字や文言を変えたい時）：
+    1. 下の「12」「10」「7」や見出し・名前のテキストを直接書き換える
+    2. このファイルをブラウザ（Chrome推奨）で開く
+    3. 開発者ツールのデバイスツールバーで幅1200×高さ630のスクリーンショットを撮る
+       （またはヘッドレスブラウザで viewport 1200x630, device_scale_factor 1 で撮影）
+    4. 撮った画像を assets/img/ogp.png として上書き保存する
+
+  デザイン（青のグラデーション背景・グリッド柄・配色）はstyle.cssの.hero /
+  .hero::beforeをそのまま踏襲しているので、hero側のデザインを変えた時は
+  こちらも合わせて直すこと。
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", system-ui, sans-serif;
+  }
+  .card {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    background: linear-gradient(135deg, #1E3FB0 0%, #2F5FE0 55%, #4B7BFF 100%);
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse at top right, #000 10%, transparent 70%);
+    mask-image: radial-gradient(ellipse at top right, #000 10%, transparent 70%);
+  }
+  .content {
+    position: relative;
+    padding: 0 90px;
+  }
+  .name-row {
+    position: absolute;
+    top: 168px;
+    left: 90px;
+    font-size: 27px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .name-row .en {
+    font-family: "Inter", "Noto Sans JP", system-ui, sans-serif;
+    font-weight: 400;
+    color: #C7D8FF;
+  }
+  h1 {
+    position: absolute;
+    top: 246px;
+    left: 90px;
+    font-size: 76px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .stats {
+    position: absolute;
+    top: 408px;
+    left: 90px;
+    display: flex;
+    align-items: baseline;
+    gap: 56px;
+  }
+  .stat-num {
+    font-family: "Inter", "Noto Sans JP", system-ui, sans-serif;
+    font-weight: 700;
+    color: #38D6FF;
+    font-size: 52px;
+  }
+  .stat-num .unit {
+    font-family: "Noto Sans JP", sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    margin-left: 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="content">
+      <div class="name-row">杉田夢生 <span class="en">/ Sugita Yumeki</span></div>
+      <h1>寄り添い提案型営業</h1>
+      <div class="stats">
+        <span class="stat-num">12<span class="unit">年</span></span>
+        <span class="stat-num">10<span class="unit">社</span></span>
+        <span class="stat-num">7<span class="unit">業界</span></span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
