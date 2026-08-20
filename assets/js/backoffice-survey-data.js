@@ -209,12 +209,6 @@ var BACKOFFICE_VOICES = [
     highlight: false
   },
   {
-    score: 8,
-    themes: ["clarity"],
-    quote: "フォーマットを見ながら説明していただけたのでわかりやすかった。",
-    highlight: false
-  },
-  {
     score: 10,
     themes: ["polite"],
     quote: "丁寧なご説明をして頂き、またお話をお伺いしたいと思いました。",
@@ -234,32 +228,8 @@ var BACKOFFICE_VOICES = [
   },
   {
     score: 10,
-    themes: ["clarity"],
-    quote: "課題の可視化により、問題点が分かりやすくなりました",
-    highlight: false
-  },
-  {
-    score: 8,
-    themes: ["clarity"],
-    quote: "内容がうまくまとめられていて分かりやすかった。",
-    highlight: false
-  },
-  {
-    score: 10,
     themes: ["listen"],
     quote: "こちらの課題に真摯に耳を傾けて下さったこと。",
-    highlight: false
-  },
-  {
-    score: 9,
-    themes: ["clarity"],
-    quote: "自社の状況が表で整理されてわかりやすかった",
-    highlight: false
-  },
-  {
-    score: 9,
-    themes: ["clarity"],
-    quote: "画面共有での情報の整理がわかりやすい",
     highlight: false
   },
 ];
