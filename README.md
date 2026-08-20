@@ -204,6 +204,9 @@ assets/js/admin.js       管理画面のロジック（周囲からの声：loca
 assets/js/admin-backoffice.js 管理画面のロジック（対応への声：localStorage管理・コード生成。
                           継続的な回答フォームが無いため取り込み機能は無い）
 assets/img/               写真・アイコン類（strength-icon の3点はSVGアイコン）
+assets/img/ogp.png         リンクシェア時に表示されるOGP画像
+assets/img/ogp-source.html ogp.pngの生成元（サイトには読み込まれない。数字や
+                          文言を変えて作り直す時に使う。ファイル冒頭のコメント参照）
 docs/apps-script-sheet-api.gs.txt  回答スプレッドシートをJSON APIとして公開するApps Scriptコード（④参照）
 .nojekyll                 GitHub PagesのJekyll処理をスキップするための空ファイル
 ```
