@@ -27,7 +27,12 @@
     ".domain-tag"
   ].join(", ");
 
-  var EXCLUDE_ANCESTOR_SELECTOR = ".career-filter, .testimonial-filter, .chip-group, .exp-bars, .career-timeline-chart, form";
+  // #backoffice-survey（「対応への声」）全体を除外する。ここは backoffice-survey.js が
+  // backoffice-survey-data.js から毎回動的に生成し、書き出し時も空に戻す（下記の
+  // generate クリックハンドラ参照）ため、ここで編集可能にしても書き出したコードには
+  // 反映されない＝編集した内容が消えるだけになる。文言を変えたい場合は
+  // assets/js/backoffice-survey-data.js を直接編集すること。
+  var EXCLUDE_ANCESTOR_SELECTOR = ".career-filter, .testimonial-filter, .chip-group, .exp-bars, .career-timeline-chart, #backoffice-survey, form";
 
   document.addEventListener("DOMContentLoaded", function () {
     // 経歴カードは編集中だけ全部開いておく（閉じたままだと詳細文が編集できないため）。
@@ -332,6 +337,22 @@
       // 生成済みの中身の上へさらにバーを重ねて二重・三重に増殖してしまう）。
       var clonedTimelineChart = clone.querySelector("#career-timeline-chart");
       if (clonedTimelineChart) clonedTimelineChart.innerHTML = "";
+      // #voice-theme-bars / #voice-panel-list も同じ理由（backoffice-survey.jsが
+      // backoffice-survey-data.jsから毎回動的に生成するgenerated要素）で空に戻す。
+      // ここを空に戻さず書き出すと、次回読み込み時にJSがその上へ二重に追記するだけで
+      // なく、データファイル（真の情報源）を更新しても書き出し済みの古い声がHTML側に
+      // 残り続け、mainブランチへのマージ時にコンフリクトを起こす（実際に本セクション
+      // 追加後、3回このコンフリクトが発生したための再発防止）。
+      var clonedVoiceBars = clone.querySelector("#voice-theme-bars");
+      if (clonedVoiceBars) clonedVoiceBars.innerHTML = "";
+      var clonedVoicePanelList = clone.querySelector("#voice-panel-list");
+      if (clonedVoicePanelList) clonedVoicePanelList.innerHTML = "";
+      var clonedVoicePanelTitle = clone.querySelector("#voice-panel-title");
+      if (clonedVoicePanelTitle) clonedVoicePanelTitle.textContent = "厳選した声";
+      var clonedVoicePanelToggle = clone.querySelector("#voice-panel-toggle");
+      if (clonedVoicePanelToggle) clonedVoicePanelToggle.textContent = "声の抜粋をもっと見る";
+      var clonedVoicePanelEmpty = clone.querySelector("#voice-panel-empty");
+      if (clonedVoicePanelEmpty) clonedVoicePanelEmpty.hidden = true;
       var cloneToolbar = clone.querySelector("#edit-mode-toolbar");
       if (cloneToolbar) cloneToolbar.remove();
       var cloneStyle = clone.querySelector("#edit-mode-style");
