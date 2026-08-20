@@ -329,7 +329,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 #achievements .fade-target + .fade-target { margin-top: var(--sp-8); }
 
 /* ---------- Experience bars ---------- */
-.exp-bars-caption { font-size: 0.82rem; color: var(--text-600); margin-top: -4px; }
+.exp-bars-caption { font-size: 0.82rem; color: var(--text-600); margin-top: -4px; white-space: pre-line; }
 .exp-bars { display: flex; flex-direction: column; gap: var(--sp-2); margin: var(--sp-2) 0 var(--sp-3); }
 .exp-bar-row { display: flex; flex-direction: column; gap: 6px; }
 .exp-bar-track {

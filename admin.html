@@ -349,8 +349,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <input type="number" id="bo-stat-handling" min="0" step="1">
       </div>
       <div class="form-row">
-        <label for="bo-stat-macro-note">グラフ下の注記文（テーマ一覧の下に表示）</label>
-        <textarea id="bo-stat-macro-note" rows="3"></textarea>
+        <label for="bo-stat-bars-caption">テーマ一覧の上に表示される説明文（改行すると2行になります）</label>
+        <textarea id="bo-stat-bars-caption" rows="3"></textarea>
       </div>
       <div class="admin-form-actions">
         <button type="button" class="btn btn-primary" id="bo-stats-save-btn">この内容を保存する</button>
@@ -424,8 +424,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="section-label">PREVIEW</span>
       <h2>サイトでの見え方</h2>
       <p>実際の「対応への声」セクションと同じ見た目で表示されます（テーマのバーと、「初期表示に含める」がオンの声のみ）。</p>
+      <p class="exp-bars-caption" id="bo-preview-bars-caption"></p>
       <div class="voice-theme-bars" id="bo-preview-bars"></div>
-      <p class="form-note" id="bo-preview-macro-note"></p>
       <div class="testimonial-grid" id="bo-preview-cards" style="margin-top: var(--sp-3);"></div>
     </div>
   </section>
