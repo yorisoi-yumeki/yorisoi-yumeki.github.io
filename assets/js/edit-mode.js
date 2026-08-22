@@ -27,12 +27,19 @@
     ".domain-tag"
   ].join(", ");
 
-  // #backoffice-survey（「対応への声」）全体を除外する。ここは backoffice-survey.js が
-  // backoffice-survey-data.js から毎回動的に生成し、書き出し時も空に戻す（下記の
-  // generate クリックハンドラ参照）ため、ここで編集可能にしても書き出したコードには
-  // 反映されない＝編集した内容が消えるだけになる。文言を変えたい場合は
+  // #backoffice-survey（「対応への声」）内の一部要素だけを除外する。この中の
+  // #voice-stat-count/#voice-stat-avg/#voice-stat-8plus/#voice-bars-caption/
+  // #voice-theme-bars/#voice-panel-title/#voice-panel-toggle/#voice-panel-list/
+  // #voice-panel-empty は backoffice-survey.js が backoffice-survey-data.js から
+  // 毎回動的に生成・上書きし、書き出し時も初期状態へ戻す（下記の generate
+  // クリックハンドラ参照）ため、ここで編集可能にしても書き出したコードには
+  // 反映されない＝編集した内容が消えるだけになる。これらの文言を変えたい場合は
   // assets/js/backoffice-survey-data.js を直接編集すること。
-  var EXCLUDE_ANCESTOR_SELECTOR = ".career-filter, .testimonial-filter, .chip-group, .exp-bars, .career-timeline-chart, #backoffice-survey, form";
+  // それ以外（セクション見出し・導入文・集計期間の注記など）はJSが触らない
+  // 静的な文章なので、通常どおり編集可能にする。
+  var EXCLUDE_ANCESTOR_SELECTOR = ".career-filter, .testimonial-filter, .chip-group, .exp-bars, .career-timeline-chart, " +
+    "#voice-stat-count, #voice-stat-avg, #voice-stat-8plus, #voice-bars-caption, #voice-theme-bars, " +
+    "#voice-panel-title, #voice-panel-toggle, #voice-panel-list, #voice-panel-empty, form";
 
   document.addEventListener("DOMContentLoaded", function () {
     // 経歴カードは編集中だけ全部開いておく（閉じたままだと詳細文が編集できないため）。
