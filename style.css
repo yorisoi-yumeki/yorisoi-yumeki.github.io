@@ -503,6 +503,34 @@ button.exp-bar-fill-label.is-jump {
   color: var(--text-600);
 }
 
+/* リクルートカード内：当時作成したマインドマップの略図（折りたたみ）。
+   career-cardと同じ<details>/<summary>パターンをネストして使っている。 */
+.career-subdetail { margin-top: var(--sp-2); }
+.career-subdetail summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--blue-600);
+}
+.career-subdetail summary::-webkit-details-marker { display: none; }
+.career-subdetail[open] summary { margin-bottom: var(--sp-2); }
+.career-subdetail-intro { font-size: 0.84rem; color: var(--text-600); margin: 0 0 var(--sp-2); }
+.pattern-map {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-2);
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-m);
+  padding: var(--sp-2);
+}
+.pattern-axis { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-s); padding: 12px 14px; }
+.pattern-axis h5 { margin: 0 0 8px; font-size: 0.82rem; font-weight: 700; color: var(--blue-700); }
+.pattern-axis ul { margin: 0; padding-left: 1.1em; font-size: 0.78rem; color: var(--text-600); }
+.pattern-axis li { margin-bottom: 6px; }
+.pattern-axis li:last-child { margin-bottom: 0; }
+
 .career-extra { display: none; }
 .career-grid.is-expanded .career-extra { display: block; }
 #career-more-btn.is-hidden { display: none; }
