@@ -494,6 +494,20 @@ button.exp-bar-fill-label.is-jump {
 /* バックオフィス診断の声セクションへの導線（freeeカード内） */
 .career-detail-link { margin: var(--sp-2) 0 0; }
 .career-detail-link a { font-size: 0.86rem; font-weight: 700; color: var(--blue-600); }
+/* リクルートカード内：当時作成したマインドマップの実物画像（クリックで拡大）。
+   data-lightbox / lightbox.js とセットで使う */
+.career-image-link {
+  display: block;
+  margin-top: var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  background: var(--bg);
+  padding: var(--sp-2);
+  cursor: zoom-in;
+}
+.career-image-thumb { display: block; width: 100%; max-height: 260px; object-fit: contain; object-position: left top; border-radius: var(--radius-s); }
+.career-image-caption { display: block; margin-top: 8px; font-size: 0.78rem; font-weight: 700; color: var(--blue-600); }
+
 /* 雇用形態・契約期間は詳細展開時の一番下に控えめに表示 */
 .career-detail-period {
   margin: var(--sp-2) 0 0;
@@ -1088,6 +1102,36 @@ html.js .fade-target.is-visible {
 @media (prefers-reduced-motion: reduce) {
   html.js .fade-target { opacity: 1; transform: none; transition: none; }
 }
+
+/* ---------- Lightbox（画像クリックで拡大表示） ---------- */
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(16, 26, 51, 0.86);
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-3);
+  cursor: zoom-out;
+}
+.lightbox-overlay.is-open { display: flex; }
+.lightbox-img { max-width: 100%; max-height: 92vh; border-radius: var(--radius-s); box-shadow: var(--shadow-card-lg); cursor: default; }
+.lightbox-close {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.lightbox-close:hover, .lightbox-close:focus-visible { background: rgba(255, 255, 255, 0.3); }
+body.lightbox-lock { overflow: hidden; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
